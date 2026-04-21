@@ -1,0 +1,243 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:owl="http://www.w3.org/2002/07/owl#"
+         xml:base="http://example.org/conceptual-space-emotion.owl"
+         xmlns="http://example.org/conceptual-space-emotion.owl#"
+         xmlns:orka="https://w3id.org/def/orka#">
+
+<owl:Ontology rdf:about="http://example.org/conceptual-space-emotion.owl"/>
+
+<owl:ObjectProperty rdf:about="#hasContext">
+  <rdfs:domain rdf:resource="#ConceptualSpace"/>
+  <rdfs:range rdf:resource="#Context"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasSimParam">
+  <rdfs:domain rdf:resource="#ConceptualSpace"/>
+  <rdfs:range rdf:resource="#SimSensParameter"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasContrastClass">
+  <rdfs:domain rdf:resource="#ConceptualSpace"/>
+  <rdfs:range rdf:resource="#ContrastClass"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasInstance">
+  <rdfs:domain rdf:resource="#ConceptualSpace"/>
+  <rdfs:range rdf:resource="#Instance"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasConcept">
+  <rdfs:domain rdf:resource="#ConceptualSpace"/>
+  <rdfs:range rdf:resource="#Concept"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasDomain">
+  <rdfs:domain rdf:resource="#ConceptualSpace"/>
+  <rdfs:range rdf:resource="#Domain"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasRegion">
+  <rdfs:domain rdf:resource="#Concept"/>
+  <rdfs:range rdf:resource="#ConvexRegion"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasPrototypicalInstance">
+  <rdfs:domain rdf:resource="#Concept"/>
+  <rdfs:range rdf:resource="#PrototypicalInstance"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#definedBy">
+  <rdfs:domain rdf:resource="#Point"/>
+  <rdfs:range rdf:resource="#Definition"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasDefinition">
+  <rdfs:domain rdf:resource="#PrototypicalInstance"/>
+  <rdfs:range rdf:resource="#Definition"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasSource">
+  <rdfs:domain rdf:resource="#Definition"/>
+  <rdfs:range rdf:resource="#KnowledgeRepository"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="https://w3id.org/def/orka#describedBy">
+  <rdfs:domain rdf:resource="#Emotion"/>
+  <rdfs:range rdf:resource="#KnowledgeRepository"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasActionUnit">
+  <rdfs:domain rdf:resource="#Emotion"/>
+  <rdfs:range rdf:resource="#ActionUnit"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#correspondsTo">
+  <rdfs:domain rdf:resource="#ConvexRegion"/>
+  <rdfs:range rdf:resource="#Domain"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasQualityDimension">
+  <rdfs:domain rdf:resource="#ConvexRegion"/>
+  <rdfs:range rdf:resource="#QualityDimension"/>
+</owl:ObjectProperty>
+
+<owl:DatatypeProperty rdf:about="#hasValue">
+  <rdfs:domain rdf:resource="#Definition"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:about="#isCircular">
+  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  <rdfs:domain rdf:resource="#QualityDimension"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:about="#hasMeasurementLevel">
+  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  <rdfs:domain rdf:resource="#QualityDimension"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:about="#hasRange">
+  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  <rdfs:domain rdf:resource="#QualityDimension"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+</owl:DatatypeProperty>
+
+<owl:Class rdf:about="#Context">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#SimSensParameter">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#ConceptualSpace">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Concept">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Emotion">
+  <rdfs:subClassOf rdf:resource="#Concept"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Instance">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#PrototypicalInstance">
+  <rdfs:subClassOf rdf:resource="#Instance"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Point">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Definition">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#KnowledgeRepository">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Region">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#ContrastClass">
+  <rdfs:subClassOf rdf:resource="#Region"/>
+</owl:Class>
+
+<owl:Class rdf:about="#ConvexRegion">
+  <rdfs:subClassOf rdf:resource="#Region"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Domain">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#QualityDimension">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#ActionUnit">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:NamedIndividual rdf:about="#emotion_space">
+  <rdf:type rdf:resource="#ConceptualSpace"/>
+  <hasContext rdf:resource="#affect_context"/>
+  <hasSimParam rdf:resource="#beta"/>
+  <hasConcept rdf:resource="#joy"/>
+  <hasDomain rdf:resource="#valence_arousal_domain"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#affect_context">
+  <rdf:type rdf:resource="#Context"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#beta">
+  <rdf:type rdf:resource="#SimSensParameter"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#valence_arousal_domain">
+  <rdf:type rdf:resource="#Domain"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#joy">
+  <rdf:type rdf:resource="#Emotion"/>
+  <hasRegion rdf:resource="#joy_region"/>
+  <hasPrototypicalInstance rdf:resource="#proto_joy"/>
+  <hasActionUnit rdf:resource="#AU12"/>
+  <orka:describedBy rdf:resource="#wikidata_repo"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#joy_region">
+  <rdf:type rdf:resource="#ConvexRegion"/>
+  <correspondsTo rdf:resource="#valence_arousal_domain"/>
+  <hasQualityDimension rdf:resource="#arousal"/>
+  <hasQualityDimension rdf:resource="#valence"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#proto_joy">
+  <rdf:type rdf:resource="#PrototypicalInstance"/>
+  <hasDefinition rdf:resource="#joy_definition"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#joy_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#wikidata_repo"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A pleasant, high-valence affective state.</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#wikidata_repo">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#AU12">
+  <rdf:type rdf:resource="#ActionUnit"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#valence">
+  <rdf:type rdf:resource="#QualityDimension"/>
+  <isCircular rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</isCircular>
+  <hasMeasurementLevel rdf:datatype="http://www.w3.org/2001/XMLSchema#string">interval</hasMeasurementLevel>
+  <hasRange rdf:datatype="http://www.w3.org/2001/XMLSchema#string">min=-1.0,max=1.0</hasRange>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#arousal">
+  <rdf:type rdf:resource="#QualityDimension"/>
+  <isCircular rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</isCircular>
+  <hasMeasurementLevel rdf:datatype="http://www.w3.org/2001/XMLSchema#string">interval</hasMeasurementLevel>
+  <hasRange rdf:datatype="http://www.w3.org/2001/XMLSchema#string">min=0.0,max=1.0</hasRange>
+</owl:NamedIndividual>
+
+
+</rdf:RDF>

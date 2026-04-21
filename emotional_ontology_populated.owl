@@ -1,0 +1,1412 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:owl="http://www.w3.org/2002/07/owl#"
+         xml:base="http://example.org/conceptual-space-emotion.owl"
+         xmlns="http://example.org/conceptual-space-emotion.owl#"
+         xmlns:orka="https://w3id.org/def/orka#">
+
+<owl:Ontology rdf:about="http://example.org/conceptual-space-emotion.owl"/>
+
+<owl:ObjectProperty rdf:about="#hasContext">
+  <rdfs:domain rdf:resource="#ConceptualSpace"/>
+  <rdfs:range rdf:resource="#Context"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasSimParam">
+  <rdfs:domain rdf:resource="#ConceptualSpace"/>
+  <rdfs:range rdf:resource="#SimSensParameter"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasContrastClass">
+  <rdfs:domain rdf:resource="#ConceptualSpace"/>
+  <rdfs:range rdf:resource="#ContrastClass"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasInstance">
+  <rdfs:domain rdf:resource="#ConceptualSpace"/>
+  <rdfs:range rdf:resource="#Instance"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasConcept">
+  <rdfs:domain rdf:resource="#ConceptualSpace"/>
+  <rdfs:range rdf:resource="#Concept"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasDomain">
+  <rdfs:domain rdf:resource="#ConceptualSpace"/>
+  <rdfs:range rdf:resource="#Domain"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasRegion">
+  <rdfs:domain rdf:resource="#Concept"/>
+  <rdfs:range rdf:resource="#ConvexRegion"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasPrototypicalInstance">
+  <rdfs:domain rdf:resource="#Concept"/>
+  <rdfs:range rdf:resource="#PrototypicalInstance"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#definedBy">
+  <rdfs:domain rdf:resource="#Point"/>
+  <rdfs:range rdf:resource="#Definition"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasDefinition">
+  <rdfs:domain rdf:resource="#PrototypicalInstance"/>
+  <rdfs:range rdf:resource="#Definition"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasSource">
+  <rdfs:domain rdf:resource="#Definition"/>
+  <rdfs:range rdf:resource="#KnowledgeRepository"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="https://w3id.org/def/orka#describedBy">
+  <rdfs:domain rdf:resource="#Emotion"/>
+  <rdfs:range rdf:resource="#KnowledgeRepository"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasActionUnit">
+  <rdfs:domain rdf:resource="#Emotion"/>
+  <rdfs:range rdf:resource="#ActionUnit"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#correspondsTo">
+  <rdfs:domain rdf:resource="#ConvexRegion"/>
+  <rdfs:range rdf:resource="#Domain"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasQualityDimension">
+  <rdfs:domain rdf:resource="#ConvexRegion"/>
+  <rdfs:range rdf:resource="#QualityDimension"/>
+</owl:ObjectProperty>
+
+<owl:DatatypeProperty rdf:about="#hasValue">
+  <rdfs:domain rdf:resource="#Definition"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:about="#isCircular">
+  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  <rdfs:domain rdf:resource="#QualityDimension"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:about="#hasMeasurementLevel">
+  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  <rdfs:domain rdf:resource="#QualityDimension"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:about="#hasRange">
+  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  <rdfs:domain rdf:resource="#QualityDimension"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+</owl:DatatypeProperty>
+
+<owl:Class rdf:about="#ConceptualSpace">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Context">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#SimSensParameter">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#ContrastClass">
+  <rdfs:subClassOf rdf:resource="#Region"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Instance">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Concept">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Domain">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#ConvexRegion">
+  <rdfs:subClassOf rdf:resource="#Region"/>
+</owl:Class>
+
+<owl:Class rdf:about="#PrototypicalInstance">
+  <rdfs:subClassOf rdf:resource="#Instance"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Point">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Definition">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#KnowledgeRepository">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Emotion">
+  <rdfs:subClassOf rdf:resource="#Concept"/>
+</owl:Class>
+
+<owl:Class rdf:about="#ActionUnit">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#QualityDimension">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Region">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:NamedIndividual rdf:about="#emotion_space">
+  <rdf:type rdf:resource="#ConceptualSpace"/>
+  <hasContext rdf:resource="#affect_context"/>
+  <hasSimParam rdf:resource="#beta"/>
+  <hasConcept rdf:resource="#joy"/>
+  <hasDomain rdf:resource="#valence_arousal_domain"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#affect_context">
+  <rdf:type rdf:resource="#Context"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#beta">
+  <rdf:type rdf:resource="#SimSensParameter"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#joy">
+  <rdf:type rdf:resource="#Emotion"/>
+  <hasRegion rdf:resource="#joy_region"/>
+  <hasPrototypicalInstance rdf:resource="#proto_joy"/>
+  <hasActionUnit rdf:resource="#AU12"/>
+  <orka:describedBy rdf:resource="#wikidata_repo"/>
+  <orka:describedBy rdf:resource="#https_dictionary_apa_org_joy"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_joy"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Joy</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 1813884</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: a feeling of extreme gladness, delight, or exultation of the spirit arising from a sense of well-being or satisfaction.</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: feel happiness or joy</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: great happiness</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#valence_arousal_domain">
+  <rdf:type rdf:resource="#Domain"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#joy_region">
+  <rdf:type rdf:resource="#ConvexRegion"/>
+  <correspondsTo rdf:resource="#valence_arousal_domain"/>
+  <hasQualityDimension rdf:resource="#arousal"/>
+  <hasQualityDimension rdf:resource="#valence"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#proto_joy">
+  <rdf:type rdf:resource="#PrototypicalInstance"/>
+  <hasDefinition rdf:resource="#joy_definition"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#AU12">
+  <rdf:type rdf:resource="#ActionUnit"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#wikidata_repo">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#arousal">
+  <rdf:type rdf:resource="#QualityDimension"/>
+  <isCircular rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</isCircular>
+  <hasMeasurementLevel rdf:datatype="http://www.w3.org/2001/XMLSchema#string">interval</hasMeasurementLevel>
+  <hasRange rdf:datatype="http://www.w3.org/2001/XMLSchema#string">min=0.0,max=1.0</hasRange>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#valence">
+  <rdf:type rdf:resource="#QualityDimension"/>
+  <isCircular rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</isCircular>
+  <hasMeasurementLevel rdf:datatype="http://www.w3.org/2001/XMLSchema#string">interval</hasMeasurementLevel>
+  <hasRange rdf:datatype="http://www.w3.org/2001/XMLSchema#string">min=-1.0,max=1.0</hasRange>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#joy_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#wikidata_repo"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A pleasant, high-valence affective state.</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#interest">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_dictionary_apa_org_interest"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_interest"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Interest</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 2678663</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: attitude characterized by a need or desire to give selective attention to something that is significant to the individual, such as an activity, goal, or research area.</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: be of importance or consequence; \"This matters to me!\"</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: the feeling of wanting to give your attention to something or of wanting to be involved with and to discover more about something</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#interest_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_apa_org_interest"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">attitude characterized by a need or desire to give selective attention to something that is significant to the individual, such as an activity, goal, or research area.</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_apa_org_interest">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.apa.org/interest</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#interest_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">be of importance or consequence; \"This matters to me!\"</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#interest_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_interest"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">the feeling of wanting to give your attention to something or of wanting to be involved with and to discover more about something</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_interest">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/interest</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#serenity">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_serenity"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Serenity</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 4904352</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: a disposition free from stress or emotion</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: the quality of being peaceful and calm</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#serenity_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a disposition free from stress or emotion</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#serenity_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_serenity"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">the quality of being peaceful and calm</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_serenity">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/serenity</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#acceptance">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Acceptance</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 4638175</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: a favorable attitude toward an idea, situation, person, or group. In the context of psychotherapy and counseling, it is the receptive, nonjudgmental attitude of therapists or counselors, which conveys an implicit respect and regard for their clients as individuals.</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: a disposition to tolerate or accept people or situations; \"all people should practice toleration and live together in peace\"</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: general agreement that something is satisfactory or right, or that someone should be included in a group</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#acceptance_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a favorable attitude toward an idea, situation, person, or group. In the context of psychotherapy and counseling, it is the receptive, nonjudgmental attitude of therapists or counselors, which conveys an implicit respect and regard for their clients as individuals.</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#acceptance_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a disposition to tolerate or accept people or situations; \"all people should practice toleration and live together in peace\"</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#acceptance_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">general agreement that something is satisfactory or right, or that someone should be included in a group</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#anticipation">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_anticipation"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Anticipation</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 14486122</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: looking forward to a future event or state, sometimes with an affective component (e.g., pleasure, anxiety)</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: anticipating with confidence of fulfillment</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: a feeling of excitement about something that is going to happen in the near future</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#anticipation_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">looking forward to a future event or state, sometimes with an affective component (e.g., pleasure, anxiety)</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#anticipation_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">anticipating with confidence of fulfillment</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#anticipation_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_anticipation"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a feeling of excitement about something that is going to happen in the near future</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_anticipation">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/anticipation</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#optimism">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_dictionary_apa_org_optimism"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_optimism"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Optimism</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 7541558</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: hopefulness: the attitude that good things will happen and that peopleâ€™s wishes or aims will ultimately be fulfilled</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: the optimistic feeling that all is going to turn out well</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: the quality of being full of hope and emphasizing the good parts of a situation, or a belief that something good will happen</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#optimism_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_apa_org_optimism"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">hopefulness: the attitude that good things will happen and that peopleâ€™s wishes or aims will ultimately be fulfilled</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_apa_org_optimism">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.apa.org/optimism</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#optimism_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">the optimistic feeling that all is going to turn out well</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#optimism_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_optimism"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">the quality of being full of hope and emphasizing the good parts of a situation, or a belief that something good will happen</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_optimism">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/optimism</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#joy_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_apa_org_joy"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a feeling of extreme gladness, delight, or exultation of the spirit arising from a sense of well-being or satisfaction.</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_apa_org_joy">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.apa.org/joy</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#joy_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">feel happiness or joy</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#joy_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_joy"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">great happiness</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_joy">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/joy</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#love">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_dictionary_apa_org_love"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_love"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Love</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 1775164</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: a complex emotion involving strong feelings of affection and tenderness for the love object, pleasurable sensations in their presence, devotion to their well-being, and sensitivity to their reactions to oneself.</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: have a great affection or liking for; \"I love French food\"; \"She loves her boss and works hard for him\"</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: to like something very much</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#love_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_apa_org_love"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a complex emotion involving strong feelings of affection and tenderness for the love object, pleasurable sensations in their presence, devotion to their well-being, and sensitivity to their reactions to oneself.</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_apa_org_love">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.apa.org/love</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#love_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">have a great affection or liking for; \"I love French food\"; \"She loves her boss and works hard for him\"</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#love_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_love"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">to like something very much</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_love">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/love</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#trust">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_dictionary_apa_org_trust"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_trust"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Trust</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 688377</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: reliance on or confidence in the dependability of someone or something</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: have confidence or faith in; \"We can trust in God\"; \"Rely on your friends\"; \"bank on your good education\"; \"I swear by my grandmother's recipes\"</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: to believe that someone is good and honest and will not harm you, or that something is safe and reliable</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#trust_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_apa_org_trust"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">reliance on or confidence in the dependability of someone or something</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_apa_org_trust">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.apa.org/trust</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#trust_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">have confidence or faith in; \"We can trust in God\"; \"Rely on your friends\"; \"bank on your good education\"; \"I swear by my grandmother's recipes\"</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#trust_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_trust"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">to believe that someone is good and honest and will not harm you, or that something is safe and reliable</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_trust">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/trust</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#aggressiveness">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_dictionary_apa_org_aggressiveness"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_aggressiveness"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Aggressiveness</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 1244846</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: a tendency toward social dominance, threatening behavior, and hostility. It may occur sporadically or be a characteristic trait of an individual</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: characteristic of an enemy or one eager to fight; \"aggressive acts against another country\"; \"a belligerent tone\"</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: the quality of being likely to attack other people or animals, or to behave in a violent or angry way towards them</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#aggressiveness_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_apa_org_aggressiveness"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a tendency toward social dominance, threatening behavior, and hostility. It may occur sporadically or be a characteristic trait of an individual</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_apa_org_aggressiveness">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.apa.org/aggressiveness</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#aggressiveness_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">characteristic of an enemy or one eager to fight; \"aggressive acts against another country\"; \"a belligerent tone\"</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#aggressiveness_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_aggressiveness"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">the quality of being likely to attack other people or animals, or to behave in a violent or angry way towards them</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_aggressiveness">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/aggressiveness</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#vigilance">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_dictionary_apa_org_vigilance"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_vigilance"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Vigilance</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 4664778</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: a state of extreme awareness and watchfulness directed by one or more members of a group toward the environment, often toward potential threats (e.g., predators, intruders, enemy forces in combat).</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: vigilant attentiveness; \"he keeps a weather eye open for trouble\""</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: more careful attention, especially in order to notice possible danger</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#vigilance_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_apa_org_vigilance"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a state of extreme awareness and watchfulness directed by one or more members of a group toward the environment, often toward potential threats (e.g., predators, intruders, enemy forces in combat).</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_apa_org_vigilance">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.apa.org/vigilance</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#vigilance_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">vigilant attentiveness; \"he keeps a weather eye open for trouble\""</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#vigilance_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_vigilance"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">more careful attention, especially in order to notice possible danger</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_vigilance">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/vigilance</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#ecstasy">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_dictionary_apa_org_ecstasy"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_ecstasy"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Ecstasy</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 13986372</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: a feeling of intense pleasure and elation, including that experienced in some mystical states, during orgasm, with aesthetic reveries, and in drug-induced states.</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: a state of being carried away by overwhelming emotion; \"listening to sweet music in a perfect rapture\"- Charles Dickens"</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: a state of extreme happiness, especially when feeling pleasure</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#ecstasy_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_apa_org_ecstasy"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a feeling of intense pleasure and elation, including that experienced in some mystical states, during orgasm, with aesthetic reveries, and in drug-induced states.</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_apa_org_ecstasy">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.apa.org/ecstasy</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#ecstasy_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a state of being carried away by overwhelming emotion; \"listening to sweet music in a perfect rapture\"- Charles Dickens"</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#ecstasy_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_ecstasy"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a state of extreme happiness, especially when feeling pleasure</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_ecstasy">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/ecstasy</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#admiration">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_admiration"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Admiration</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 7500741</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: a feeling of delighted approval and liking</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: the feeling of admiring someone or something</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#admiration_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a feeling of delighted approval and liking</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#admiration_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_admiration"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">the feeling of admiring someone or something</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_admiration">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/admiration</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#submission">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_dictionary_apa_org_submission"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_submissiveness"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Submission</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 7509325</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: compliance with or surrender to the requests, demands, or will of others.</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: the feeling of patient, submissive humbleness</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: a willingness to allow control by other people or animals, or behaviour that shows this</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#submission_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_apa_org_submission"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">compliance with or surrender to the requests, demands, or will of others.</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_apa_org_submission">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.apa.org/submission</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#submission_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">the feeling of patient, submissive humbleness</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#submission_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_submissiveness"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a willingness to allow control by other people or animals, or behaviour that shows this</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_submissiveness">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/submissiveness</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#annoyance">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_annoyance"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Annoyance</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 7518261</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: anger produced by some annoying irritation</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: the feeling or state of being annoyed</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#annoyance_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">anger produced by some annoying irritation</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#annoyance_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_annoyance"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">the feeling or state of being annoyed</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_annoyance">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/annoyance</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#anger">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_dictionary_apa_org_anger"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_anger"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Anger</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 14036539</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: an emotion characterized by tension and hostility arising from frustration, real or imagined injury by another, or perceived injustice. It can manifest itself in behaviors designed to remove the object of the anger (e.g., determined action) or behaviors designed merely to express the emotion (e.g., swearing).</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: the state of being angry</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: a strong feeling that makes you want to hurt someone or be unpleasant because of something unfair or unkind that has happened</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#anger_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_apa_org_anger"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">an emotion characterized by tension and hostility arising from frustration, real or imagined injury by another, or perceived injustice. It can manifest itself in behaviors designed to remove the object of the anger (e.g., determined action) or behaviors designed merely to express the emotion (e.g., swearing).</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_apa_org_anger">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.apa.org/anger</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#anger_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">the state of being angry</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#anger_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_anger"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a strong feeling that makes you want to hurt someone or be unpleasant because of something unfair or unkind that has happened</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_anger">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/anger</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#rage">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_dictionary_apa_org_rage"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_rage"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Rage</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 7516997</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: intense, typically uncontrolled anger</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: a feeling of intense anger; \"hell hath no fury like a woman scorned\"; \"his face turned red with rage\"</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: (a period of) extreme or violent anger</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#rage_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_apa_org_rage"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">intense, typically uncontrolled anger</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_apa_org_rage">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.apa.org/rage</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#rage_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a feeling of intense anger; \"hell hath no fury like a woman scorned\"; \"his face turned red with rage\"</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#rage_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_rage"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(a period of) extreme or violent anger</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_rage">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/rage</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#terror">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_dictionary_apa_org_terror"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_terror"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Terror</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 7520612</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: intense and overwhelming fear</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: an overwhelming feeling of fear and anxiety</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: extreme fear</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#terror_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_apa_org_terror"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">intense and overwhelming fear</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_apa_org_terror">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.apa.org/terror</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#terror_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">an overwhelming feeling of fear and anxiety</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#terror_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_terror"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">extreme fear</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_terror">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/terror</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#fear">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_dictionary_apa_org_fear"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_fear"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Fear</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 7519253</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: a basic, intense emotion aroused by the detection of imminent threat, involving an immediate alarm reaction that mobilizes the organism by triggering a set of physiological changes</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: an emotion experienced in anticipation of some specific pain or danger (usually accompanied by a desire to flee or fight)</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: an unpleasant emotion or thought that you have when you are frightened or worried by something dangerous, painful, or bad that is happening or might happen</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#fear_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_apa_org_fear"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a basic, intense emotion aroused by the detection of imminent threat, involving an immediate alarm reaction that mobilizes the organism by triggering a set of physiological changes</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_apa_org_fear">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.apa.org/fear</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#fear_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">an emotion experienced in anticipation of some specific pain or danger (usually accompanied by a desire to flee or fight)</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#fear_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_fear"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">an unpleasant emotion or thought that you have when you are frightened or worried by something dangerous, painful, or bad that is happening or might happen</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_fear">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/fear</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#apprehension">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_dictionary_apa_org_apprehension"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_apprehension"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Apprehension</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 7521674</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: uneasiness or dread about an upcoming event or the future generally</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: fearful expectation or anticipation; \"the student looked around the examination room with apprehension\"</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: worry about the future, or a fear that something unpleasant is going to happen</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#apprehension_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_apa_org_apprehension"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">uneasiness or dread about an upcoming event or the future generally</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_apa_org_apprehension">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.apa.org/apprehension</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#apprehension_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">fearful expectation or anticipation; \"the student looked around the examination room with apprehension\"</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#apprehension_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_apprehension"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">worry about the future, or a fear that something unpleasant is going to happen</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_apprehension">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/apprehension</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#contempt">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_dictionary_apa_org_contempt"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_contempt"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Contempt</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 7502980</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: an emotion characterized by negative regard for anything or anybody considered to be inferior, vile, or worthless</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: lack of respect accompanied by a feeling of intense dislike; \"he was held in contempt\"; \"the despite in which outsiders were held is legendary\"</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: a strong feeling of disliking and having no respect for someone or something</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#contempt_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_apa_org_contempt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">an emotion characterized by negative regard for anything or anybody considered to be inferior, vile, or worthless</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_apa_org_contempt">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.apa.org/contempt</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#contempt_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">lack of respect accompanied by a feeling of intense dislike; \"he was held in contempt\"; \"the despite in which outsiders were held is legendary\"</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#contempt_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_contempt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a strong feeling of disliking and having no respect for someone or something</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_contempt">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/contempt</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#loathing">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_loathing"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Loathing</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 7503430</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: hate coupled with disgust</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: a strong feeling of hating someone or something</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#loathing_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">hate coupled with disgust</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#loathing_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_loathing"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a strong feeling of hating someone or something</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_loathing">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/loathing</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#grief">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_dictionary_apa_org_grief"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_grief"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Grief</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 7535010</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: the anguish experienced after significant loss, usually the death of a beloved person.</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: intense sorrow caused by loss of a loved one (especially by death)</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: very great sadness, especially at the death of someone</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#grief_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_apa_org_grief"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">the anguish experienced after significant loss, usually the death of a beloved person.</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_apa_org_grief">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.apa.org/grief</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#grief_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">intense sorrow caused by loss of a loved one (especially by death)</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#grief_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_grief"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">very great sadness, especially at the death of someone</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_grief">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/grief</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#amazement">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_amazement"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Amazement</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 7509572</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: the feeling that accompanies something extremely surprising; \"he looked at me in astonishment\"</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: extreme surprise</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#amazement_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">the feeling that accompanies something extremely surprising; \"he looked at me in astonishment\"</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#amazement_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_amazement"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">extreme surprise</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_amazement">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/amazement</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#awe">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_dictionary_apa_org_awe"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_awe"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Awe</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 7510184</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: the experience of admiration and elevation in response to physical beauty, displays of exceptional ability, or moral goodness.</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: an overwhelming feeling of wonder or admiration; \"he stared over the edge with a feeling of awe\"</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: a feeling of great respect sometimes mixed with fear or surprise</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#awe_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_apa_org_awe"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">the experience of admiration and elevation in response to physical beauty, displays of exceptional ability, or moral goodness.</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_apa_org_awe">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.apa.org/awe</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#awe_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">an overwhelming feeling of wonder or admiration; \"he stared over the edge with a feeling of awe\"</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#awe_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_awe"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a feeling of great respect sometimes mixed with fear or surprise</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_awe">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/awe</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#disgust">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_dictionary_apa_org_disgust"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_disgust"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Disgust</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 7503260</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: a strong aversion, for example, to the taste, smell, or touch of something deemed revolting, or toward a person or behavior deemed morally repugnant</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: strong feelings of dislike</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: a strong feeling of disapproval and dislike at a situation, person's behaviour, etc.</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#disgust_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_apa_org_disgust"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a strong aversion, for example, to the taste, smell, or touch of something deemed revolting, or toward a person or behavior deemed morally repugnant</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_apa_org_disgust">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.apa.org/disgust</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#disgust_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">strong feelings of dislike</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#disgust_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_disgust"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a strong feeling of disapproval and dislike at a situation, person's behaviour, etc.</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_disgust">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/disgust</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#remorse">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_dictionary_apa_org_remorse"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_remorse"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Remorse</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 7536074</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: a strong sense of guilt and regret for a past action</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: a feeling of deep regret (usually for some misdeed)</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: a feeling of sadness and being sorry for something you have done</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#remorse_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_apa_org_remorse"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a strong sense of guilt and regret for a past action</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_apa_org_remorse">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.apa.org/remorse</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#remorse_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a feeling of deep regret (usually for some misdeed)</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#remorse_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_remorse"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a feeling of sadness and being sorry for something you have done</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_remorse">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/remorse</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#sadness">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_dictionary_apa_org_sadness"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_sadness"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sadness</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 7532440</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: an emotional state of unhappiness, ranging in intensity from mild to extreme and usually aroused by the loss of something that is highly valued (e.g., by the rupture of a relationship).</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: emotions experienced when not in a state of well-being</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: the feeling of being unhappy, especially because something bad has happened</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#sadness_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_apa_org_sadness"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">an emotional state of unhappiness, ranging in intensity from mild to extreme and usually aroused by the loss of something that is highly valued (e.g., by the rupture of a relationship).</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_apa_org_sadness">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.apa.org/sadness</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#sadness_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">emotions experienced when not in a state of well-being</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#sadness_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_sadness"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">the feeling of being unhappy, especially because something bad has happened</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_sadness">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/sadness</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#disappointment">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_disappointment"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Disappointment</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 7540602</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: a feeling of dissatisfaction that results when your expectations are not realized; \"his hopes were so high he was doomed to disappointment\"</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: the feeling of being disappointed</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#disappointment_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a feeling of dissatisfaction that results when your expectations are not realized; \"his hopes were so high he was doomed to disappointment\"</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#disappointment_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_disappointment"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">the feeling of being disappointed</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_disappointment">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/disappointment</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#surprise">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_dictionary_apa_org_surprise"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_surprise"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Surprise</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 7510348</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: an emotion typically resulting from the violation of an expectation or the detection of novelty in the environment.</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: the astonishment you feel when something totally unexpected happens to you</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: the feeling caused by something unexpected happening</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#surprise_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_apa_org_surprise"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">an emotion typically resulting from the violation of an expectation or the detection of novelty in the environment.</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_apa_org_surprise">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.apa.org/surprise</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#surprise_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">the astonishment you feel when something totally unexpected happens to you</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#surprise_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_surprise"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">the feeling caused by something unexpected happening</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_surprise">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/surprise</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#boredom">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_dictionary_apa_org_boredom"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_boredom"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Boredom</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 7539790</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: a state of weariness or ennui resulting from a lack of engagement with stimuli in the environment.</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: the feeling of being bored by something tedious</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: the state of being bored</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#boredom_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_apa_org_boredom"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a state of weariness or ennui resulting from a lack of engagement with stimuli in the environment.</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_apa_org_boredom">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.apa.org/boredom</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#boredom_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">the feeling of being bored by something tedious</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#boredom_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_boredom"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">the state of being bored</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_boredom">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/boredom</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#pensiveness">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_pensive"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Pensiveness</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 4660805</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: deep serious thoughtfulness</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: thinking in a quiet way, often with a serious expression on your face</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#pensiveness_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">deep serious thoughtfulness</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#pensiveness_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_pensive"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">thinking in a quiet way, often with a serious expression on your face</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_pensive">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/pensive</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#distraction">
+  <rdf:type rdf:resource="#Emotion"/>
+  <orka:describedBy rdf:resource="#dictionary_apa_org_distractibility"/>
+  <orka:describedBy rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <orka:describedBy rdf:resource="#https_dictionary_cambridge_org_dictionary_english_distraction"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Distraction</rdfs:label>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synset: 5684440</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">apa_definition: difficulty in maintaining attention or a tendency to be easily diverted from the matter at hand</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">sentiwordnet_definition: mental turmoil; \"he drives me to distraction\"</rdfs:comment>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cambridge_definition: the state of being very bored or annoyed</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#distraction_apa_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#dictionary_apa_org_distractibility"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">difficulty in maintaining attention or a tendency to be easily diverted from the matter at hand</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#dictionary_apa_org_distractibility">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dictionary.apa.org/distractibility</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#distraction_sentiwordnet_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_github_com_aesuli_sentiwordnet_blob_master_data_sentiwordnet_3_0_0_txt"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">mental turmoil; \"he drives me to distraction\"</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#distraction_cambridge_definition">
+  <rdf:type rdf:resource="#Definition"/>
+  <hasSource rdf:resource="#https_dictionary_cambridge_org_dictionary_english_distraction"/>
+  <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">the state of being very bored or annoyed</hasValue>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#https_dictionary_cambridge_org_dictionary_english_distraction">
+  <rdf:type rdf:resource="#KnowledgeRepository"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">https://dictionary.cambridge.org/dictionary/english/distraction</rdfs:label>
+</owl:NamedIndividual>
+
+
+</rdf:RDF>
