@@ -1,0 +1,9 @@
+emotion,pleasure,arousal,dominance
+exuberant,1,1,1
+dependent,1,1,-1
+relaxed,1,-1,1
+docile,1,-1,-1
+bored,-1,-1,-1
+disdainful,-1,-1,1
+anxious,-1,1,-1
+hostile,-1,1,1

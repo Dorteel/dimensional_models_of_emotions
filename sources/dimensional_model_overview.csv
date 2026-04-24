@@ -1,0 +1,5 @@
+model_label,model_source,model_dimensions,ground_truth,range_min,range_max
+plutchik_model,https://doi.org/10.1511/2001.28.344,intensity,,,
+pad,https://doi.org/10.1007/BF02686918,"pleasure, arousal, dominance",,,
+circumplex,https://doi.org/10.1037/h0077714,"valence, arousal",yes,-1,1
+vector_model,,"valence, arousal",,,

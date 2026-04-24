@@ -1,0 +1,4 @@
+dataset_label,dataset_source,dimensions
+emotic,https://doi.org/10.1109/CVPR.2017.212,"valence, arousal, dominance"
+sentiwordnet,http://www.lrec-conf.org/proceedings/lrec2010/pdf/769_Paper.pdf,"positive_score, negative_score"
+affectnet,https://doi.org/10.1109/TAFFC.2017.2740923,"valence, arousal"

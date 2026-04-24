@@ -4,7 +4,7 @@ import pandas as pd
 from owlready2 import *
 
 BASE_DIR = Path(__file__).resolve().parent
-CSV_PATH = BASE_DIR / "sources.csv"
+CSV_PATH = BASE_DIR / "sources/emotion_definitions.csv"
 ONTOLOGY_PATH = BASE_DIR / "emotional_ontology.owl"
 OUTPUT_PATH = BASE_DIR / "emotional_ontology_populated.owl"
 
