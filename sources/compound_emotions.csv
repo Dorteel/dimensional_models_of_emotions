@@ -1,0 +1,20 @@
+emotion_label,components,Closest word,Models,datasets
+Fearfully Surprised,"Fear, surprise",,,Raf-db
+Fearfully Disgusted,"Fear, Disgust",,,Raf-db
+Fearfully Angry,"Fear, Anger",,,Raf-db
+Happily Surprised,"Happy, surprise",Delighted,,Raf-db
+Happily Disgusted,"Happy, Disgust",,,Raf-db
+Sadly Angry,"Sad, Anger",,,Raf-db
+Sadly Fearful,"Sad, Fear",,,Raf-db
+Sadly Disgusted,"Sad, Disgust",,,Raf-db
+Sadly surprised,"Sad, Surprise",Disappointment,,Raf-db
+Angrily surprised,"Anger, surprise",,,Raf-db
+Angrly Disgusted,"Anger, Disgust",Contempt,Plutchik,Raf-db
+Disgustedly Surprised,"Disgust, Surprise",,,Raf-db
+Optimism,"Anticipation, Joy",Optimism,Plutchik,
+Love,"Joy, Trust",Love,Plutchik,
+Awe,"Surprise, Fear",,Plutchik,
+Disapproval,"Surprise, Sad",,Plutchik,
+Aggressiveness,"Anticipation, Anger",Aggressiveness,Plutchik,
+Submission,"Trust, Fear",Submission,Plutchik,
+Remorse,"Sadness, Digust",Remorse,Plutchik,
