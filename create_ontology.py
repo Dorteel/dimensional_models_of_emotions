@@ -32,6 +32,7 @@ with onto:
     class Definition(Thing):
         pass
 
+
     class KnowledgeRepository(Thing):
         pass
 
@@ -112,7 +113,7 @@ with onto:
         range = [Domain]
 
     class hasQualityDimension(ObjectProperty):
-        domain = [ConvexRegion]
+        domain = [Domain]
         range = [QualityDimension]
 
     # ---------- Data properties ----------
