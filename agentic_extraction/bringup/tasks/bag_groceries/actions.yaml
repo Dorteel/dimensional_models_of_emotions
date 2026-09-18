@@ -1,0 +1,17 @@
+drive:
+  intent: "Robot moves its base from one location to another."
+  requires_capabilities: [navigation]
+
+pick:
+  intent: "Robot acquires physical hold of an item."
+  requires_capabilities:
+    any_of: [grasping, manipulation]
+
+place_in_container:
+  intent: "Robot puts a held item inside a container."
+  requires_capabilities:
+    any_of: [grasping, manipulation]
+
+open:
+  intent: "Robot opens a container, so the container becomes open."
+  requires_capabilities: [manipulation]

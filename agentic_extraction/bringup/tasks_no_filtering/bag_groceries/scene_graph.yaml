@@ -1,0 +1,26 @@
+nodes:
+  robot1: {type: robot}
+  sack1: {type: sack}
+  sack2: {type: sack}
+  checkout1: {type: checkout}
+  canned_food1: {type: canned_food}
+  egg1: {type: egg}
+  apple1: {type: apple}
+  bottle_of_orange_juice1: {type: bottle_of_orange_juice}
+  grocery_store: {type: location}
+edges:
+  - {predicate: on_top, args: [sack1, checkout1]}
+  - {predicate: on_top, args: [sack2, checkout1]}
+  - {predicate: on_top, args: [canned_food1, checkout1]}
+  - {predicate: on_top, args: [egg1, checkout1]}
+  - {predicate: on_top, args: [apple1, checkout1]}
+  - {predicate: on_top, args: [bottle_of_orange_juice1, checkout1]}
+  - {predicate: at, args: [checkout1, grocery_store]}
+  - {predicate: at, args: [sack1, grocery_store]}
+  - {predicate: at, args: [sack2, grocery_store]}
+  - {predicate: at, args: [canned_food1, grocery_store]}
+  - {predicate: at, args: [egg1, grocery_store]}
+  - {predicate: at, args: [apple1, grocery_store]}
+  - {predicate: at, args: [bottle_of_orange_juice1, grocery_store]}
+  - {predicate: at, args: [robot1, grocery_store]}
+  - {predicate: robot_free, args: [robot1]}

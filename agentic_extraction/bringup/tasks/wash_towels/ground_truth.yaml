@@ -1,0 +1,16 @@
+task: wash_towels-0
+domain: laundry
+types: [locatable, location, robot, item, container, device, food, furniture,
+        bath_towel, dirt, washer, clothes_dryer, detergent_bottle, floor]
+predicates: [covered, on_top, at, robot_free, holding]
+actions: [drive, pick, clean]
+type_aliases:
+  bath_towel: [item]
+  dirt: [item]
+  washer: [device]
+  clothes_dryer: [device]
+  detergent_bottle: [container]
+  floor: [furniture]
+goal: |
+  (and
+    (forall (?t - bath_towel) (not (covered ?t dirt1))))

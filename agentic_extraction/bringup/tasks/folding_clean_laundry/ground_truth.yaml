@@ -1,0 +1,27 @@
+task: folding_clean_laundry-0
+domain: laundry
+types: [locatable, location, robot, item, container, device, food, furniture,
+        garment, tablecloth, sock, trouser, dishtowel, bed]
+predicates: [at, on_top, folded, robot_free, holding]
+actions: [drive, pick, fold]
+type_aliases:
+  tablecloth: [garment, item]
+  sock: [garment, item]
+  trouser: [garment, item]
+  dishtowel: [garment, item]
+  bed: [furniture]
+goal: |
+  (and
+    (folded tablecloth1)
+    (folded sock1)
+    (folded sock2)
+    (folded trouser1)
+    (folded dishtowel1)
+    (folded dishtowel2)
+    (on_top dishtowel1 bed1)
+    (on_top dishtowel2 bed1)
+    (on_top sock1 bed1)
+    (on_top sock2 bed1)
+    (on_top trouser1 bed1)
+    (on_top tablecloth1 bed1)
+  )

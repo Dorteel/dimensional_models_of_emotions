@@ -1,0 +1,17 @@
+locatable - object
+location  - object
+robot - locatable
+item - locatable
+container - item
+device - item
+food - item
+furniture - locatable
+residue - item
+sour_bread - food
+sack - container
+box_of_corn_flakes - food
+cup_of_yogurt - food
+egg - food
+electric_refrigerator - container
+cabinet - container
+floor - furniture

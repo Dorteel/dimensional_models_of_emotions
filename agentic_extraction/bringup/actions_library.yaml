@@ -1,0 +1,71 @@
+move:
+  intent: "Agent moves to a target pose or location."
+  requires_capabilities:
+    any_of: [grasping, manipulation, navigation]     
+
+pick:
+  intent: "Agent acquires physical hold of an item."
+  requires_capabilities:
+    any_of: [grasping, manipulation]     
+
+place:
+  intent: "Agent puts a held item at a target location or surface."
+  requires_capabilities:
+    any_of: [grasping, manipulation]     
+
+place_in_container:
+  intent: "Agent puts a held item onto a container, storage or furniture."
+  requires_capabilities:
+    any_of: [grasping, manipulation]
+
+stack:
+  intent: "Agent places a held item on top of another item."
+  requires_capabilities:
+    any_of: [grasping, manipulation]     
+
+unstack:
+  intent: "Agent removes an item from on top of another item and holds it."
+  requires_capabilities:
+    any_of: [grasping, manipulation]     
+
+open:
+  intent: "Agent changes a target from closed to open."
+  requires_capabilities: [manipulation]
+
+close:
+  intent: "Agent changes a target from open to closed."
+  requires_capabilities: [manipulation]
+
+push:
+  intent: "Agent applies force to displace an item away."
+  requires_capabilities: [manipulation]
+
+pull:
+  intent: "Agent applies force to draw an item closer."
+  requires_capabilities: [manipulation]
+
+pour:
+  intent: "Agent tilts a held container to discharge its contents."
+  requires_capabilities: [manipulation]
+
+look_at:
+  intent: "Agent directs sensing toward a target."
+  requires_capabilities: [perception]
+
+wait:
+  intent: "Agent remains idle for a period."
+  requires_capabilities: []
+
+
+# drive:
+#   intent: "Agent moves its base from one location to another."
+#   requires_capabilities: [navigation]
+
+# move:
+#   intent: "Agent moves its end-effector to a target pose or location."
+#   requires_capabilities:
+#     any_of: [grasping, manipulation]     
+
+# find:
+#   intent: "Agent learns the position of an object without needing to be at the object's location."
+#   requires_capabilities: []

@@ -1,0 +1,26 @@
+nodes:
+  robot1: {type: robot}
+  short_pants1: {type: short_pants}
+  blouse1: {type: blouse}
+  trouser1: {type: trouser}
+  dress1: {type: dress}
+  brassiere1: {type: brassiere}
+  tank_top1: {type: tank_top}
+  bed1: {type: bed}
+  bedroom: {type: location}
+edges:
+  - {predicate: at, args: [robot1, bedroom]}
+  - {predicate: at, args: [bed1, bedroom]}
+  - {predicate: at, args: [short_pants1, bedroom]}
+  - {predicate: at, args: [blouse1, bedroom]}
+  - {predicate: at, args: [trouser1, bedroom]}
+  - {predicate: at, args: [dress1, bedroom]}
+  - {predicate: at, args: [brassiere1, bedroom]}
+  - {predicate: at, args: [tank_top1, bedroom]}
+  - {predicate: on_top, args: [short_pants1, bed1]}
+  - {predicate: on_top, args: [blouse1, bed1]}
+  - {predicate: on_top, args: [trouser1, bed1]}
+  - {predicate: on_top, args: [dress1, bed1]}
+  - {predicate: on_top, args: [brassiere1, bed1]}
+  - {predicate: on_top, args: [tank_top1, bed1]}
+  - {predicate: robot_free, args: [robot1]}

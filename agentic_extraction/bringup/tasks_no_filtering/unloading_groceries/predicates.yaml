@@ -1,0 +1,83 @@
+# Location / spatial relations
+at:
+  intent: "An entity is located at a place."
+  arguments: "(?e - locatable ?l - location)"
+
+in:
+  intent: "An item is contained within a container."
+  arguments: "(?o - item ?c - container)"
+
+on_top:
+  intent: "An item is resting on top of another entity."
+  arguments: "(?top - item ?bottom - locatable)"
+
+next_to:
+  intent: "Two entities are adjacent."
+  arguments: "(?a - item ?b - locatable)"
+
+under:
+  intent: "An item is underneath another entity."
+  arguments: "(?a - item ?b - locatable)"
+
+touching:
+  intent: "Two entities are in physical contact."
+  arguments: "(?a - item ?b - locatable)"
+
+attached:
+  intent: "An item is attached to another entity."
+  arguments: "(?a - item ?b - locatable)"
+
+draped:
+  intent: "An item is draped over another entity."
+  arguments: "(?a - item ?b - locatable)"
+
+# Manipulation
+holding:
+  intent: "A robot is currently holding an item."
+  arguments: "(?a - robot ?o - item)"
+
+robot_free:
+  intent: "A robot is not currently holding any item."
+  arguments: "(?r - robot)"
+
+# Container relations
+covered:
+  intent: "An entity is covered by residue such as dirt, dust or stains."
+  arguments: "(?o - locatable ?s - item)"
+
+# Object states
+open:
+  intent: "A container is in an open state."
+  arguments: "(?t - container)"
+
+cooked:
+  intent: "A food is cooked."
+  arguments: "(?o - food)"
+
+frozen:
+  intent: "A food is frozen."
+  arguments: "(?o - food)"
+
+folded:
+  intent: "An item is folded."
+  arguments: "(?o - item)"
+
+unfolded:
+  intent: "An item is unfolded."
+  arguments: "(?o - item)"
+
+toggled_on:
+  intent: "A device is switched on."
+  arguments: "(?o - device)"
+
+hot:
+  intent: "An entity is hot."
+  arguments: "(?o - locatable)"
+
+broken:
+  intent: "An item is broken."
+  arguments: "(?o - item)"
+
+on_fire:
+  intent: "An item is on fire."
+  arguments: "(?o - item)"

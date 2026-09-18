@@ -1,0 +1,17 @@
+nodes:
+  robot1: {type: robot}
+  car1: {type: car}
+  briefcase1: {type: briefcase}
+  satchel1: {type: satchel}
+  sofa1: {type: sofa}
+  garage: {type: location}
+  living_room: {type: location}
+edges:
+  - {predicate: in, args: [briefcase1, car1]}
+  - {predicate: in, args: [satchel1, car1]}
+  - {predicate: at, args: [car1, garage]}
+  - {predicate: at, args: [sofa1, living_room]}
+  - {predicate: at, args: [briefcase1, garage]}
+  - {predicate: at, args: [satchel1, garage]}
+  - {predicate: at, args: [robot1, garage]}
+  - {predicate: robot_free, args: [robot1]}

@@ -1,0 +1,27 @@
+task: setting_the_table-0
+domain: storage
+types: [locatable, location, robot, item, container, device, food, furniture,
+        cupcake, plate, tablefork, table_knife, breakfast_table, sink, cabinet,
+        electric_refrigerator]
+predicates: [at, in, on_top, next_to, holding, robot_free, open]
+actions: [drive, pick, place, place_next_to, open]
+type_aliases:
+  cupcake: [food, item]
+  plate: [item]
+  tablefork: [item]
+  table_knife: [item]
+  breakfast_table: [furniture]
+  sink: [furniture]
+  cabinet: [container, item]
+  electric_refrigerator: [container, item]
+goal: |
+  (and
+    (on_top plate1 breakfast_table1)
+    (on_top plate2 breakfast_table1)
+    (on_top cupcake1 plate1)
+    (on_top cupcake2 plate2)
+    (next_to tablefork1 plate1)
+    (next_to tablefork2 plate2)
+    (next_to table_knife1 plate1)
+    (next_to table_knife2 plate2)
+  )

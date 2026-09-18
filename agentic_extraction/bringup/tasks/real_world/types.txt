@@ -1,0 +1,16 @@
+locatable - object
+location  - object
+robot - locatable
+item - locatable
+container - item
+residue - item
+device - item
+food - item
+furniture - locatable
+banana - food
+pear - food
+apple - food
+orange - food
+plate - item
+bowl - container
+table - furniture

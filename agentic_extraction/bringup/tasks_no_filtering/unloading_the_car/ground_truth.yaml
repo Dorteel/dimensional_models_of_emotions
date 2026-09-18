@@ -1,0 +1,16 @@
+task: unloading_the_car-0
+domain: storage
+types: [locatable, location, robot, item, container, device, food, furniture,
+        residue, car, briefcase, satchel, sofa, floor]
+predicates: [next_to, in, at, on_top, robot_free, holding]
+actions: [drive, pick, place_next_to]
+type_aliases:
+  car: [container]
+  briefcase: [item]
+  satchel: [item]
+  sofa: [furniture]
+  floor: [furniture]
+goal: |
+  (and
+    (forall (?b - briefcase) (next_to ?b sofa1))
+    (forall (?s - satchel) (next_to ?s sofa1)))

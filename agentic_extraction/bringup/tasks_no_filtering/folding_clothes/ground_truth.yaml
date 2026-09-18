@@ -1,0 +1,23 @@
+task: folding_clothes-0
+domain: laundry
+types: [locatable, location, robot, item, container, device, food, furniture,
+        garment, short_pants, blouse, trouser, dress, brassiere, tank_top, bed]
+predicates: [at, on_top, folded, robot_free, holding]
+actions: [drive, pick, fold]
+type_aliases:
+  short_pants: [garment, item]
+  blouse: [garment, item]
+  trouser: [garment, item]
+  dress: [garment, item]
+  brassiere: [garment, item]
+  tank_top: [garment, item]
+  bed: [furniture]
+goal: |
+  (and
+    (folded short_pants1)
+    (folded blouse1)
+    (folded trouser1)
+    (folded dress1)
+    (folded brassiere1)
+    (folded tank_top1)
+  )

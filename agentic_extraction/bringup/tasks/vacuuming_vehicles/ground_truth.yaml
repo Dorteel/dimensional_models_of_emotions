@@ -1,0 +1,13 @@
+task: vacuuming_vehicles-0
+domain: cleaning
+types: [locatable, location, robot, item, container, device, food, furniture,
+        residue, car, vacuum, dust, floor]
+predicates: [covered, on_top, at, robot_free, holding]
+actions: [drive, pick, clean]
+type_aliases:
+  car: [furniture]
+  vacuum: [device, item]
+  dust: [residue, item]
+  floor: [furniture]
+goal: |
+  (and (not (covered car1 dust1)))

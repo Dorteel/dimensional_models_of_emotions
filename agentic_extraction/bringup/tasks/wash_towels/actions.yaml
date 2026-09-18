@@ -1,0 +1,12 @@
+drive:
+  intent: "Robot moves its base from one location to another."
+  requires_capabilities: [navigation]
+
+pick:
+  intent: "Robot acquires physical hold of an item."
+  requires_capabilities:
+    any_of: [grasping, manipulation]
+
+clean:
+  intent: "Robot cleans a surface that is covered by a residue, leaving the surface no longer covered by that residue. The surface is the object being cleaned (for example a towel, table or floor); the residue is what is removed (for example dirt, dust or a stain). Cleaning only removes the covered relation and does not move any object."
+  requires_capabilities: [manipulation]

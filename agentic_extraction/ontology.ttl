@@ -1,0 +1,259 @@
+@prefix ns1: <http://example.org/planning#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ns1:ActionEffect a rdfs:Class ;
+    rdfs:comment "A relationship indicating that an action has a specific effect." .
+
+ns1:ActionPrecondition a rdfs:Class ;
+    rdfs:comment "A relationship indicating that an action has a specific precondition." .
+
+ns1:Capability a rdfs:Class ;
+    rdfs:comment "A capability that an agent can possess, enabling it to perform specific actions or achieve certain goals." .
+
+ns1:GoalState a rdfs:Class ;
+    rdfs:comment "The desired configuration of the world, defined by a set of predicates." ;
+    rdfs:subClassOf ns1:PlanningState .
+
+ns1:InitialState a rdfs:Class ;
+    rdfs:comment "The starting configuration of the world, defined by a set of predicates." ;
+    rdfs:subClassOf ns1:PlanningState .
+
+ns1:PDDLType a rdfs:Class ;
+    rdfs:comment "A type (of entity) that can be involved as parameters in planning actions or domains." .
+
+ns1:PlanningAction a rdfs:Class ;
+    rdfs:comment "An action that can be performed in a planning context." .
+
+ns1:PlanningDomain a rdfs:Class ;
+    rdfs:comment "A domain that encompasses a set of planning actions and their relationships." .
+
+ns1:PlanningPredicate a rdfs:Class ;
+    rdfs:comment "A relationship between one or multiple entities in the planning context." .
+
+ns1:PlanningProblem a rdfs:Class ;
+    rdfs:comment "A specific planning problem, defined by a domain, initial state, and goal state." .
+
+ns1:PlanningState a rdfs:Class ;
+    rdfs:comment "A specific configuration of the world, defined by a set of predicates." .
+
+ns1:at a ns1:PlanningPredicate ;
+    ns1:hasArgument "(?e - locatable ?l - location)" ;
+    ns1:hasIntent "An entity is located at a place." .
+
+ns1:attached a ns1:PlanningPredicate ;
+    ns1:hasArgument "(?a - item ?b - locatable)" ;
+    ns1:hasIntent "An item is attached to another entity." .
+
+ns1:broken a ns1:PlanningPredicate ;
+    ns1:hasArgument "(?o - item)" ;
+    ns1:hasIntent "An item is broken." .
+
+ns1:clean a ns1:PlanningAction ;
+    ns1:hasIntent "Robot removes a residue from a surface, so the surface is no longer covered by that residue." ;
+    ns1:requiresCapability ns1:manipulation .
+
+ns1:close a ns1:PlanningAction ;
+    ns1:hasIntent "Robot changes a target from open to closed." ;
+    ns1:requiresCapability ns1:manipulation .
+
+ns1:cooked a ns1:PlanningPredicate ;
+    ns1:hasArgument "(?o - food)" ;
+    ns1:hasIntent "A food is cooked." .
+
+ns1:covered a ns1:PlanningPredicate ;
+    ns1:hasArgument "(?o - locatable ?s - item)" ;
+    ns1:hasIntent "An entity is covered by residue such as dirt, dust or stains." .
+
+ns1:draped a ns1:PlanningPredicate ;
+    ns1:hasArgument "(?a - item ?b - locatable)" ;
+    ns1:hasIntent "An item is draped over another entity." .
+
+ns1:drive a ns1:PlanningAction ;
+    ns1:hasIntent "Robot moves its base from one location to another." ;
+    ns1:requiresCapability ns1:navigation .
+
+ns1:fold a ns1:PlanningAction ;
+    ns1:hasIntent "Robot folds a piece of cloth or clothing." ;
+    ns1:requiresCapability ns1:grasping,
+        ns1:manipulation .
+
+ns1:folded a ns1:PlanningPredicate ;
+    ns1:hasArgument "(?o - item)" ;
+    ns1:hasIntent "An item is folded." .
+
+ns1:frozen a ns1:PlanningPredicate ;
+    ns1:hasArgument "(?o - food)" ;
+    ns1:hasIntent "A food is frozen." .
+
+ns1:hasAction a rdf:Property ;
+    rdfs:comment "A relationship indicating that a domain includes a specific action." ;
+    rdfs:domain ns1:PlanningDomain ;
+    rdfs:range ns1:PlanningAction .
+
+ns1:hasActionEffect a rdf:Property ;
+    rdfs:comment "A relationship indicating that an action includes a specific action effect." ;
+    rdfs:domain ns1:PlanningAction ;
+    rdfs:range ns1:ActionEffect .
+
+ns1:hasActionPrecondition a rdf:Property ;
+    rdfs:comment "A relationship indicating that an action includes a specific action precondition." ;
+    rdfs:domain ns1:PlanningAction ;
+    rdfs:range ns1:ActionPrecondition .
+
+ns1:hasArgument a rdf:Property ;
+    rdfs:comment "A relationship indicating that a specific predicate has a certain argument or parameter." ;
+    rdfs:domain ns1:PlanningPredicate ;
+    rdfs:range xsd:string .
+
+ns1:hasDomainPredicate a rdf:Property ;
+    rdfs:comment "A relationship indicating that a domain includes a specific predicate." ;
+    rdfs:domain ns1:PlanningDomain ;
+    rdfs:range ns1:PlanningPredicate .
+
+ns1:hasGoalState a rdf:Property ;
+    rdfs:comment "A relationship indicating that a planning problem has a specific goal state." ;
+    rdfs:domain ns1:PlanningProblem ;
+    rdfs:range ns1:GoalState .
+
+ns1:hasInitialState a rdf:Property ;
+    rdfs:comment "A relationship indicating that a planning problem has a specific initial state." ;
+    rdfs:domain ns1:PlanningProblem ;
+    rdfs:range ns1:InitialState .
+
+ns1:hasIntent a rdf:Property ;
+    rdfs:comment "A relationship indicating that a specific action is associated with a certain intent or purpose." ;
+    rdfs:domain ns1:PlanningAction ;
+    rdfs:range xsd:string .
+
+ns1:hasPDDLType a rdf:Property ;
+    rdfs:comment "A relationship indicating that a domain includes a specific PDDL type." ;
+    rdfs:domain ns1:PlanningDomain ;
+    rdfs:range ns1:PDDLType .
+
+ns1:hasProblem a rdf:Property ;
+    rdfs:comment "A relationship indicating that a domain includes a specific planning problem." ;
+    rdfs:domain ns1:PlanningDomain ;
+    rdfs:range ns1:PlanningProblem .
+
+ns1:hasStatePredicate a rdf:Property ;
+    rdfs:comment "A relationship indicating that a state includes a specific predicate." ;
+    rdfs:domain ns1:PlanningState ;
+    rdfs:range ns1:PlanningPredicate .
+
+ns1:holding a ns1:PlanningPredicate ;
+    ns1:hasArgument "(?a - robot ?o - item)" ;
+    ns1:hasIntent "A robot is currently holding an item." .
+
+ns1:hot a ns1:PlanningPredicate ;
+    ns1:hasArgument "(?o - locatable)" ;
+    ns1:hasIntent "An entity is hot." .
+
+ns1:in a ns1:PlanningPredicate ;
+    ns1:hasArgument "(?o - item ?c - container)" ;
+    ns1:hasIntent "An item is contained within a container." .
+
+ns1:look_at a ns1:PlanningAction ;
+    ns1:hasIntent "Robot directs sensing toward a target." ;
+    ns1:requiresCapability ns1:perception .
+
+ns1:move a ns1:PlanningAction ;
+    ns1:hasIntent "Robot moves its end-effector to a target pose." ;
+    ns1:requiresCapability ns1:grasping,
+        ns1:manipulation .
+
+ns1:next_to a ns1:PlanningPredicate ;
+    ns1:hasArgument "(?a - item ?b - locatable)" ;
+    ns1:hasIntent "Two entities are adjacent." .
+
+ns1:on_fire a ns1:PlanningPredicate ;
+    ns1:hasArgument "(?o - item)" ;
+    ns1:hasIntent "An item is on fire." .
+
+ns1:on_top a ns1:PlanningPredicate ;
+    ns1:hasArgument "(?top - item ?bottom - locatable)" ;
+    ns1:hasIntent "An item is resting on top of another entity." .
+
+ns1:open a ns1:PlanningAction,
+        ns1:PlanningPredicate ;
+    ns1:hasArgument "(?t - container)" ;
+    ns1:hasIntent "A container is in an open state.",
+        "Robot changes a target from closed to open." ;
+    ns1:requiresCapability ns1:manipulation .
+
+ns1:pick a ns1:PlanningAction ;
+    ns1:hasIntent "Robot acquires physical hold of an item." ;
+    ns1:requiresCapability ns1:grasping,
+        ns1:manipulation .
+
+ns1:place a ns1:PlanningAction ;
+    ns1:hasIntent "Robot puts a held item on a target surface." ;
+    ns1:requiresCapability ns1:grasping,
+        ns1:manipulation .
+
+ns1:place_in_container a ns1:PlanningAction ;
+    ns1:hasIntent "Robot puts a held item inside a container." ;
+    ns1:requiresCapability ns1:grasping,
+        ns1:manipulation .
+
+ns1:pour a ns1:PlanningAction ;
+    ns1:hasIntent "Robot tilts a held container to discharge its contents." ;
+    ns1:requiresCapability ns1:manipulation .
+
+ns1:pull a ns1:PlanningAction ;
+    ns1:hasIntent "Robot applies force to draw an item closer." ;
+    ns1:requiresCapability ns1:manipulation .
+
+ns1:push a ns1:PlanningAction ;
+    ns1:hasIntent "Robot applies force to displace an item away." ;
+    ns1:requiresCapability ns1:manipulation .
+
+ns1:requiresCapability a rdf:Property ;
+    rdfs:comment "A relationship indicating that a specific action requires a certain capability to be performed." ;
+    rdfs:domain ns1:PlanningAction ;
+    rdfs:range ns1:Capability .
+
+ns1:robot_free a ns1:PlanningPredicate ;
+    ns1:hasArgument "(?r - robot)" ;
+    ns1:hasIntent "A robot is not currently holding any item." .
+
+ns1:stack a ns1:PlanningAction ;
+    ns1:hasIntent "Robot places a held item on top of another item." ;
+    ns1:requiresCapability ns1:grasping,
+        ns1:manipulation .
+
+ns1:toggled_on a ns1:PlanningPredicate ;
+    ns1:hasArgument "(?o - device)" ;
+    ns1:hasIntent "A device is switched on." .
+
+ns1:touching a ns1:PlanningPredicate ;
+    ns1:hasArgument "(?a - item ?b - locatable)" ;
+    ns1:hasIntent "Two entities are in physical contact." .
+
+ns1:under a ns1:PlanningPredicate ;
+    ns1:hasArgument "(?a - item ?b - locatable)" ;
+    ns1:hasIntent "An item is underneath another entity." .
+
+ns1:unfold a ns1:PlanningAction ;
+    ns1:hasIntent "Robot unfolds a folded piece of cloth or clothing." ;
+    ns1:requiresCapability ns1:grasping,
+        ns1:manipulation .
+
+ns1:unfolded a ns1:PlanningPredicate ;
+    ns1:hasArgument "(?o - item)" ;
+    ns1:hasIntent "An item is unfolded." .
+
+ns1:unstack a ns1:PlanningAction ;
+    ns1:hasIntent "Robot removes an item from on top of another item and holds it." ;
+    ns1:requiresCapability ns1:grasping,
+        ns1:manipulation .
+
+ns1:navigation a ns1:Capability .
+
+ns1:perception a ns1:Capability .
+
+ns1:grasping a ns1:Capability .
+
+ns1:manipulation a ns1:Capability .
+

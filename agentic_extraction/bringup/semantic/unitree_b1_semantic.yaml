@@ -1,0 +1,7 @@
+robot:
+  name: b1_description
+capabilities:
+  navigation: true
+  perception: true
+  manipulation: false
+  grasping: false

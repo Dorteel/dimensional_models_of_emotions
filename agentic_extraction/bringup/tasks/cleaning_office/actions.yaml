@@ -1,0 +1,28 @@
+drive:
+  intent: "Robot moves its base from one location to another."
+  requires_capabilities: [navigation]
+
+pick:
+  intent: "Robot acquires physical hold of an item."
+  requires_capabilities:
+    any_of: [grasping, manipulation]
+
+place:
+  intent: "Robot puts a held item on a target surface."
+  requires_capabilities:
+    any_of: [grasping, manipulation]
+
+place_in_container:
+  intent: "Robot puts a held item inside a container."
+  requires_capabilities:
+    any_of: [grasping, manipulation]
+
+open:
+  intent: "Robot opens a container, so the container becomes opened."
+  requires_capabilities: [manipulation]
+
+clean:
+  intent: "Robot removes a residue from a surface using a cleaning tool it is holding, so the surface is no longer covered by that residue. The residue and the tool are different objects."
+  requires_capabilities: [manipulation]
+
+  

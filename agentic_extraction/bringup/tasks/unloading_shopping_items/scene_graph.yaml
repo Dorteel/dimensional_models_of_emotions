@@ -1,0 +1,60 @@
+nodes:
+  robot1: {type: robot}
+  carton1: {type: carton}
+  carton2: {type: carton}
+  cabinet1: {type: cabinet}
+  bottle_of_lotion1: {type: bottle_of_lotion}
+  bottle_of_detergent1: {type: bottle_of_detergent}
+  picture_frame1: {type: picture_frame}
+  picture_frame2: {type: picture_frame}
+  picture_frame3: {type: picture_frame}
+  notebook1: {type: notebook}
+  notebook2: {type: notebook}
+  notebook3: {type: notebook}
+  painting1: {type: painting}
+  painting2: {type: painting}
+  plastic_art1: {type: plastic_art}
+  lampshade1: {type: lampshade}
+  lampshade2: {type: lampshade}
+  globe1: {type: globe}
+  console_table1: {type: console_table}
+  floor1: {type: floor}
+  living_room: {type: location}
+edges:
+  - {predicate: on_top, args: [carton1, floor1]}
+  - {predicate: on_top, args: [carton2, floor1]}
+  - {predicate: in, args: [bottle_of_lotion1, carton1]}
+  - {predicate: in, args: [bottle_of_detergent1, carton1]}
+  - {predicate: in, args: [picture_frame1, carton1]}
+  - {predicate: in, args: [picture_frame2, carton1]}
+  - {predicate: in, args: [picture_frame3, carton1]}
+  - {predicate: in, args: [notebook1, carton1]}
+  - {predicate: in, args: [notebook2, carton1]}
+  - {predicate: in, args: [notebook3, carton1]}
+  - {predicate: in, args: [painting1, carton2]}
+  - {predicate: in, args: [painting2, carton2]}
+  - {predicate: in, args: [plastic_art1, carton2]}
+  - {predicate: in, args: [lampshade1, carton2]}
+  - {predicate: in, args: [lampshade2, carton2]}
+  - {predicate: in, args: [globe1, carton2]}
+  - {predicate: at, args: [floor1, living_room]}
+  - {predicate: at, args: [console_table1, living_room]}
+  - {predicate: at, args: [cabinet1, living_room]}
+  - {predicate: at, args: [carton1, living_room]}
+  - {predicate: at, args: [carton2, living_room]}
+  - {predicate: at, args: [bottle_of_lotion1, living_room]}
+  - {predicate: at, args: [bottle_of_detergent1, living_room]}
+  - {predicate: at, args: [picture_frame1, living_room]}
+  - {predicate: at, args: [picture_frame2, living_room]}
+  - {predicate: at, args: [picture_frame3, living_room]}
+  - {predicate: at, args: [notebook1, living_room]}
+  - {predicate: at, args: [notebook2, living_room]}
+  - {predicate: at, args: [notebook3, living_room]}
+  - {predicate: at, args: [painting1, living_room]}
+  - {predicate: at, args: [painting2, living_room]}
+  - {predicate: at, args: [plastic_art1, living_room]}
+  - {predicate: at, args: [lampshade1, living_room]}
+  - {predicate: at, args: [lampshade2, living_room]}
+  - {predicate: at, args: [globe1, living_room]}
+  - {predicate: at, args: [robot1, living_room]}
+  - {predicate: robot_free, args: [robot1]}

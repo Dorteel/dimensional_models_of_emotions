@@ -1,0 +1,63 @@
+nodes:
+  robot1: {type: robot}
+  computer1: {type: computer}
+  computer2: {type: computer}
+  desk1: {type: desk}
+  desk2: {type: desk}
+  keyboard1: {type: keyboard}
+  keyboard2: {type: keyboard}
+  mouse1: {type: mouse}
+  mouse2: {type: mouse}
+  legal_document1: {type: legal_document}
+  carton1: {type: carton}
+  sheet1: {type: sheet}
+  pen1: {type: pen}
+  book1: {type: book}
+  recycling_bin1: {type: recycling_bin}
+  folder1: {type: folder}
+  rag1: {type: rag}
+  dust1: {type: dust}
+  floor1: {type: floor}
+  shared_office: {type: location}
+edges:
+  - {predicate: on_top, args: [computer1, desk1]}
+  - {predicate: on_top, args: [keyboard1, desk1]}
+  - {predicate: on_top, args: [mouse1, desk1]}
+  - {predicate: on_top, args: [computer2, desk2]}
+  - {predicate: on_top, args: [keyboard2, desk2]}
+  - {predicate: on_top, args: [mouse2, desk2]}
+  - {predicate: on_top, args: [legal_document1, desk1]}
+  - {predicate: on_top, args: [carton1, desk1]}
+  - {predicate: on_top, args: [sheet1, desk2]}
+  - {predicate: on_top, args: [pen1, desk1]}
+  - {predicate: on_top, args: [book1, desk2]}
+  - {predicate: on_top, args: [recycling_bin1, floor1]}
+  - {predicate: on_top, args: [folder1, desk2]}
+  - {predicate: on_top, args: [rag1, floor1]}
+  - {predicate: covered, args: [desk1, dust1]}
+  - {predicate: covered, args: [computer1, dust1]}
+  - {predicate: covered, args: [desk2, dust1]}
+  - {predicate: covered, args: [computer2, dust1]}
+  - {predicate: covered, args: [keyboard1, dust1]}
+  - {predicate: covered, args: [mouse1, dust1]}
+  - {predicate: covered, args: [keyboard2, dust1]}
+  - {predicate: covered, args: [mouse2, dust1]}
+  - {predicate: at, args: [desk1, shared_office]}
+  - {predicate: at, args: [desk2, shared_office]}
+  - {predicate: at, args: [floor1, shared_office]}
+  - {predicate: at, args: [computer1, shared_office]}
+  - {predicate: at, args: [computer2, shared_office]}
+  - {predicate: at, args: [keyboard1, shared_office]}
+  - {predicate: at, args: [keyboard2, shared_office]}
+  - {predicate: at, args: [mouse1, shared_office]}
+  - {predicate: at, args: [mouse2, shared_office]}
+  - {predicate: at, args: [legal_document1, shared_office]}
+  - {predicate: at, args: [carton1, shared_office]}
+  - {predicate: at, args: [sheet1, shared_office]}
+  - {predicate: at, args: [pen1, shared_office]}
+  - {predicate: at, args: [book1, shared_office]}
+  - {predicate: at, args: [recycling_bin1, shared_office]}
+  - {predicate: at, args: [folder1, shared_office]}
+  - {predicate: at, args: [rag1, shared_office]}
+  - {predicate: at, args: [robot1, shared_office]}
+  - {predicate: robot_free, args: [robot1]}

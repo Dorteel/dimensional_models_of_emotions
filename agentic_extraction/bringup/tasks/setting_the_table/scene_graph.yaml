@@ -1,0 +1,39 @@
+nodes:
+  robot1: {type: robot}
+  cupcake1: {type: cupcake}
+  cupcake2: {type: cupcake}
+  plate1: {type: plate}
+  plate2: {type: plate}
+  tablefork1: {type: tablefork}
+  tablefork2: {type: tablefork}
+  table_knife1: {type: table_knife}
+  table_knife2: {type: table_knife}
+  breakfast_table1: {type: breakfast_table}
+  cabinet1: {type: cabinet}
+  electric_refrigerator1: {type: electric_refrigerator}
+  sink1: {type: sink}
+  kitchen: {type: location}
+  dining_room: {type: location}
+edges:
+  - {predicate: at, args: [robot1, kitchen]}
+  - {predicate: at, args: [breakfast_table1, dining_room]}
+  - {predicate: at, args: [cabinet1, kitchen]}
+  - {predicate: at, args: [electric_refrigerator1, kitchen]}
+  - {predicate: at, args: [sink1, kitchen]}
+  - {predicate: at, args: [cupcake1, kitchen]}
+  - {predicate: at, args: [cupcake2, kitchen]}
+  - {predicate: at, args: [plate1, kitchen]}
+  - {predicate: at, args: [plate2, kitchen]}
+  - {predicate: at, args: [tablefork1, kitchen]}
+  - {predicate: at, args: [tablefork2, kitchen]}
+  - {predicate: at, args: [table_knife1, kitchen]}
+  - {predicate: at, args: [table_knife2, kitchen]}
+  - {predicate: in, args: [cupcake1, electric_refrigerator1]}
+  - {predicate: in, args: [cupcake2, electric_refrigerator1]}
+  - {predicate: in, args: [plate1, cabinet1]}
+  - {predicate: in, args: [plate2, cabinet1]}
+  - {predicate: on_top, args: [tablefork1, sink1]}
+  - {predicate: on_top, args: [tablefork2, sink1]}
+  - {predicate: on_top, args: [table_knife1, sink1]}
+  - {predicate: on_top, args: [table_knife2, sink1]}
+  - {predicate: robot_free, args: [robot1]}

@@ -1,0 +1,17 @@
+locatable - object
+location  - object
+robot - locatable
+item - locatable
+container - item
+residue - item
+device - item
+food - item
+furniture - locatable
+cupcake - food
+plate - item
+tablefork - item
+table_knife - item
+breakfast_table - furniture
+sink - furniture
+cabinet - container
+electric_refrigerator - container

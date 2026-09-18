@@ -1,0 +1,37 @@
+nodes:
+  robot1: {type: robot}
+  pitcher1: {type: pitcher}
+  countertop1: {type: countertop}
+  box_of_cream1: {type: box_of_cream}
+  cabinet1: {type: cabinet}
+  napkin1: {type: napkin}
+  napkin2: {type: napkin}
+  breakfast_table1: {type: breakfast_table}
+  bowl1: {type: bowl}
+  teaspoon1: {type: teaspoon}
+  teaspoon2: {type: teaspoon}
+  electric_refrigerator1: {type: electric_refrigerator}
+  floor1: {type: floor}
+  kitchen: {type: location}
+  dining_room: {type: location}
+edges:
+  - {predicate: on_top, args: [pitcher1, countertop1]}
+  - {predicate: in, args: [box_of_cream1, electric_refrigerator1]}
+  - {predicate: on_top, args: [napkin1, breakfast_table1]}
+  - {predicate: on_top, args: [napkin2, breakfast_table1]}
+  - {predicate: in, args: [teaspoon1, cabinet1]}
+  - {predicate: in, args: [teaspoon2, cabinet1]}
+  - {predicate: on_top, args: [bowl1, countertop1]}
+  - {predicate: at, args: [breakfast_table1, dining_room]}
+  - {predicate: at, args: [cabinet1, kitchen]}
+  - {predicate: at, args: [countertop1, kitchen]}
+  - {predicate: at, args: [electric_refrigerator1, kitchen]}
+  - {predicate: at, args: [pitcher1, kitchen]}
+  - {predicate: at, args: [box_of_cream1, kitchen]}
+  - {predicate: at, args: [napkin1, dining_room]}
+  - {predicate: at, args: [napkin2, dining_room]}
+  - {predicate: at, args: [teaspoon1, kitchen]}
+  - {predicate: at, args: [teaspoon2, kitchen]}
+  - {predicate: at, args: [bowl1, kitchen]}
+  - {predicate: at, args: [robot1, kitchen]}
+  - {predicate: robot_free, args: [robot1]}

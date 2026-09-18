@@ -1,0 +1,19 @@
+at:
+  intent: "An entity is located at a place."
+  arguments: "(?e - locatable ?l - location)"
+
+in:
+  intent: "An item is contained within a container."
+  arguments: "(?o - item ?c - container)"
+
+on_top:
+  intent: "An item is resting on top of another entity."
+  arguments: "(?top - item ?bottom - locatable)"
+
+holding:
+  intent: "A robot is currently holding an item."
+  arguments: "(?a - robot ?o - item)"
+
+robot_free:
+  intent: "A robot is not currently holding any item."
+  arguments: "(?r - robot)"

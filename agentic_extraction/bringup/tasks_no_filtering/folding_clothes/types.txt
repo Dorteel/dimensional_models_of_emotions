@@ -1,0 +1,17 @@
+locatable - object
+location  - object
+robot - locatable
+item - locatable
+container - item
+residue - item
+device - item
+food - item
+furniture - locatable
+garment - item
+short_pants - garment
+blouse - garment
+trouser - garment
+dress - garment
+brassiere - garment
+tank_top - garment
+bed - furniture

@@ -1,0 +1,35 @@
+at:
+  intent: "An entity is located at a place."
+  arguments: "(?e - locatable ?l - location)"
+
+holding:
+  intent: "An agent is currently holding an item."
+  arguments: "(?a - agent ?o - item)"
+
+closed:
+  intent: "A container is in a closed state."
+  arguments: "(?t - container)"
+
+open:
+  intent: "A container is in an open state."
+  arguments: "(?t - container)"
+
+in:
+  intent: "An item is contained within a container."
+  arguments: "(?o - item ?c - container)"
+
+on_top:
+  intent: "An item is resting on top of another item."
+  arguments: "(?top - item ?bottom - item)"
+
+robot_free:
+  intent: "An agent is not currently holding any item."
+  arguments: "(?r - agent)"
+
+free:
+  intent: "An item has no item placed on it."
+  arguments: "(?l - item)"
+
+# know_position:
+#   intent: "An agent obtains knowledge of an object's position without physical proximity. "
+#   arguments: "(?o - object)"

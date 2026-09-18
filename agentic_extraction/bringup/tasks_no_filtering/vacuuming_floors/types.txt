@@ -1,0 +1,12 @@
+locatable - object
+location  - object
+robot - locatable
+item - locatable
+container - item
+device - item
+food - item
+furniture - locatable
+residue - item
+dust - residue
+floor - furniture
+vacuum - device

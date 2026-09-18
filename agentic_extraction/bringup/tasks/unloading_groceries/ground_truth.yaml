@@ -1,0 +1,24 @@
+task: unloading_groceries-0
+domain: storage
+types: [locatable, location, robot, item, container, device, food, furniture,
+        residue, sour_bread, sack, box_of_corn_flakes, cup_of_yogurt, egg,
+        electric_refrigerator, cabinet, floor]
+predicates: [in, at, on_top, open, robot_free, holding]
+actions: [drive, pick, place_in_container, open, close]
+type_aliases:
+  sour_bread: [food, item]
+  box_of_corn_flakes: [food, item]
+  cup_of_yogurt: [food, item]
+  egg: [food, item]
+  sack: [container]
+  electric_refrigerator: [container]
+  cabinet: [container]
+  floor: [furniture]
+goal: |
+  (and
+    (in sour_bread1 cabinet1)
+    (in box_of_corn_flakes1 cabinet1)
+    (in cup_of_yogurt1 electric_refrigerator1)
+    (in egg1 electric_refrigerator1)
+    (not (open electric_refrigerator1))
+    (not (open cabinet1)))

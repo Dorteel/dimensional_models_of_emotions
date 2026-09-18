@@ -1,0 +1,16 @@
+nodes:
+  robot1: {type: robot}
+  car1: {type: car}
+  vacuum1: {type: vacuum}
+  dust1: {type: dust}
+  floor1: {type: floor}
+  garden: {type: location}
+  garage: {type: location}
+edges:
+  - {predicate: covered, args: [car1, dust1]}
+  - {predicate: on_top, args: [vacuum1, floor1]}
+  - {predicate: at, args: [car1, garden]}
+  - {predicate: at, args: [floor1, garage]}
+  - {predicate: at, args: [vacuum1, garage]}
+  - {predicate: at, args: [robot1, garage]}
+  - {predicate: robot_free, args: [robot1]}

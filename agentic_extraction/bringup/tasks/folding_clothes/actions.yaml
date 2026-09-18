@@ -1,0 +1,12 @@
+drive:
+  intent: "Robot moves its base from one location to another."
+  requires_capabilities: [navigation]
+
+pick:
+  intent: "Robot acquires physical hold of an item."
+  requires_capabilities:
+    any_of: [grasping, manipulation]
+
+fold:
+  intent: "Robot folds a garment that is within reach, leaving it folded. Folding does not move the garment or change where it rests."
+  requires_capabilities: [manipulation]

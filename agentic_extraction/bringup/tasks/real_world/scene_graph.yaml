@@ -1,0 +1,27 @@
+nodes:
+  robot1: {type: robot}
+  plate1: {type: plate}
+  bowl1: {type: bowl}
+  apple1: {type: apple}
+  pear1: {type: pear}
+  orange1: {type: orange}
+  banana1: {type: banana}
+  table1: {type: table}
+  home: {type: location}
+  wp2: {type: location}
+  wp3: {type: location}
+  wp4: {type: location}
+  wp5: {type: location}
+  wp6: {type: location}
+  wp7: {type: location}
+  wp8: {type: location}
+edges:
+  - {predicate: at, args: [robot1, home]}
+  - {predicate: at, args: [table1, wp2]}
+  - {predicate: at, args: [plate1, wp3]}
+  - {predicate: at, args: [bowl1, wp4]}
+  - {predicate: at, args: [apple1, wp5]}
+  - {predicate: at, args: [pear1, wp6]}
+  - {predicate: at, args: [orange1, wp7]}
+  - {predicate: at, args: [banana1, wp8]}
+  - {predicate: robot_free, args: [robot1]}

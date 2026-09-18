@@ -1,0 +1,71 @@
+drive:
+  intent: "Robot moves its base from one location to another."
+  requires_capabilities: [navigation]
+
+move:
+  intent: "Robot moves its end-effector to a target pose."
+  requires_capabilities:
+    any_of: [grasping, manipulation]
+
+pick:
+  intent: "Robot acquires physical hold of an item."
+  requires_capabilities:
+    any_of: [grasping, manipulation]
+
+place:
+  intent: "Robot puts a held item on a target surface."
+  requires_capabilities:
+    any_of: [grasping, manipulation]
+
+place_in_container:
+  intent: "Robot puts a held item inside a container."
+  requires_capabilities:
+    any_of: [grasping, manipulation]
+
+stack:
+  intent: "Robot places a held item on top of another item."
+  requires_capabilities:
+    any_of: [grasping, manipulation]
+
+unstack:
+  intent: "Robot removes an item from on top of another item and holds it."
+  requires_capabilities:
+    any_of: [grasping, manipulation]
+
+open:
+  intent: "Robot changes a target from closed to open."
+  requires_capabilities: [manipulation]
+
+close:
+  intent: "Robot changes a target from open to closed."
+  requires_capabilities: [manipulation]
+
+push:
+  intent: "Robot applies force to displace an item away."
+  requires_capabilities: [manipulation]
+
+pull:
+  intent: "Robot applies force to draw an item closer."
+  requires_capabilities: [manipulation]
+
+pour:
+  intent: "Robot tilts a held container to discharge its contents."
+  requires_capabilities: [manipulation]
+
+look_at:
+  intent: "Robot directs sensing toward a target."
+  requires_capabilities: [perception]
+
+clean:
+  intent: "Robot removes a residue from a surface, so the surface is no longer covered by that residue."
+  requires_capabilities: [manipulation]
+
+fold:
+  intent: "Robot folds a piece of cloth or clothing."
+  requires_capabilities:
+    any_of: [grasping, manipulation]
+
+unfold:
+  intent: "Robot unfolds a folded piece of cloth or clothing."
+  requires_capabilities:
+    any_of: [grasping, manipulation]

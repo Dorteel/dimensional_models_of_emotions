@@ -1,0 +1,19 @@
+task: bag_groceries-0
+domain: storage
+types: [locatable, location, robot, item, container, food, furniture,
+        sack, checkout, canned_food, egg, apple, bottle_of_orange_juice]
+predicates: [on_top, at, in, robot_free, holding, open]
+actions: [drive, pick, place_in_container, open]
+type_aliases:
+  sack: [container]
+  checkout: [furniture]
+  canned_food: [food, item]
+  egg: [food, item]
+  apple: [food, item]
+  bottle_of_orange_juice: [item]
+goal: |
+  (and
+    (in canned_food1 sack1)
+    (in egg1 sack1)
+    (in apple1 sack1)
+    (in bottle_of_orange_juice1 sack1))

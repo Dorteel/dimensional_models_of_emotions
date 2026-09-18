@@ -1,0 +1,22 @@
+{
+  "carton1": "carton.n.02_1",
+  "carton2": "carton.n.02_2",
+  "cabinet1": "cabinet.n.01_1",
+  "bottle_of_lotion1": "bottle__of__lotion.n.01_1",
+  "bottle_of_detergent1": "bottle__of__detergent.n.01_1",
+  "picture_frame1": "picture_frame.n.01_1",
+  "picture_frame2": "picture_frame.n.01_2",
+  "picture_frame3": "picture_frame.n.01_3",
+  "notebook1": "notebook.n.01_1",
+  "notebook2": "notebook.n.01_2",
+  "notebook3": "notebook.n.01_3",
+  "painting1": "painting.n.01_1",
+  "painting2": "painting.n.01_2",
+  "plastic_art1": "plastic_art.n.01_1",
+  "lampshade1": "lampshade.n.01_1",
+  "lampshade2": "lampshade.n.01_2",
+  "globe1": "globe.n.03_1",
+  "console_table1": "console_table.n.01_1",
+  "floor1": "floor.n.01_1",
+  "robot1": "agent.n.01_1"
+}

@@ -1,0 +1,7 @@
+robot:
+  name: panda
+capabilities:
+  navigation: false
+  perception: false
+  manipulation: false
+  grasping: true

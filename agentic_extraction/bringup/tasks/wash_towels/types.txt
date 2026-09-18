@@ -1,0 +1,15 @@
+locatable - object
+location  - object
+robot - locatable
+item - locatable
+container - item
+residue - item
+device - item
+food - item
+furniture - locatable
+bath_towel - item
+dirt - residue
+washer - device
+clothes_dryer - device
+detergent_bottle - container
+floor - furniture

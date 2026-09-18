@@ -1,0 +1,26 @@
+task: clean_a_company_office-0
+domain: cleaning
+types: [locatable, location, robot, item, container, device, food, furniture,
+        computer, desk, keyboard, mouse, legal_document, carton, sheet, pen,
+        book, recycling_bin, folder, rag, dust, floor]
+predicates: [on_top, covered, in, at, robot_free, holding, opened]
+actions: [drive, pick, place, place_in_container, clean, open]
+type_aliases:
+  computer: [device, item]
+  desk: [furniture]
+  carton: [container]
+  recycling_bin: [container]
+  dust: [item]
+  floor: [furniture]
+goal: |
+  (and
+    (forall (?c - computer) (not (covered ?c dust1)))
+    (forall (?d - desk) (not (covered ?d dust1)))
+    (forall (?m - mouse) (not (covered ?m dust1)))
+    (forall (?k - keyboard) (not (covered ?k dust1)))
+    (in sheet1 carton1)
+    (in pen1 carton1)
+    (in legal_document1 carton1)
+    (in book1 carton1)
+    (in folder1 carton1)
+    (on_top carton1 floor1))

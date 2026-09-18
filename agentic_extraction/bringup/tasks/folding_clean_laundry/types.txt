@@ -1,0 +1,15 @@
+locatable - object
+location  - object
+robot - locatable
+item - locatable
+container - item
+residue - item
+device - item
+food - item
+furniture - locatable
+garment - item
+tablecloth - garment
+sock - garment
+trouser - garment
+dishtowel - garment
+bed - furniture

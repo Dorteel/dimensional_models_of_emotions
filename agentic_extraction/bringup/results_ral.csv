@@ -1,0 +1,13 @@
+task,md,mp,mplan,vocab_p,vocab_r,vocab_f1,vocab_f1_relaxed,goal_exact,goal_jaccard,plan_length,notes
+bag_groceries,1,1,1,0.793,1,0.885,0.885,1,1,9,
+cleaning_office,1,1,1,0.971,0.971,0.971,0.971,1,1,20,
+wash_towels,1,1,1,0.913,0.955,0.933,0.933,1,1,2,
+unloading_the_car,1,1,1,0.95,0.826,0.884,0.909,1,1.0,7,
+unloading_groceries,1,1,1,0.963,0.929,0.945,0.945,1,1.0,12,
+vacuuming_floors,1,1,1,0.944,0.895,0.919,0.919,1,1.0,2,
+vacuuming_vehicles,1,1,1,0.95,0.905,0.927,0.927,1,1.0,2,
+unloading_shopping_items,1,1,1,0.966,0.903,0.933,0.933,1,1.0,32,
+setting_table_for_coffee,1,1,1,0.929,0.897,0.912,0.912,1,1.0,15,
+setting_the_table,1,1,1,0.964,0.964,0.964,0.964,1,1.0,19,
+folding_clothes,1,1,1,0.955,0.875,0.913,0.913,1,1.0,6,
+folding_clean_laundry,1,1,1,0.95,0.864,0.905,0.905,1,1.0,6,

@@ -1,0 +1,25 @@
+task: setting_table_for_coffee-0
+domain: storage
+types: [locatable, location, robot, item, container, device, food, furniture,
+        residue, pitcher, countertop, box_of_cream, cabinet, napkin,
+        breakfast_table, bowl, teaspoon, electric_refrigerator, floor]
+predicates: [on_top, in, at, robot_free, holding]
+actions: [drive, pick, place, stack, unstack]
+type_aliases:
+  pitcher: [container]
+  countertop: [furniture]
+  box_of_cream: [item]
+  cabinet: [container]
+  napkin: [item]
+  breakfast_table: [furniture]
+  bowl: [container]
+  teaspoon: [item]
+  electric_refrigerator: [container]
+  floor: [furniture]
+goal: |
+  (and
+    (on_top pitcher1 countertop1)
+    (on_top box_of_cream1 breakfast_table1)
+    (forall (?n - napkin) (on_top ?n breakfast_table1))
+    (forall (?t - teaspoon) (on_top ?t breakfast_table1))
+    (on_top bowl1 breakfast_table1))

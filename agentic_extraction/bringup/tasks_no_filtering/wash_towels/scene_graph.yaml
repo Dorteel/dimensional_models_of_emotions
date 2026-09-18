@@ -1,0 +1,24 @@
+nodes:
+  robot1: {type: robot}
+  bath_towel1: {type: bath_towel}
+  bath_towel2: {type: bath_towel}
+  dirt1: {type: dirt}
+  washer1: {type: washer}
+  clothes_dryer1: {type: clothes_dryer}
+  detergent_bottle1: {type: detergent_bottle}
+  floor1: {type: floor}
+  utility_room: {type: location}
+edges:
+  - {predicate: on_top, args: [bath_towel2, washer1]}
+  - {predicate: on_top, args: [bath_towel1, floor1]}
+  - {predicate: covered, args: [bath_towel1, dirt1]}
+  - {predicate: covered, args: [bath_towel2, dirt1]}
+  - {predicate: on_top, args: [detergent_bottle1, floor1]}
+  - {predicate: at, args: [floor1, utility_room]}
+  - {predicate: at, args: [clothes_dryer1, utility_room]}
+  - {predicate: at, args: [washer1, utility_room]}
+  - {predicate: at, args: [bath_towel1, utility_room]}
+  - {predicate: at, args: [bath_towel2, utility_room]}
+  - {predicate: at, args: [detergent_bottle1, utility_room]}
+  - {predicate: at, args: [robot1, utility_room]}
+  - {predicate: robot_free, args: [robot1]}

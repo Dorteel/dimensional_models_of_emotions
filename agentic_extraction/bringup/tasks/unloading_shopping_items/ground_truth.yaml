@@ -1,0 +1,32 @@
+task: unloading_shopping_items-0
+domain: storage
+types: [locatable, location, robot, item, container, device, food, furniture,
+        residue, carton, cabinet, bottle_of_lotion, bottle_of_detergent,
+        picture_frame, notebook, painting, plastic_art, lampshade, globe,
+        console_table, floor]
+predicates: [on_top, next_to, in, at, robot_free, holding]
+actions: [drive, pick, place, place_next_to]
+type_aliases:
+  carton: [container]
+  cabinet: [container]
+  bottle_of_lotion: [item]
+  bottle_of_detergent: [item]
+  picture_frame: [item]
+  notebook: [item]
+  painting: [item]
+  plastic_art: [item]
+  lampshade: [item]
+  globe: [item]
+  console_table: [furniture]
+  floor: [furniture]
+goal: |
+  (and
+    (forall (?n - notebook) (on_top ?n console_table1))
+    (forall (?p - picture_frame) (on_top ?p console_table1))
+    (forall (?p - painting) (on_top ?p cabinet1))
+    (on_top bottle_of_lotion1 console_table1)
+    (on_top bottle_of_detergent1 cabinet1)
+    (forall (?l - lampshade) (on_top ?l cabinet1))
+    (on_top plastic_art1 console_table1)
+    (on_top globe1 console_table1)
+    (forall (?c - carton) (next_to ?c console_table1)))

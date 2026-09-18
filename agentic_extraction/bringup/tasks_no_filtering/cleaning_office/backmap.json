@@ -1,0 +1,21 @@
+{
+  "computer1": "computer.n.01_1",
+  "computer2": "computer.n.01_2",
+  "desk1": "desk.n.01_1",
+  "desk2": "desk.n.01_2",
+  "keyboard1": "keyboard.n.01_1",
+  "keyboard2": "keyboard.n.01_2",
+  "mouse1": "mouse.n.04_1",
+  "mouse2": "mouse.n.04_2",
+  "legal_document1": "legal_document.n.01_1",
+  "carton1": "carton.n.02_1",
+  "sheet1": "sheet.n.02_1",
+  "pen1": "pen.n.01_1",
+  "book1": "book.n.02_1",
+  "recycling_bin1": "recycling_bin.n.01_1",
+  "folder1": "folder.n.02_1",
+  "rag1": "rag.n.01_1",
+  "dust1": "dust.n.01_1",
+  "floor1": "floor.n.01_1",
+  "robot1": "agent.n.01_1"
+}

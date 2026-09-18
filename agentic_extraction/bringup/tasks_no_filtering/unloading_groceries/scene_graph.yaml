@@ -1,0 +1,26 @@
+nodes:
+  robot1: {type: robot}
+  sour_bread1: {type: sour_bread}
+  sack1: {type: sack}
+  box_of_corn_flakes1: {type: box_of_corn_flakes}
+  cup_of_yogurt1: {type: cup_of_yogurt}
+  egg1: {type: egg}
+  electric_refrigerator1: {type: electric_refrigerator}
+  cabinet1: {type: cabinet}
+  floor1: {type: floor}
+  kitchen: {type: location}
+edges:
+  - {predicate: in, args: [sour_bread1, sack1]}
+  - {predicate: in, args: [box_of_corn_flakes1, sack1]}
+  - {predicate: in, args: [cup_of_yogurt1, sack1]}
+  - {predicate: in, args: [egg1, sack1]}
+  - {predicate: on_top, args: [sack1, floor1]}
+  - {predicate: at, args: [cabinet1, kitchen]}
+  - {predicate: at, args: [electric_refrigerator1, kitchen]}
+  - {predicate: at, args: [sack1, kitchen]}
+  - {predicate: at, args: [sour_bread1, kitchen]}
+  - {predicate: at, args: [box_of_corn_flakes1, kitchen]}
+  - {predicate: at, args: [cup_of_yogurt1, kitchen]}
+  - {predicate: at, args: [egg1, kitchen]}
+  - {predicate: at, args: [robot1, kitchen]}
+  - {predicate: robot_free, args: [robot1]}

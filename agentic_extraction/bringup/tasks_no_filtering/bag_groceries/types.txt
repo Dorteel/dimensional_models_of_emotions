@@ -1,0 +1,14 @@
+locatable - object
+location  - object
+robot - locatable
+item - locatable
+container - item
+device - item
+food - item
+furniture - locatable
+sack - container
+checkout - furniture
+canned_food - food
+egg - food
+apple - food
+bottle_of_orange_juice - item
