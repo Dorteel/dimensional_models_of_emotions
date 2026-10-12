@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Emotional Color Space Explorer</title>
+<meta name="description" content="Explore a personal, hypothetical emotional mapping of HSV in an interactive hexcone.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23245ec2' d='M2 9 16 2 30 9 30 23 16 30 2 23Z'/%3E%3Ccircle cx='16' cy='16' r='5' fill='white'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+<script defer src="plotly.min.js"></script><script defer src="color_spaces.js"></script><script defer src="main.js"></script>
+</head><body>
+<header><span class="eyebrow">EMOTIONAL COLOR SPACE EXPLORER</span><h1>A space for your emotional vocabulary</h1><p>Explore hue, saturation, and value as personal metaphors. These mappings are hypotheses, not established scientific equivalences.</p></header>
+<main>
+<section class="controls" aria-label="HSV controls">
+<label>Hue <output id="hue-output">120°</output><input id="hue" type="range" min="0" max="359" step="1" value="120"></label>
+<label>Saturation <output id="saturation-output">0.80</output><input id="saturation" type="range" min="0" max="1" step="0.01" value="0.8"></label>
+<label>Value <output id="value-output">0.60</output><input id="value" type="range" min="0" max="1" step="0.01" value="0.6"></label>
+<label class="toggle"><input id="surface" type="checkbox" checked> Hexcone surface</label>
+</section>
+<div class="workspace"><section class="view"><h2>HSV hexcone</h2><div id="plot" aria-label="Interactive HSV hexcone"></div><p class="hint">Drag to rotate · Scroll to zoom · Right-drag to pan</p></section>
+<aside class="panel"><h2>Selected emotional coordinates</h2>
+<dl><dt>Hue <span id="hue-number"></span></dt><dd>Emotional direction: <strong id="emotion">Unassigned</strong></dd>
+<dt>Saturation <span id="saturation-number"></span></dt><dd>Emotional energy: <strong id="energy"></strong></dd>
+<dt>Value <span id="value-number"></span></dt><dd>Love / positive orientation: <strong id="orientation"></strong></dd></dl>
+<div id="swatch" class="swatch" aria-label="Selected color swatch"></div><p id="rgb-readout"></p><p id="degenerate" class="secondary"></p>
+<form id="label-form"><label for="label">Name this hue's emotional direction</label><input id="label" type="text" maxlength="120" placeholder="Your own emotion name"><button type="submit">Save label</button><button id="remove" type="button">Remove label</button></form>
+<p class="secondary">Labels belong to exact integer hue positions and persist in this browser when local storage is available.</p>
+<div class="actions"><button id="export" type="button">Export JSON</button><label class="import-button" for="import">Import JSON</label><input id="import" type="file" accept="application/json,.json"></div>
+<p class="secondary">Import replaces the current labels after the file passes validation.</p><p id="storage-status" role="status" aria-live="polite"></p>
+</aside></div>
+<p id="render-status" role="status" aria-live="polite"></p>
+<details><summary>Geometry and interpretation</summary><p>The six boundary hues are red (0°), yellow (60°), green (120°), cyan (180°), blue (240°), and magenta (300°). Intermediate hues interpolate along straight hexagon edges. Saturation scales from the grayscale axis to the boundary; value scales the entire horizontal hexagon and sets its height. At V = 0 all coordinates collapse to black.</p><p>The translucent horizontal slice marks V. The dark inner hexagon marks S at that height; the colored ray marks H. The colored marker sits at their intersection. Hue is a sector coordinate, so its Euclidean polar angle differs slightly between corners. This HSV embedding is not the RGB cube's perpendicular plane section, and it is not perceptually uniform.</p><p>Emotion names are assigned only by you. Energy and love / positive orientation are interpretations under exploration, not measurements or psychological diagnoses. At S = 0 hue does not change the gray color; at V = 0 neither hue nor saturation changes black.</p></details>
+</main></body></html>
