@@ -1,0 +1,17 @@
+schema_version: "1.0"
+id: "yourdomainmodel"
+name: "yourdomainmodel"
+description: "A description of your domain model."
+dimensions:
+  - id: "valence"
+    name: "valence"
+    definition: "A description of the quality dimension."
+    min: 0
+    max: 1
+    circular: false
+emotions:
+  - id: "joy"
+    name: "joy"
+    definition: "A definition of this emotion."
+    coordinates:
+      "valence": 1
