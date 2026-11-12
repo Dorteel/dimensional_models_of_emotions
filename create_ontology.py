@@ -26,7 +26,13 @@ with onto:
     class PrototypicalInstance(Instance):
         pass
 
+    class ObservedInstance(Instance):
+        pass
+
     class Point(Thing):
+        pass
+
+    class Coordinate(Thing):
         pass
 
     class Definition(Thing):
@@ -92,8 +98,29 @@ with onto:
         range = [Definition]
 
     class hasDefinition(ObjectProperty):
-        domain = [PrototypicalInstance]
+        # For domain/dimension/instance individuals. Emotion classes use
+        # the annotation property hasClassDefinition instead.
         range = [Definition]
+
+    class hasPoint(ObjectProperty):
+        domain = [Instance]
+        range = [Point]
+
+    class hasCoordinate(ObjectProperty):
+        domain = [Point]
+        range = [Coordinate]
+
+    class onQualityDimension(ObjectProperty):
+        domain = [Coordinate]
+        range = [QualityDimension]
+
+    class belongsToDomain(ObjectProperty):
+        domain = [Instance]
+        range = [Domain]
+
+    class hasDomainPrototype(ObjectProperty):
+        domain = [Domain]
+        range = [PrototypicalInstance]
 
     class hasSource(ObjectProperty):
         domain = [Definition]
@@ -116,10 +143,26 @@ with onto:
         domain = [Domain]
         range = [QualityDimension]
 
+    # ---------- Annotation properties ----------
+    class hasClassDefinition(AnnotationProperty):
+        # Attaches Definition individuals to emotion classes.
+        pass
+
     # ---------- Data properties ----------
     class hasValue(DataProperty):
         domain = [Definition]
         range = [str]
+
+    class numericValue(DataProperty, FunctionalProperty):
+        domain = [Coordinate]
+        range = [float]
+
+    class hasNotes(DataProperty):
+        range = [str]
+
+    class hasModelType(DataProperty, FunctionalProperty):
+        domain = [Domain]
+        range = [str]  # "reference" or "generated"
 
     class isCircular(DataProperty, FunctionalProperty):
         domain = [QualityDimension]

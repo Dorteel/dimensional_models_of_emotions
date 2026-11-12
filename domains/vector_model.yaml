@@ -1,0 +1,21 @@
+schema_version: "1.0"
+id: "vector_model"
+name: "vector_model"
+description: ""
+notes: "Model as listed in sources/dimensional_model_overview.csv line 5 (model_label 'vector_model'). Source: none recorded (model_source is empty). model_dimensions as recorded: \"valence, arousal\". 'undefined' = no documented definition; 'unknown' = value not documented (see domains/MISSING_DEFINITIONS.md)."
+dimensions:
+  - id: "valence"
+    name: "valence"
+    definition: "undefined"
+    notes: "Dimension listed in model_dimensions, sources/dimensional_model_overview.csv line 5. Definition: none documented. Minimum/maximum: not documented (range_min/range_max empty). Circularity: not documented."
+    min: null
+    max: null
+    circular: null
+  - id: "arousal"
+    name: "arousal"
+    definition: "undefined"
+    notes: "Dimension listed in model_dimensions, sources/dimensional_model_overview.csv line 5. Definition: none documented. Minimum/maximum: not documented (range_min/range_max empty). Circularity: not documented."
+    min: null
+    max: null
+    circular: null
+emotions: []

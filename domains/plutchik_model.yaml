@@ -1,0 +1,14 @@
+schema_version: "1.0"
+id: "plutchik_model"
+name: "plutchik_model"
+description: ""
+notes: "Model as listed in sources/dimensional_model_overview.csv line 2 (model_label 'plutchik_model'). Source: https://doi.org/10.1511/2001.28.344. model_dimensions as recorded: \"intensity\". 'undefined' = no documented definition; 'unknown' = value not documented (see domains/MISSING_DEFINITIONS.md)."
+dimensions:
+  - id: "intensity"
+    name: "intensity"
+    definition: "undefined"
+    notes: "Dimension listed in model_dimensions, sources/dimensional_model_overview.csv line 2. Definition: none documented. Minimum/maximum: not documented (range_min/range_max empty). Circularity: not documented."
+    min: null
+    max: null
+    circular: null
+emotions: []
