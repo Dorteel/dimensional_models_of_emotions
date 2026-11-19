@@ -1,4 +1,5 @@
 from owlready2 import *
+from pathlib import Path
 
 onto = get_ontology("http://example.org/conceptual-space-emotion.owl#")
 
@@ -183,5 +184,7 @@ with onto:
 
 
 # Save as RDF/XML OWL file
-onto.save(file="emotional_ontology.owl", format="rdfxml")
-print("Saved:", "emotional_ontology.owl")
+output = Path(__file__).resolve().parent / "owl" / "emotional_ontology.owl"
+output.parent.mkdir(parents=True, exist_ok=True)
+onto.save(file=str(output), format="rdfxml")
+print("Saved:", output)

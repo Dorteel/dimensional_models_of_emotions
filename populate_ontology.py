@@ -3,7 +3,9 @@
 Run create_ontology.py first. This script never modifies the inputs.
 """
 from pathlib import Path
+import argparse
 import hashlib
+import math
 import re
 import types
 
@@ -12,7 +14,7 @@ import yaml
 from owlready2 import *
 
 BASE_DIR = Path(__file__).resolve().parent
-DICTIONARY_PATH = BASE_DIR / "sources/emotions/emotion_dictionary.ods"
+DICTIONARY_PATH = BASE_DIR / "emotions/emotion_dictionary.ods"
 DOMAINS_DIR = BASE_DIR / "domains"
 ONTOLOGY_PATH = BASE_DIR / "owl/emotional_ontology.owl"
 OUTPUT_PATH = BASE_DIR / "owl/emotional_ontology_populated.owl"
@@ -83,11 +85,19 @@ def read_dictionary():
     return df
 
 
-def read_domains():
+def read_domains(paths=None):
     if not DOMAINS_DIR.is_dir():
         raise FileNotFoundError(f"Domain directory not found: {DOMAINS_DIR}")
     documents = []
-    for path in sorted(DOMAINS_DIR.glob("*.yaml")) + sorted(DOMAINS_DIR.glob("*.yml")):
+    if paths is None:
+        # Model folders are recursive; examples and drafts are not active inputs.
+        # Keep accepting root-level YAML for compatibility with existing exports.
+        paths = [p for p in sorted(DOMAINS_DIR.rglob("*.yaml")) + sorted(DOMAINS_DIR.rglob("*.yml"))
+                 if not {"examples", "drafts"}.intersection(p.relative_to(DOMAINS_DIR).parts[:-1])
+                 and p.name not in {"yourdomainmodel.yaml", "yourdomainmodel2.yaml"}]
+    model_ids = set()
+    for path in paths:
+        path = Path(path)
         with path.open(encoding="utf-8") as handle:
             data = yaml.safe_load(handle)
         if not isinstance(data, dict):
@@ -98,7 +108,12 @@ def read_domains():
             raise ValueError(f"{path}: missing name or dimensions")
         if not isinstance(data.get("emotions", []), list):
             raise ValueError(f"{path}: emotions must be a list")
+        model_id = safe_name(data.get("id") or data["name"])
+        if model_id in model_ids:
+            raise ValueError(f"{path}: duplicate model identifier {model_id}")
+        model_ids.add(model_id)
         dimension_ids = set()
+        normalized_dimension_ids = set()
         for dimension in data["dimensions"]:
             if not isinstance(dimension, dict) or not dimension.get("id") or not dimension.get("name"):
                 raise ValueError(f"{path}: each dimension needs an id and name")
@@ -106,14 +121,20 @@ def read_domains():
             if identifier in dimension_ids:
                 raise ValueError(f"{path}: duplicate dimension {identifier}")
             dimension_ids.add(identifier)
+            normalized = safe_name(identifier)
+            if normalized in normalized_dimension_ids:
+                raise ValueError(f"{path}: dimension identifier collision {identifier}")
+            normalized_dimension_ids.add(normalized)
             minimum, maximum = dimension.get("min"), dimension.get("max")
-            if (isinstance(minimum, bool) or isinstance(maximum, bool)
-                    or not isinstance(minimum, (float, int)) or not isinstance(maximum, (float, int))
-                    or minimum >= maximum):
+            for bound in (minimum, maximum):
+                if bound is not None and (isinstance(bound, bool) or not isinstance(bound, (float, int)) or not math.isfinite(bound)):
+                    raise ValueError(f"{path}: invalid range for {identifier}")
+            if minimum is not None and maximum is not None and minimum >= maximum:
                 raise ValueError(f"{path}: invalid range for {identifier}")
-            if not isinstance(dimension.get("circular"), bool):
-                raise ValueError(f"{path}: circular must be boolean for {identifier}")
+            if dimension.get("circular") is not None and not isinstance(dimension["circular"], bool):
+                raise ValueError(f"{path}: circular must be boolean or null for {identifier}")
         seen_emotions = set()
+        data.setdefault("emotions", [])
         for emotion in data["emotions"]:
             if not isinstance(emotion, dict) or not emotion.get("id"):
                 raise ValueError(f"{path}: each emotion needs an id")
@@ -122,27 +143,38 @@ def read_domains():
                 raise ValueError(f"{path}: duplicate emotion {emotion_id}")
             seen_emotions.add(emotion_id)
             coordinates = emotion.get("coordinates")
-            if not isinstance(coordinates, dict) or set(coordinates) != dimension_ids:
-                raise ValueError(f"{path}: prototype {emotion_id} needs exactly the domain dimensions")
+            if coordinates is None:
+                coordinates = {}
+            emotion["coordinates"] = coordinates
+            if not isinstance(coordinates, dict) or not set(coordinates) <= dimension_ids:
+                raise ValueError(f"{path}: prototype {emotion_id} has unknown dimensions")
             for dimension in data["dimensions"]:
+                if dimension["id"] not in coordinates:
+                    continue
                 value = coordinates[dimension["id"]]
-                if (isinstance(value, bool) or not isinstance(value, (float, int))
-                        or not dimension["min"] <= value <= dimension["max"]):
+                if (isinstance(value, bool) or not isinstance(value, (float, int)) or not math.isfinite(value)
+                        or (dimension.get("min") is not None and value < dimension["min"])
+                        or (dimension.get("max") is not None and value > dimension["max"])):
                     raise ValueError(f"{path}: {emotion_id} has an invalid coordinate for {dimension['id']}")
         documents.append((path, data))
     return documents
 
 
-def main():
+def source_path(path):
+    path = path.resolve()
+    return str(path.relative_to(BASE_DIR)) if path.is_relative_to(BASE_DIR) else str(path)
+
+
+def main(domain_paths=None):
     ontology_path = ONTOLOGY_PATH
     if not ontology_path.is_file():
-        # create_ontology.py currently saves into the working directory.
+        # Support an older root-level schema if the current path is absent.
         ontology_path = BASE_DIR / "emotional_ontology.owl"
     if not ontology_path.is_file():
         raise FileNotFoundError("Base ontology not found. Run create_ontology.py first.")
 
     dictionary = read_dictionary()
-    domains = read_domains()
+    domains = read_domains(domain_paths)
     onto = get_ontology(ontology_path.as_uri()).load()
     emotions = {}
 
@@ -172,23 +204,26 @@ def main():
         model_id = safe_name(model.get("id") or model["name"])
         domain = named_individual(onto, onto.Domain, f"domain_{model_id}")
         domain.label = [str(model["name"])]
-        domain.hasModelType = [str(model.get("model_type", "reference"))]
+        if nonempty(model.get("model_type")):
+            domain.hasModelType = str(model["model_type"])
         if nonempty(model.get("notes")):
             add_once(domain.hasNotes, str(model["notes"]))
-        add_definition(onto, domain, model.get("description"), str(path.relative_to(BASE_DIR)))
+        add_definition(onto, domain, model.get("description"), source_path(path))
         dimensions = {}
         for item in model["dimensions"]:
             dim_id = str(item["id"])
             # Domain-scoped IDs avoid assuming same-named dimensions have the same semantics.
             dimension = named_individual(onto, onto.QualityDimension, f"dimension_{model_id}_{safe_name(dim_id)}")
             dimension.label = [str(item["name"])]
-            dimension.hasRange = [f"min={item['min']},max={item['max']}"]
-            dimension.isCircular = [item["circular"]]
+            if item.get("min") is not None or item.get("max") is not None:
+                dimension.hasRange = f"min={item.get('min')},max={item.get('max')}"
+            if item.get("circular") is not None:
+                dimension.isCircular = item["circular"]
             if nonempty(item.get("measurement_level")):
-                dimension.hasMeasurementLevel = [str(item["measurement_level"])]
+                dimension.hasMeasurementLevel = str(item["measurement_level"])
             if nonempty(item.get("notes")):
                 add_once(dimension.hasNotes, str(item["notes"]))
-            add_definition(onto, dimension, item.get("definition"), str(path.relative_to(BASE_DIR)))
+            add_definition(onto, dimension, (item.get("definition") if nonempty(item.get("definition")) and item.get("definition") != "undefined" else "no known definitions"), source_path(path))
             add_once(domain.hasQualityDimension, dimension)
             dimensions[dim_id] = dimension
 
@@ -203,13 +238,15 @@ def main():
             add_once(domain.hasDomainPrototype, prototype)
             if nonempty(item.get("notes")):
                 add_once(prototype.hasNotes, str(item["notes"]))
-            add_definition(onto, prototype, item.get("definition"), str(path.relative_to(BASE_DIR)))
+            add_definition(onto, prototype, (item.get("definition") if nonempty(item.get("definition")) and item.get("definition") != "undefined" else "no known definitions"), source_path(path))
+            if not item["coordinates"]:
+                continue
             point = named_individual(onto, onto.Point, f"point_{model_id}_{emotion_id}")
             add_once(prototype.hasPoint, point)
             for dim_id, value in item["coordinates"].items():
                 coordinate = named_individual(onto, onto.Coordinate, f"coordinate_{model_id}_{emotion_id}_{safe_name(dim_id)}")
                 coordinate.onQualityDimension = [dimensions[dim_id]]
-                coordinate.numericValue = [float(value)]
+                coordinate.numericValue = float(value)
                 add_once(point.hasCoordinate, coordinate)
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -219,4 +256,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("domains", nargs="*", type=Path, help="Explicit domain YAML files (defaults to repository models; excludes examples)")
+    args = parser.parse_args()
+    main(args.domains or None)

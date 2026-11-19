@@ -29,7 +29,7 @@ emotions:
   - id: "exuberant"
     name: "exuberant"
     definition: "joyously unrestrained"
-    notes: "Coordinates: sources/models/pad/standard_model.csv line 2. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Exuberant')."
+    notes: "Coordinates: sources/models/pad/standard_model.csv line 2. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Exuberant')."
     coordinates:
       "pleasure": 1
       "arousal": 1
@@ -37,7 +37,7 @@ emotions:
   - id: "dependent"
     name: "dependent"
     definition: "being under the power or sovereignty of another or others; \"subject peoples\"; \"a dependent prince\""
-    notes: "Coordinates: sources/models/pad/standard_model.csv line 3. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Dependent')."
+    notes: "Coordinates: sources/models/pad/standard_model.csv line 3. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Dependent')."
     coordinates:
       "pleasure": 1
       "arousal": 1
@@ -45,7 +45,7 @@ emotions:
   - id: "relaxed"
     name: "relaxed"
     definition: "a feeling of refreshing tranquility and an absence of tension or worry; \"the easiness we feel when sleeping\""
-    notes: "Coordinates: sources/models/pad/standard_model.csv line 4. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Relaxed')."
+    notes: "Coordinates: sources/models/pad/standard_model.csv line 4. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Relaxed')."
     coordinates:
       "pleasure": 1
       "arousal": -1
@@ -53,7 +53,7 @@ emotions:
   - id: "docile"
     name: "docile"
     definition: "willing to be taught or led or supervised or directed; \"the docile masses of an enslaved nation\""
-    notes: "Coordinates: sources/models/pad/standard_model.csv line 5. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Docile')."
+    notes: "Coordinates: sources/models/pad/standard_model.csv line 5. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Docile')."
     coordinates:
       "pleasure": 1
       "arousal": -1
@@ -61,7 +61,7 @@ emotions:
   - id: "bored"
     name: "bored"
     definition: "undefined"
-    notes: "Coordinates: sources/models/pad/standard_model.csv line 6. Definition: none in sources/emotions/emotion_dictionary.ods (concept 'bored')."
+    notes: "Coordinates: sources/models/pad/standard_model.csv line 6. Definition: none in emotions/emotion_dictionary.ods (concept 'bored')."
     coordinates:
       "pleasure": -1
       "arousal": -1
@@ -69,7 +69,7 @@ emotions:
   - id: "disdainful"
     name: "disdainful"
     definition: "expressing extreme contempt"
-    notes: "Coordinates: sources/models/pad/standard_model.csv line 7. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Disdainful')."
+    notes: "Coordinates: sources/models/pad/standard_model.csv line 7. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Disdainful')."
     coordinates:
       "pleasure": -1
       "arousal": -1
@@ -77,7 +77,7 @@ emotions:
   - id: "anxious"
     name: "anxious"
     definition: "undefined"
-    notes: "Coordinates: sources/models/pad/standard_model.csv line 8. Definition: none in sources/emotions/emotion_dictionary.ods (concept 'anxious')."
+    notes: "Coordinates: sources/models/pad/standard_model.csv line 8. Definition: none in emotions/emotion_dictionary.ods (concept 'anxious')."
     coordinates:
       "pleasure": -1
       "arousal": 1
@@ -85,7 +85,7 @@ emotions:
   - id: "hostile"
     name: "hostile"
     definition: "the feeling of a hostile person; \"he could no longer contain his hostility\""
-    notes: "Coordinates: sources/models/pad/standard_model.csv line 9. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Hostile')."
+    notes: "Coordinates: sources/models/pad/standard_model.csv line 9. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Hostile')."
     coordinates:
       "pleasure": -1
       "arousal": 1

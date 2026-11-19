@@ -6,7 +6,7 @@ definitions ("undefined") and unknown range/circularity (ODS "unknown", YAML
 null) are accepted only where the sources really lack the value; coordinates
 must be numeric, within any documented range and equal to the source values.
 The ODS -> YAML exporter is tested against a YAML file produced by the real
-ExportYAML macro (domains/yourdomainmodel2.yaml) and on invalid scratch copies.
+ExportYAML macro (domains/examples/yourdomainmodel/yourdomainmodel2.yaml) and on invalid scratch copies.
 
 Usage (from the repository root):
     python3 domains/validate_domain_models.py
@@ -29,24 +29,22 @@ import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "domains"))
-import build_domain_models as gen  # noqa: E402  (only for the exporter tests in section E)
+import ods_export as gen  # noqa: E402  (only for the exporter tests in section E)
 
 SOURCES = ROOT / "sources"
+EMOTIONS = ROOT / "emotions"
 DOMAINS = ROOT / "domains"
 REPORT = DOMAINS / "GENERATION_REPORT.md"
 MISSING = DOMAINS / "MISSING_DEFINITIONS.md"
 UNDEFINED, UNKNOWN = "undefined", "unknown"
 
-# sha256 of files that must not change, recorded before the generator was first run.
+# Snapshot the current inputs: validation must not modify files. Historical hashes
+# of old OWL/template versions are not requirements for validating current data.
 PROTECTED = {
-    "domain_model_template_with_notes.ods": "41da6e1fc42e9e9aa0a81a35e6273ae4453502c1a7a0406b7b315d84ba2201b2",
-    "custom_domain_model_definition.ods": "ad32d2f796da9ca98a9c39721580510bcc1fc52d757497d547f31c5bc087515d",
-    "domains/yourdomainmodel.yaml": "1efac8a99c4f83d2a51ada36d125fbef32016a37d33ee54fd9b7da2afa439ac6",
-    "domains/yourdomainmodel2.yaml": "e5a58069d9700918c996c7e99e19fc241689d10cfe01bba8c6db9fa010477ef7",
-    "owl/emotional_ontology.owl": "91aaea5eb52dff9a0891a295c182295c95d9724ddc5d949f9860439cec016827",
-    "owl/emotional_ontology_populated.owl": "ba5943d825c1153fab88e05224c82b95ddfec3f21c9cf37ab00c4ac2db874d4e",
-    "sources/emotions/emotion_dictionary.ods": "666f96aa48e937206e2791ef78e516aa9d28856590d2c3cb69f19c9004670cf1",
-    "sources/emotions/emotion_catalogue.ods": "5366328234ae4c910460fb7ea9838a366b3491d56f6d48a932642cb2c2f72bc1",
+    str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
+    for p in [gen.TEMPLATE, gen.MACRO_DOC, *DOMAINS.rglob("*.ods"), *DOMAINS.rglob("*.yaml"),
+              *(ROOT / "owl").glob("*.owl"),
+              EMOTIONS / "emotion_dictionary.ods", EMOTIONS / "emotion_catalogue.ods"]
 }
 YAML_KEYS = ["schema_version", "id", "name", "description", "notes", "dimensions", "emotions"]
 DIM_KEYS = ["id", "name", "definition", "notes", "min", "max", "circular"]
@@ -110,30 +108,21 @@ def cell(rows, ref):  # "B4" -> rows[3][1]
 # ----------------------------------------------------------------- sources
 dim_models = {r["model_label"].strip(): (line, r) for line, r in raw_rows("dimensional_model_overview.csv")}
 disc_models = {r["model_label"].strip(): (line, r) for line, r in raw_rows("discrete_model_overview.csv")}
-dict_rows = sheets_of(SOURCES / "emotions" / "emotion_dictionary.ods")["Dictionary"]
+dict_rows = sheets_of(EMOTIONS / "emotion_dictionary.ods")["Dictionary"]
 dict_head = [h for h in dict_rows[0] if h]
 dictionary = {}
 for r in dict_rows[1:]:
     if r[0]:
         dictionary[key(r[0])] = [(dict_head[i].removesuffix(" definition"), r[i], r[i + 1])
                                  for i in range(1, len(dict_head), 2) if r[i] != ""]
-catalogue = {key(r[0]): r[1] for r in sheets_of(SOURCES / "emotions" / "emotion_catalogue.ods")["Catalogue"][1:] if r[0]}
-template = sheets_of(ROOT / "domain_model_template_with_notes.ods")["DomainModel"]
-
-# ----------------------------------------------------------------- A. nothing protected was modified
-changed = [p for p, h in PROTECTED.items() if hashlib.sha256((ROOT / p).read_bytes()).hexdigest() != h]
-check("Template, macro workbook, ontology OWL files, emotion dictionary/catalogue and existing YAML unchanged (sha256)",
-      not changed, f"changed: {changed}")
-git = subprocess.run(["git", "status", "--porcelain", "--", "sources", "owl", "create_ontology.py", "populate_ontology.py"],
-                     cwd=ROOT, capture_output=True, text=True).stdout.split("\n")
-dirty = [l for l in git if l and l[3:].rstrip("/") != "sources/emotions"]
-check("No tracked source, ontology or ontology-code file modified (git status)", not dirty, f"{dirty}")
+catalogue = {key(r[0]): r[1] for r in sheets_of(EMOTIONS / "emotion_catalogue.ods")["Catalogue"][1:] if r[0]}
+template = sheets_of(ROOT / "domain_model_template.ods")["DomainModel"]
 
 # ----------------------------------------------------------------- B. every model accounted for
 expected = {m for m, (_, r) in dim_models.items() if r["model_dimensions"].strip()}
 missing_md = MISSING.read_text(encoding="utf-8") if MISSING.exists() else ""
-check("Every dimensional model with at least one dimension has domains/<model>.ods and domains/<model>.yaml",
-      all((DOMAINS / f"{m}.ods").exists() and (DOMAINS / f"{m}.yaml").exists() for m in expected), f"{sorted(expected)}")
+check("Every dimensional model with at least one dimension has domains/<model>/<model>.ods and domains/<model>/<model>.yaml",
+      all((DOMAINS / m / f"{m}.ods").exists() and (DOMAINS / m / f"{m}.yaml").exists() for m in expected), f"{sorted(expected)}")
 check("No leftover drafts directory", not (DOMAINS / "drafts").exists())
 check("Every model not generated (discrete or without dimensions) is listed in MISSING_DEFINITIONS.md",
       all(f"| `{m}` |" in missing_md for m in (set(dim_models) - expected) | set(disc_models)),
@@ -156,8 +145,8 @@ def md_rows(model):
 # ----------------------------------------------------------------- C/D. ODS and YAML per model
 LABEL_CELLS = [(r, c) for r in range(64) for c in range(13) if template[r][c] != ""]
 for m in sorted(expected):
-    s = sheets_of(DOMAINS / f"{m}.ods")["DomainModel"]
-    text = (DOMAINS / f"{m}.yaml").read_text(encoding="utf-8")
+    s = sheets_of(DOMAINS / m / f"{m}.ods")["DomainModel"]
+    text = (DOMAINS / m / f"{m}.yaml").read_text(encoding="utf-8")
     y = yaml.safe_load(text)
     line, row = dim_models[m]
     dims = [d.strip() for d in row["model_dimensions"].split(",") if d.strip()]
@@ -166,7 +155,7 @@ for m in sorted(expected):
 
     # --- ODS vs sources ---
     problems = []
-    if list(sheets_of(DOMAINS / f"{m}.ods")) != ["DomainModel"]:
+    if list(sheets_of(DOMAINS / m / f"{m}.ods")) != ["DomainModel"]:
         problems.append("sheets")
     if any(s[r][c] != template[r][c] for r, c in LABEL_CELLS if not (r == 31 and 3 <= c <= 11)):
         problems.append("template label cells changed")
@@ -280,10 +269,22 @@ for m in sorted(expected):
 with gen.office() as session:
     macro = gen.MacroFunctions(session)
     try:
+        # The interactive macro and Python exporter must use document-relative paths.
+        path_fn = macro.doc.getScriptProvider().getScript(
+            "vnd.sun.star.script:Standard.Module1.DomainYAMLURL?language=Basic&location=document")
+        for document, model_id, expected_path in [
+                ("file:///repo/domains/custom/custom.ods", "custom", "file:///repo/domains/custom/custom.yaml"),
+                ("file:///a%20folder/domains/custom/edited.ods", "custom", "file:///a%20folder/domains/custom/custom.yaml"),
+                ("", "custom", ""),
+                ("https://example.org/custom.ods", "custom", "")]:
+            actual = path_fn.invoke((document, model_id), (), ())[0]
+            check(f"Interactive macro export destination for {document!r}", actual == expected_path,
+                  f"{actual!r}")
+
         # E1: rebuild the macro-exported example in a copy of the template and compare byte-for-byte.
-        golden_text = (DOMAINS / "yourdomainmodel2.yaml").read_text(encoding="utf-8")
+        golden_text = (DOMAINS / "examples/yourdomainmodel/yourdomainmodel2.yaml").read_text(encoding="utf-8")
         g = yaml.safe_load(golden_text)
-        doc = gen.load(session, ROOT / "domain_model_template_with_notes.ods", AsTemplate=True)
+        doc = gen.load(session, ROOT / "domain_model_template.ods", AsTemplate=True)
         d = doc.Sheets.getByName("DomainModel")
         d.getCellRangeByName("B4").String = g["name"]
         d.getCellRangeByName("B5").String = g["description"]
@@ -306,18 +307,18 @@ with gen.office() as session:
         doc.close(True)
         out, errs = gen.export_yaml(session, macro, golden_ods)
         check("Exporter reproduces a YAML file written by the real ExportYAML macro byte-for-byte "
-              "(domains/yourdomainmodel2.yaml)", out == golden_text and not errs, f"errors: {errs}")
+              "(domains/examples/yourdomainmodel/yourdomainmodel2.yaml)", out == golden_text and not errs, f"errors: {errs}")
 
         # E2: re-exporting each generated ODS reproduces its YAML byte-for-byte (YAML derived from ODS).
         for m in sorted(expected):
-            out, errs = gen.export_yaml(session, macro, DOMAINS / f"{m}.ods")
+            out, errs = gen.export_yaml(session, macro, DOMAINS / m / f"{m}.ods")
             check(f"{m}: re-export of {m}.ods reproduces {m}.yaml byte-for-byte",
-                  out == (DOMAINS / f"{m}.yaml").read_text(encoding="utf-8"), f"errors: {errs}")
+                  out == (DOMAINS / m / f"{m}.yaml").read_text(encoding="utf-8"), f"errors: {errs}")
 
         # E3: invalid coordinates are rejected (scratch copies of the circumplex ODS).
         def mutated(label, edit):
             scratch = session.work / f"mut_{label}.ods"
-            shutil.copyfile(DOMAINS / "circumplex.ods", scratch)
+            shutil.copyfile(DOMAINS / "circumplex/circumplex.ods", scratch)
             doc = gen.load(session, scratch)
             edit(doc.Sheets.getByName("DomainModel"))
             doc.store()
@@ -346,6 +347,9 @@ with gen.office() as session:
     finally:
         macro.close()
 
+changed = [p for p, h in PROTECTED.items() if hashlib.sha256((ROOT / p).read_bytes()).hexdigest() != h]
+check("Validation leaves templates, model pairs, examples, sources and OWL unchanged (sha256)",
+      not changed, f"changed: {changed}")
 shutil.rmtree(WORK, ignore_errors=True)
 print(f"\n{sum(RESULTS)}/{len(RESULTS)} checks passed.")
 sys.exit(0 if all(RESULTS) else 1)

@@ -22,196 +22,196 @@ emotions:
   - id: "pleased"
     name: "pleased"
     definition: "feeling pleasurable satisfaction over something by which you measures your self-worth; \"proud of their child\""
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 2. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Pleased')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 2. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Pleased')."
     coordinates:
       "valence": 0.99
       "arousal": -0.12
   - id: "happy"
     name: "happy"
     definition: "state of well-being characterized by emotions ranging from contentment to intense joy"
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 3. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Happy')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 3. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Happy')."
     coordinates:
       "valence": 0.99
       "arousal": 0.14
   - id: "delighted"
     name: "delighted"
     definition: "undefined"
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 4. Definition: none in sources/emotions/emotion_dictionary.ods (concept 'delighted')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 4. Definition: none in emotions/emotion_dictionary.ods (concept 'delighted')."
     coordinates:
       "valence": 0.91
       "arousal": 0.42
   - id: "excited"
     name: "excited"
     definition: "(of persons) excessively affected by emotion; \"he would become emotional over nothing at all\"; \"she was worked up about all the noise\""
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 5. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Excited')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 5. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Excited')."
     coordinates:
       "valence": 0.66
       "arousal": 0.75
   - id: "astonished"
     name: "astonished"
     definition: "filled with the emotional impact of overwhelming surprise or shock; \"an amazed audience gave the magician a standing ovation\"; \"I stood enthralled, astonished by the vastness and majesty of the cathedral\"; \"astounded viewers wept at the pictures from the Oklahoma City bombing\"; \"stood in stunned silence\"; \"stunned scientists found not one but at least three viruses\""
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 6. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Astonished')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 6. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Astonished')."
     coordinates:
       "valence": 0.35
       "arousal": 0.94
   - id: "aroused"
     name: "aroused"
     definition: "keenly excited (especially sexually) or indicating excitement; \"his face all ablaze with excitement\"- Bram Stoker; \"he was aflame with desire\""
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 7. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Aroused')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 7. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Aroused')."
     coordinates:
       "valence": 0.28
       "arousal": 0.96
   - id: "alarmed"
     name: "alarmed"
     definition: "experiencing a sudden sense of danger"
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 8. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Alarmed')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 8. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Alarmed')."
     coordinates:
       "valence": -0.11
       "arousal": 0.99
   - id: "tense"
     name: "tense"
     definition: "in or of a state of physical or nervous tension"
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 9. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Tense')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 9. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Tense')."
     coordinates:
       "valence": -0.05
       "arousal": 1
   - id: "angry"
     name: "angry"
     definition: "undefined"
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 10. Definition: none in sources/emotions/emotion_dictionary.ods (concept 'angry')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 10. Definition: none in emotions/emotion_dictionary.ods (concept 'angry')."
     coordinates:
       "valence": -0.5
       "arousal": 0.87
   - id: "annoyed"
     name: "annoyed"
     definition: "undefined"
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 11. Definition: none in sources/emotions/emotion_dictionary.ods (concept 'annoyed')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 11. Definition: none in emotions/emotion_dictionary.ods (concept 'annoyed')."
     coordinates:
       "valence": -0.77
       "arousal": 0.64
   - id: "distressed"
     name: "distressed"
     definition: "psychological suffering; \"the death of his wife caused him great distress\""
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 12. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Distressed')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 12. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Distressed')."
     coordinates:
       "valence": -0.87
       "arousal": 0.5
   - id: "frustrated"
     name: "frustrated"
     definition: "undefined"
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 13. Definition: none in sources/emotions/emotion_dictionary.ods (concept 'frustrated')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 13. Definition: none in emotions/emotion_dictionary.ods (concept 'frustrated')."
     coordinates:
       "valence": -0.94
       "arousal": 0.34
   - id: "miserable"
     name: "miserable"
     definition: "very unhappy; full of misery; \"he felt depressed and miserable\"; \"a message of hope for suffering humanity\"; \"wretched prisoners huddled in stinking cages\""
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 14. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Miserable')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 14. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Miserable')."
     coordinates:
       "valence": -0.99
       "arousal": -0.15
   - id: "sad"
     name: "sad"
     definition: "undefined"
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 15. Definition: none in sources/emotions/emotion_dictionary.ods (concept 'Sad')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 15. Definition: none in emotions/emotion_dictionary.ods (concept 'Sad')."
     coordinates:
       "valence": -0.89
       "arousal": -0.46
   - id: "gloomy"
     name: "gloomy"
     definition: "depressingly dark; \"the gloomy forest\"; \"the glooming interior of an old inn\"; \"`gloomful' is archaic\""
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 16. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Gloomy')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 16. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Gloomy')."
     coordinates:
       "valence": -0.87
       "arousal": -0.5
   - id: "depressed"
     name: "depressed"
     definition: "filled with melancholy and despondency ; \"gloomy at the thought of what he had to face\"; \"gloomy predictions\"; \"a gloomy silence\"; \"took a grim view of the economy\"; \"the darkening mood\"; \"lonely and blue in a strange city\"; \"depressed by the loss of his job\"; \"a dispirited and resigned expression on her face\"; \"downcast after his defeat\"; \"feeling discouraged and downhearted\""
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 17. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Depressed')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 17. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Depressed')."
     coordinates:
       "valence": -0.77
       "arousal": -0.64
   - id: "bored"
     name: "bored"
     definition: "undefined"
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 18. Definition: none in sources/emotions/emotion_dictionary.ods (concept 'bored')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 18. Definition: none in emotions/emotion_dictionary.ods (concept 'bored')."
     coordinates:
       "valence": -0.5
       "arousal": -0.87
   - id: "droopy"
     name: "droopy"
     definition: "hanging down (as from exhaustion or weakness)"
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 19. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Droopy')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 19. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Droopy')."
     coordinates:
       "valence": -0.23
       "arousal": -0.97
   - id: "tired"
     name: "tired"
     definition: "depleted of strength or energy; \"tired mothers with crying babies\"; \"too tired to eat\""
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 20. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Tired')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 20. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Tired')."
     coordinates:
       "valence": -0.04
       "arousal": -1
   - id: "sleepy"
     name: "sleepy"
     definition: "a very sleepy state; \"sleepiness causes many driving accidents\""
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 21. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Sleepy')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 21. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Sleepy')."
     coordinates:
       "valence": 0.03
       "arousal": -1
   - id: "calm"
     name: "calm"
     definition: "not agitated; without losing self-possession; \"spoke in a calm voice\"; \"remained calm throughout the uproar\"; \"he remained serene in the midst of turbulence\"; \"a serene expression on her face\"; \"she became more tranquil\"; \"tranquil life in the country\""
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 22. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Calm')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 22. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Calm')."
     coordinates:
       "valence": 0.72
       "arousal": -0.69
   - id: "relaxed"
     name: "relaxed"
     definition: "a feeling of refreshing tranquility and an absence of tension or worry; \"the easiness we feel when sleeping\""
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 23. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Relaxed')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 23. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Relaxed')."
     coordinates:
       "valence": 0.64
       "arousal": -0.6
   - id: "satisfied"
     name: "satisfied"
     definition: "the contentment one feels when one has fulfilled a desire, need, or expectation; \"the chef tasted the sauce with great satisfaction\""
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 24. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Satisfied')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 24. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Satisfied')."
     coordinates:
       "valence": 0.77
       "arousal": -0.55
   - id: "at_ease"
     name: "at_ease"
     definition: "a feeling of being at ease in a relationship"
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 25. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'At ease')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 25. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'At ease')."
     coordinates:
       "valence": 0.82
       "arousal": -0.5
   - id: "content"
     name: "content"
     definition: "the state of being contented with your situation in life; \"he relaxed in sleepy contentedness\"; \"they could read to their heart's content\""
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 26. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Content')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 26. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Content')."
     coordinates:
       "valence": 0.91
       "arousal": -0.45
   - id: "serene"
     name: "serene"
     definition: "undefined"
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 27. Definition: none in sources/emotions/emotion_dictionary.ods (concept 'serene')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 27. Definition: none in emotions/emotion_dictionary.ods (concept 'serene')."
     coordinates:
       "valence": 0.85
       "arousal": -0.53
   - id: "glad"
     name: "glad"
     definition: "feeling happy appreciation; \"glad of the fire's warmth\""
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 28. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via sources/emotions/emotion_dictionary.ods, concept 'Glad')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 28. Definition: WordNet 3.0 (via SentiWordNet), https://github.com/aesuli/SentiWordNet/blob/master/data/SentiWordNet_3.0.0.txt (via emotions/emotion_dictionary.ods, concept 'Glad')."
     coordinates:
       "valence": 0.98
       "arousal": -0.05
   - id: "afraid"
     name: "afraid"
     definition: "undefined"
-    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 29. Definition: none in sources/emotions/emotion_dictionary.ods (concept 'afraid')."
+    notes: "Coordinates: sources/models/circumplex/standard_model.csv line 29. Definition: none in emotions/emotion_dictionary.ods (concept 'afraid')."
     coordinates:
       "valence": -0.33
       "arousal": 0.85
