@@ -16,6 +16,7 @@ import subprocess
 import sys
 import tempfile
 import threading
+import xml.etree.ElementTree as ET
 import unittest
 from pathlib import Path
 
@@ -33,10 +34,27 @@ CHROME = os.environ.get("CHROME") or next(
 @unittest.skipUnless(CHROME, "Chrome/Chromium not found (set CHROME=...)")
 class BrowserSelfTest(unittest.TestCase):
     def test_dashboard_in_headless_browser(self):
-        for path in find_ontologies(server.resolve_owl_dir()):
+        owl_dir = server.resolve_owl_dir()
+        extraction = None
+        for path in find_ontologies(owl_dir):
             with self.subTest(file=path.name):
                 print(f"\n  {path.name}")
-                self.run_selftest(path.name)
+                extraction = self.run_selftest(path.name)
+        # Domain Models tab: what the browser extracted must equal an independent reading of the OWL file.
+        source = owl_dir / server.DOMAIN_SOURCE
+        self.assertTrue(source.exists(), f"{source} not found")
+        self.assertIsNotNone(extraction, "Domain Models self-test returned no extraction")
+        expected = independent_domains(source)
+        got = {d["id"]: d for d in extraction["domains"]}
+        self.assertEqual(set(got), set(expected), "Domain individuals differ")
+        for iri, exp in expected.items():
+            with self.subTest(domain=exp["label"]):
+                self.assertEqual(got[iri]["label"], exp["label"])
+                self.assertEqual(got[iri]["dimensions"], exp["dimensions"])
+                self.assertEqual(got[iri]["prototypes"], exp["prototypes"])
+        n = sum(len(v) for d in expected.values() for v in d["prototypes"].values())
+        print(f"\n  Domain extraction matches {source.name}: {len(expected)} domains, "
+              f"{sum(len(d['prototypes']) for d in expected.values())} prototypes, {n} coordinate cells")
 
     def run_selftest(self, file_name):
         httpd = server.make_server(port=0)
@@ -60,7 +78,49 @@ class BrowserSelfTest(unittest.TestCase):
             print(f"  [{'PASS' if c['ok'] else 'FAIL'}] {c['name']}" + (f" — {c['detail'][:120]}" if c["detail"] else ""))
         failed = [c for c in result["checks"] if not c["ok"]]
         self.assertFalse(failed, json.dumps(failed, indent=1))
-        self.assertGreaterEqual(result["passed"], 25)
+        self.assertGreaterEqual(result["passed"], 50)
+        return result.get("domainExtraction")
+
+
+def independent_domains(path):
+    """Domains, dimensions and raw coordinate strings read with ElementTree (no gui code involved)."""
+    rdf = "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}"
+    root = ET.parse(path).getroot()
+    base = root.get("{http://www.w3.org/XML/1998/namespace}base", "")
+    full = lambda ref: base + ref if ref.startswith("#") else ref  # noqa: E731
+    local = lambda tag: re.split(r"[#/}]", tag)[-1]  # noqa: E731
+    nodes = {}
+    for node in root:
+        about = node.get(rdf + "about")
+        if about is None:
+            continue
+        entry = nodes.setdefault(full(about), {"types": set(), "props": {}})
+        for prop in node:
+            res = prop.get(rdf + "resource")
+            value = full(res) if res is not None else (prop.text or "")
+            if prop.tag == rdf + "type":
+                entry["types"].add(local(value))
+            else:
+                entry["props"].setdefault(local(prop.tag), []).append(value)
+    get = lambda iri, p: nodes.get(iri, {"props": {}})["props"].get(p, [])  # noqa: E731
+    domains = {}
+    for iri, n in nodes.items():
+        if "Domain" not in n["types"]:
+            continue
+        dims = list(dict.fromkeys(get(iri, "hasQualityDimension")))
+        protos = list(dict.fromkeys(get(iri, "hasDomainPrototype") +
+                                    [s for s in nodes if iri in get(s, "belongsToDomain")]))
+        table = {}
+        for p in protos:
+            found = {}
+            for point in get(p, "hasPoint"):
+                for c in get(point, "hasCoordinate"):
+                    for dim in get(c, "onQualityDimension"):
+                        found.setdefault(dim, []).extend(get(c, "numericValue"))
+            table[p] = {dim: (found[dim][0] if len(found.get(dim, [])) == 1 else
+                              " | ".join(found[dim]) if found.get(dim) else None) for dim in dims}
+        domains[iri] = {"label": (get(iri, "label") or [iri])[0], "dimensions": dims, "prototypes": table}
+    return domains
 
 
 if __name__ == "__main__":

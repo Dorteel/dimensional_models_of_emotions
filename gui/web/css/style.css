@@ -153,3 +153,52 @@ html, body { margin: 0; height: 100%; background: var(--bg); }
   .panes { grid-template-columns: 220px 1fr; }
   .pane.right { grid-column: 1 / -1; max-height: 40vh; border-left: 0; border-top: 1px solid var(--border); }
 }
+
+/* Domain Models tab */
+.domain-tab { display: flex; flex-direction: column; height: 100%; }
+.plot-pane { position: relative; display: flex; flex-direction: column; min-height: 0; background: var(--bg); }
+.domain-summary { padding: 10px 16px 6px; border-bottom: 1px solid var(--border); background: var(--panel); }
+.domain-summary h2 { margin: 0 0 6px; font-size: 17px; }
+.domain-summary .muted { font-size: 12px; margin-top: 6px; }
+.dim-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: inherit; font-size: 12px; padding: 2px 9px; border-radius: 12px; border: 1px solid var(--border);
+  background: var(--bg); color: var(--text); cursor: pointer; }
+.chip:hover { border-color: var(--accent); }
+.plot-host { position: relative; flex: 1; min-height: 0; }
+.omitted { padding: 4px 16px 8px; font-size: 12px; color: var(--muted); }
+.omitted:empty { display: none; }
+.omitted a { color: var(--accent); }
+.axis-pickers { display: inline-flex; gap: 8px; }
+.axis-pickers[hidden] { display: none; }
+.tree-row.k-domain .tree-label { font-weight: 600; }
+.tree-row.k-dimension .tree-label::before { content: "↔"; margin-right: 5px; color: var(--domain-range); }
+.tree-row.k-group .tree-label { color: var(--muted); }
+
+.coord-plot { position: absolute; inset: 0; width: 100%; height: 100%; display: block; user-select: none; outline: none; }
+.coord-plot[data-mode="3d"] { cursor: grab; }
+.coord-plot .plot-area { fill: var(--panel); stroke: var(--border); }
+.coord-plot .grid { stroke: var(--border); stroke-width: 1; }
+.coord-plot .zero { stroke: var(--muted); stroke-dasharray: 4 3; stroke-width: 1; }
+.coord-plot .axis-line, .coord-plot .tick { stroke: var(--muted); stroke-width: 1.5; }
+.coord-plot .axis-line.axis-0 { stroke: #2f5fd0; }
+.coord-plot .axis-line.axis-1 { stroke: #1f9d6b; }
+.coord-plot .axis-line.axis-2 { stroke: #c0392b; }
+.coord-plot .tick-dot { fill: var(--muted); }
+.coord-plot .tick-label { font-size: 11px; fill: var(--muted); text-anchor: middle; }
+.coord-plot .tick-label.end { text-anchor: end; }
+.coord-plot .tick-label.small { font-size: 10px; text-anchor: end; }
+.coord-plot .axis-title { font-size: 12px; font-weight: 600; fill: var(--text); text-anchor: middle; }
+.coord-plot .plot-empty { font-size: 14px; fill: var(--muted); text-anchor: middle; }
+.coord-plot .plot-hint { font-size: 11px; fill: var(--muted); }
+.coord-plot .pt { cursor: pointer; }
+.coord-plot .pt circle { fill: var(--individual-fill); stroke: var(--individual); stroke-width: 1.5; }
+.coord-plot .pt-label { font-size: 11px; fill: var(--text); pointer-events: none; paint-order: stroke; stroke: var(--bg);
+  stroke-width: 3px; stroke-linejoin: round; }
+.coord-plot .pt-label.centered { text-anchor: middle; }
+.coord-plot .pt-label.crowded { opacity: .55; }
+.coord-plot .leader { stroke: var(--border); }
+.coord-plot.no-labels .pt-label, .coord-plot.no-labels .leader { display: none; }
+.coord-plot.no-labels .pt.selected .pt-label { display: block; }
+.coord-plot.has-selection .pt:not(.selected) { opacity: .45; }
+.coord-plot .pt.selected circle { stroke: var(--select); stroke-width: 3; }
+.coord-plot .pt.selected .pt-label { font-weight: 700; opacity: 1; }

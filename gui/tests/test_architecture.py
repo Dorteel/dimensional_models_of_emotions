@@ -21,18 +21,27 @@ class Architecture(unittest.TestCase):
                 code = re.sub(r"//[^\n]*|/\*.*?\*/", "", f.read_text(encoding="utf-8"), flags=re.S)
                 self.assertIsNone(re.search(r"\b(owl|rdfs?|ontology|subclass|individual)\b", code, re.I), f.name)
 
-    def test_adapter_is_pure(self):
-        text = (WEB / "ontology" / "adapter.js").read_text(encoding="utf-8")
-        self.assertEqual(imports(WEB / "ontology" / "adapter.js"), [])
-        self.assertNotIn("document.", text)
-        self.assertNotIn("fetch(", text)
+    def test_adapters_are_pure(self):
+        for f in (WEB / "ontology").glob("*.js"):   # adapter.js (ontology tab), domains.js (domain tab)
+            with self.subTest(file=f.name):
+                text = f.read_text(encoding="utf-8")
+                self.assertEqual(imports(f), [])
+                self.assertNotIn("document.", text)
+                self.assertNotIn("fetch(", text)
+
+    def test_tabs_use_adapters_not_raw_ontology_json(self):
+        # Tabs get ontology meaning only through the adapters (no OWL vocabulary in tab code).
+        for f in (WEB / "tabs").glob("*.js"):
+            with self.subTest(file=f.name):
+                code = re.sub(r"//[^\n]*", "", f.read_text(encoding="utf-8"))
+                self.assertIsNone(re.search(r"hasCoordinate|numericValue|hasQualityDimension|rdfs:|owl:", code), f.name)
 
     def test_only_api_module_fetches_data(self):
         for f in WEB.rglob("*.js"):
-            if f.name in ("api.js", "selftest.js"):
+            if f.name == "api.js" or f.name.startswith("selftest"):   # self-tests fetch to cross-check the UI
                 continue
             with self.subTest(file=f.name):
-                self.assertNotIn("fetch(", f.read_text(encoding="utf-8"))
+                self.assertFalse("fetch(" in f.read_text(encoding="utf-8"), f"{f.name} fetches data directly")
 
     def test_no_external_resources(self):
         for f in list((WEB.parent).rglob("*.html")) + list((WEB.parent).rglob("*.css")) + list(WEB.rglob("*.js")):

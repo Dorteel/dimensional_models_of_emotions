@@ -163,6 +163,16 @@ export class OntologyTab {
     });
   }
 
+  // Show a term from another tab: load the given file if another one is displayed, then select the term.
+  async reveal(file, id) {
+    await this.ready;
+    if (file && this.model?.meta.file !== file) {
+      this.ui.file.value = file;
+      await this.load(file);
+    }
+    this.selectEntity(id, "external");
+  }
+
   selectEntity(id, source) {
     if (!this.model) return;
     if (id && id.startsWith("group:")) return;

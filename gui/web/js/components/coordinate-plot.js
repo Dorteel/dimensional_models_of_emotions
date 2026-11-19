@@ -248,10 +248,17 @@ export class CoordinatePlot extends EventTarget {
         frame.append(el("circle", { cx: tp.x, cy: tp.y, r: 1.5, class: "tick-dot" }));
         frame.append(el("text", { x: tp.x - 4, y: tp.y + 13, class: "tick-label small" }, String(t)));
       }
-      const lab = [-1, -1, -1]; lab[i] = 1.25;
-      const lp = this.project(lab);
-      frame.append(el("text", { x: lp.x, y: lp.y, class: `axis-title axis-${i}` },
-                      `${axis.label}${doms[i].stated ? "" : " (range not stated)"}`));
+      // Title: pushed outward (in screen space) from the cube centre past the axis end, kept inside the view,
+      // so it never covers the point at the cube corner.
+      const text = `${axis.label}${doms[i].stated ? "" : " (range not stated)"}`;
+      const centre = this.project([0, 0, 0]);
+      let ux = q.x - centre.x, uy = q.y - centre.y;
+      const len = Math.hypot(ux, uy) || 1;
+      ux /= len; uy /= len;
+      const tw = textWidth(text);
+      const tx = Math.max(tw / 2 + 6, Math.min(w - tw / 2 - 6, q.x + ux * 34));
+      const ty = Math.max(16, Math.min(h - 26, q.y + uy * 34 + 4));
+      frame.append(el("text", { x: tx, y: ty, class: `axis-title axis-${i}` }, text));
     });
     this.svg.append(frame);
     const items = this.data.points.map((p) => {

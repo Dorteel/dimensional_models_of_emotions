@@ -63,6 +63,19 @@ class ServerTest(unittest.TestCase):
             self.assertEqual(data["meta"]["sha256"], self.hashes[p])
             self.assertTrue(data["entities"])
 
+    def test_ontology_folder_and_domain_source(self):
+        status, _, body = get(self.base, "/api/ontologies")
+        data = json.loads(body)
+        owl_dir = server.resolve_owl_dir()
+        # ontology/ is preferred; owl/ is used only while ontology/ has no .owl files.
+        expected = next(c for c in server.OWL_DIR_CANDIDATES if find_ontologies(c)) \
+            if any(find_ontologies(c) for c in server.OWL_DIR_CANDIDATES) else server.OWL_DIR_CANDIDATES[0]
+        self.assertEqual(owl_dir, expected)
+        self.assertEqual(Path(data["directory"]), owl_dir)
+        self.assertEqual(data["fallback"], owl_dir != server.OWL_DIR_CANDIDATES[0])
+        self.assertEqual(data["domain_source"], "emotional_ontology_populated.owl")
+        self.assertIn(data["domain_source"], [f["name"] for f in data["files"]])
+
     def test_only_listed_files_are_reachable(self):
         for bad in ("../README.md", "/etc/passwd", "nonexistent.owl", ""):
             status, _, body = get(self.base, f"/api/ontology?file={bad}")

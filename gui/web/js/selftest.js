@@ -1,4 +1,5 @@
 // End-to-end self-test, loaded only with ?selftest=1 (used by gui/tests/test_browser.py).
+// Emotional Ontology tab checks are below; Domain Models tab checks are in selftest-domains.js.
 // Drives the real UI with DOM events and compares what is shown with the API data,
 // which it fetches independently. Expected values are derived from the ontology file, not hard-coded.
 
@@ -39,8 +40,8 @@ export async function run(dashboard) {
 
     // ---------------------------------------------------------------- dashboard + loading
     const tabs = [...document.querySelectorAll('.tabbar [role="tab"]')].map((b) => b.textContent);
-    check("Dashboard has exactly one tab, 'Emotional Ontology'", tabs.length === 1 && tabs[0] === "Emotional Ontology",
-          JSON.stringify(tabs));
+    check("Dashboard has the tabs 'Emotional Ontology' and 'Domain Models'",
+          JSON.stringify(tabs) === JSON.stringify(["Emotional Ontology", "Domain Models"]), JSON.stringify(tabs));
     const list = await (await fetch("/api/ontologies")).json();
     const wantedFile = new URLSearchParams(location.search).get("file") || list.default;
     const api = await (await fetch(`/api/ontology?file=${encodeURIComponent(wantedFile)}`)).json();
@@ -216,9 +217,16 @@ export async function run(dashboard) {
   } catch (err) {
     check("Self-test ran without errors", false, `${err.message}\n${err.stack}`);
   }
+  let domainExtraction = null;
+  try {
+    const { runDomainChecks } = await import("./selftest-domains.js");
+    domainExtraction = await runDomainChecks(dashboard, check);
+  } catch (err) {
+    check("Domain Models self-test ran without errors", false, `${err.message}\n${err.stack}`);
+  }
   const failed = checks.filter((c) => !c.ok).length;
   out.dataset.status = failed ? "fail" : "pass";
-  out.textContent = JSON.stringify({ passed: checks.length - failed, failed, checks }, null, 1);
+  out.textContent = JSON.stringify({ passed: checks.length - failed, failed, checks, domainExtraction }, null, 1);
   document.body.append(out);
   document.title = failed ? "SELFTEST FAIL" : "SELFTEST PASS";
   await sleep(0);
