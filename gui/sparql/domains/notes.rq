@@ -1,0 +1,12 @@
+# Notes (ecs:hasNotes) on any term: domains, quality dimensions, prototypes.
+#
+# Columns
+#   ?subject  the annotated term
+#   ?note     ecs:hasNotes value
+
+PREFIX ecs:  <http://example.org/conceptual-space-emotion.owl#>
+
+SELECT ?subject ?note
+WHERE {
+  ?subject ecs:hasNotes ?note .
+}

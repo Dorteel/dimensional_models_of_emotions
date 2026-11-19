@@ -2,8 +2,10 @@
 
 Starts the server, opens the dashboard with ?selftest=1 and reads the results of
 web/js/selftest.js, which drives the real UI (clicks, wheel zoom, drag-pan, node
-drag, tree navigation, inspector links, focus, filters, search) and checks it
-against the ontology data. Skipped if no Chrome/Chromium is installed; set
+drag, tree navigation, inspector links, focus, filters, search, and the Domain
+Models tab) and checks it against the ontology data. The domains the Domain Models
+tab received (via /api/domains, i.e. SPARQL) are compared with an independent
+ElementTree reading of the OWL file. Skipped if no Chrome/Chromium is installed; set
 CHROME=/path/to/browser to choose one.
 """
 
@@ -16,15 +18,17 @@ import subprocess
 import sys
 import tempfile
 import threading
-import xml.etree.ElementTree as ET
 import unittest
 from pathlib import Path
 
 GUI = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(GUI))
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import independent as ind  # noqa: E402
 import server  # noqa: E402
-from owl_loader import find_ontologies  # noqa: E402
+from ontology_service import find_ontologies  # noqa: E402
 
 CHROME = os.environ.get("CHROME") or next(
     (shutil.which(b) for b in ("google-chrome", "google-chrome-stable", "chromium", "chromium-browser") if shutil.which(b)),
@@ -44,7 +48,7 @@ class BrowserSelfTest(unittest.TestCase):
         source = owl_dir / server.DOMAIN_SOURCE
         self.assertTrue(source.exists(), f"{source} not found")
         self.assertIsNotNone(extraction, "Domain Models self-test returned no extraction")
-        expected = independent_domains(source)
+        expected = ind.et_domains(source)
         got = {d["id"]: d for d in extraction["domains"]}
         self.assertEqual(set(got), set(expected), "Domain individuals differ")
         for iri, exp in expected.items():
@@ -80,47 +84,6 @@ class BrowserSelfTest(unittest.TestCase):
         self.assertFalse(failed, json.dumps(failed, indent=1))
         self.assertGreaterEqual(result["passed"], 50)
         return result.get("domainExtraction")
-
-
-def independent_domains(path):
-    """Domains, dimensions and raw coordinate strings read with ElementTree (no gui code involved)."""
-    rdf = "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}"
-    root = ET.parse(path).getroot()
-    base = root.get("{http://www.w3.org/XML/1998/namespace}base", "")
-    full = lambda ref: base + ref if ref.startswith("#") else ref  # noqa: E731
-    local = lambda tag: re.split(r"[#/}]", tag)[-1]  # noqa: E731
-    nodes = {}
-    for node in root:
-        about = node.get(rdf + "about")
-        if about is None:
-            continue
-        entry = nodes.setdefault(full(about), {"types": set(), "props": {}})
-        for prop in node:
-            res = prop.get(rdf + "resource")
-            value = full(res) if res is not None else (prop.text or "")
-            if prop.tag == rdf + "type":
-                entry["types"].add(local(value))
-            else:
-                entry["props"].setdefault(local(prop.tag), []).append(value)
-    get = lambda iri, p: nodes.get(iri, {"props": {}})["props"].get(p, [])  # noqa: E731
-    domains = {}
-    for iri, n in nodes.items():
-        if "Domain" not in n["types"]:
-            continue
-        dims = list(dict.fromkeys(get(iri, "hasQualityDimension")))
-        protos = list(dict.fromkeys(get(iri, "hasDomainPrototype") +
-                                    [s for s in nodes if iri in get(s, "belongsToDomain")]))
-        table = {}
-        for p in protos:
-            found = {}
-            for point in get(p, "hasPoint"):
-                for c in get(point, "hasCoordinate"):
-                    for dim in get(c, "onQualityDimension"):
-                        found.setdefault(dim, []).extend(get(c, "numericValue"))
-            table[p] = {dim: (found[dim][0] if len(found.get(dim, [])) == 1 else
-                              " | ".join(found[dim]) if found.get(dim) else None) for dim in dims}
-        domains[iri] = {"label": (get(iri, "label") or [iri])[0], "dimensions": dims, "prototypes": table}
-    return domains
 
 
 if __name__ == "__main__":

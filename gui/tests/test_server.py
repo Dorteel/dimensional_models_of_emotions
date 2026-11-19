@@ -14,7 +14,7 @@ REPO = GUI.parent
 sys.path.insert(0, str(GUI))
 
 import server  # noqa: E402
-from owl_loader import find_ontologies  # noqa: E402
+from ontology_service import find_ontologies  # noqa: E402
 
 
 def get(base, path):
@@ -75,6 +75,32 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(data["fallback"], owl_dir != server.OWL_DIR_CANDIDATES[0])
         self.assertEqual(data["domain_source"], "emotional_ontology_populated.owl")
         self.assertIn(data["domain_source"], [f["name"] for f in data["files"]])
+
+    def test_domains_endpoint_uses_sparql_on_the_populated_file(self):
+        status, _, body = get(self.base, "/api/domains")
+        data = json.loads(body)
+        self.assertEqual(status, 200)
+        self.assertEqual(data["meta"]["file"], server.DOMAIN_SOURCE)
+        self.assertTrue(data["meta"]["parser"].startswith("rdflib"))
+        self.assertTrue(all(q in server.QUERIES.names() for q in data["meta"]["queries"]))
+        self.assertEqual(len(data["domains"]), 4)
+
+    def test_named_queries_are_listed_and_runnable(self):
+        status, _, body = get(self.base, "/api/queries")
+        listed = json.loads(body)["queries"]
+        self.assertEqual(status, 200)
+        self.assertEqual([q["name"] for q in listed], server.QUERIES.names())
+        self.assertTrue(all(q["text"] and q["description"] for q in listed))
+        status, _, body = get(self.base, "/api/sparql/domains/coordinates")
+        data = json.loads(body)
+        self.assertEqual(status, 200)
+        self.assertEqual(data["columns"], ["prototype", "point", "coordinate", "dimension", "lexical", "datatype"])
+        self.assertEqual(len(data["rows"]), 80)
+
+    def test_no_user_supplied_sparql(self):
+        for path in ("/api/sparql/SELECT%20%3Fs%20WHERE%20%7B%3Fs%20%3Fp%20%3Fo%7D", "/api/sparql/../server",
+                     "/api/sparql/nonexistent", "/api/sparql?query=SELECT%20*%20WHERE%20%7B%3Fs%20%3Fp%20%3Fo%7D"):
+            self.assertEqual(get(self.base, path)[0], 404, path)
 
     def test_only_listed_files_are_reachable(self):
         for bad in ("../README.md", "/etc/passwd", "nonexistent.owl", ""):

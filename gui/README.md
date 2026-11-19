@@ -14,8 +14,19 @@ A local, browser-based dashboard for exploring the Emotional Ontology. It has tw
 - the prototypes' coordinates, plotted as a number line, a 2D scatterplot or an interactive 3D view;
 - an inspector for domains, dimensions and prototypes that states missing information explicitly.
 
-Everything shown is read from the OWL file on disk each time it is loaded. Nothing is hard-coded and the
-ontology is never written to.
+Everything shown is read from the OWL file on disk each time it is loaded: the server loads it with RDFLib
+and answers with the results of the named SPARQL queries in [`sparql/`](sparql/README.md). Nothing is
+hard-coded and the ontology is never written to.
+
+## Setup (once)
+
+The server needs [RDFLib](https://rdflib.readthedocs.io/), installed into a virtual environment inside `gui/`
+(git-ignored):
+
+```bash
+python3 -m venv gui/.venv
+gui/.venv/bin/pip install -r gui/requirements.txt      # rdflib==7.1.4
+```
 
 ## Run
 
@@ -26,13 +37,16 @@ python3 gui/server.py            # then open http://127.0.0.1:8765/
 python3 gui/server.py --open     # same, and open the browser
 ```
 
+If `python3` cannot import RDFLib, `server.py` restarts itself with `gui/.venv/bin/python`. Running
+`gui/.venv/bin/python gui/server.py` directly does the same thing.
+
 Options: `--port 8765`, `--owl-dir ontology` (folder with `.owl` files), `--default <file.owl>`.
 Without `--owl-dir`, the server uses `ontology/`. If `ontology/` contains no `.owl` files, it falls back to
 `owl/`, the location used before the move. It checks again on every request, so a move is picked up without a
 restart. The status bars show which folder is in use.
 
-Requirements: Python 3.10+ (standard library only) and a modern browser. There are no dependencies to
-install, no build step, and no network access. The server listens on `127.0.0.1` only.
+Requirements: Python 3.10+, RDFLib (see Setup) and a modern browser. There is no build step, no external
+SPARQL server or triple store, and no network access at run time. The server listens on `127.0.0.1` only.
 
 Deep links:
 
@@ -79,7 +93,9 @@ placed under `owl:Thing`, which is marked "implicit root" when the file does not
 ## Using the Domain Models tab
 
 **Data source.** The tab reads only `ontology/emotional_ontology_populated.owl`, re-read on **Reload**. It never
-reads the domain YAML or ODS files. Everything comes from these links in the ontology:
+reads the domain YAML or ODS files. `GET /api/domains` runs the queries in `sparql/domains/` and returns their
+grouped results; the tab does not traverse triples itself. The queries follow these links in the ontology
+(details in [`sparql/README.md`](sparql/README.md)):
 
 - `Domain` `hasQualityDimension` → `QualityDimension`, with `rdfs:label`, `hasRange`, `isCircular`,
   `hasMeasurementLevel`, `hasNotes` and `hasDefinition`;
@@ -123,16 +139,24 @@ The inspector shows the description, notes, dimensions and prototypes.
 
 ```
 gui/
-  server.py                 local HTTP server + read-only JSON API (/api/ontologies, /api/ontology?file=)
-  owl_loader/               ontology loading and parsing (Python, no GUI code)
-    rdfxml.py               RDF/XML -> triples (reports unsupported constructs instead of guessing)
-    model.py                triples -> entities, edges, class hierarchy, stats
+  server.py                 local HTTP server + read-only JSON API (see sparql/README.md)
+  requirements.txt          rdflib (installed into gui/.venv)
+  sparql/                   the named SPARQL queries (.rq) — the only way the GUI reads the ontology
+    domains/*.rq            domains, quality dimensions, prototypes, classes, coordinates, definitions, notes, provenance
+    explorer/statements.rq  every statement (Emotional Ontology tab)
+    README.md               query interface: prefixes, columns, rules, API
+  ontology_service/         Python query service (no GUI code)
+    store.py                RDFLib loading (fresh per request, literal lexical forms kept), document positions
+    queries.py              QueryLibrary: loads and runs the named .rq files; no ad-hoc SPARQL
+    domains.py              query rows -> domains / dimensions / prototypes / coordinates JSON
+    explorer.py             query rows -> entities, edges, class hierarchy (Emotional Ontology tab)
+    names.py                compact names from the file's prefixes
   web/
     index.html, css/style.css
     js/main.js              dashboard layout: tab bar; tabs are registered in one list
     js/api.js               the only module that fetches data
     js/ontology/adapter.js  ontology JSON -> generic graph / tree / inspector structures (pure functions)
-    js/ontology/domains.js  ontology JSON -> domains, dimensions, prototypes, coordinates; plot data (pure)
+    js/ontology/domains.js  /api/domains JSON -> plot data, tree items, inspector descriptions (pure)
     js/components/          reusable, ontology-agnostic UI components
       graph-view.js         SVG graph: zoom, pan, drag, select, focus, filters
       force-layout.js       deterministic force-directed layout
@@ -156,15 +180,16 @@ they stay independent of the ontology code.
 From the repository root:
 
 ```bash
-PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s gui/tests -v
+PYTHONDONTWRITEBYTECODE=1 gui/.venv/bin/python -m unittest discover -s gui/tests -v
 ```
 
 | Test file | What it checks |
 |---|---|
-| `test_loader.py` | Every triple of each `ontology/*.owl` file is read, cross-checked with an independent ElementTree reading. Classes, individuals, properties, edges and literals match the file. Every declared class is in the hierarchy. RDF/XML edge cases are handled. Unsupported constructs are reported. Files are unchanged (sha256). |
-| `test_server.py` | The dashboard and assets are served. The API lists and reads the OWL files (sha256 matches). The `ontology/` → `owl/` folder resolution and the domain source are reported. Only listed files are reachable (no path traversal). Files are unchanged. |
-| `test_architecture.py` | Components do not import ontology or API code. Both adapters are pure. Tabs use no OWL vocabulary directly. Only `api.js` fetches. No external resources are loaded. |
-| `test_browser.py` | Runs the self-test in headless Chrome/Chromium against each OWL file (see below). It also compares every domain, dimension, prototype and raw coordinate string the Domain Models tab extracted with an independent ElementTree reading of `emotional_ontology_populated.owl`. Skipped if no browser is found; set `CHROME=/path/to/browser` to choose one. |
+| `test_sparql.py` | The query files are complete, documented (header and columns), declare their prefixes and parse. Only named queries run, and there is no SPARQL text in Python or JS. `explorer/statements` equals an independent ElementTree reading of each OWL file; entities, edges, literals, hierarchy and "defined at" lines match. Against RDFLib's triple API (no SPARQL) and the raw XML: 4 domains, 36 prototypes and 80 coordinates; labels, dimensions, ranges, notes, classes, definitions with sources, and provenance counts match; coordinate strings are exact; order follows the file. The schema-only file has no domains. Reload re-reads the file (tested on a temporary copy). Ontology files are unchanged. |
+| `independent.py` | Helper module, not a test: the independent ElementTree and RDFLib-triple-API readings used above. |
+| `test_server.py` | The dashboard and assets are served. The API lists and reads the OWL files (sha256 matches). The `ontology/` → `owl/` folder resolution and the domain source are reported. `/api/domains` is built by SPARQL. Named queries are listed and runnable, and no user-supplied SPARQL is accepted. Only listed files are reachable (no path traversal). Files are unchanged. |
+| `test_architecture.py` | Components do not import ontology or API code. Both adapters are pure. Tabs use no OWL vocabulary directly. There is no SPARQL in JavaScript. Only `api.js` fetches. No external resources are loaded. |
+| `test_browser.py` | Runs the self-test in headless Chrome/Chromium against each OWL file (see below). It also compares every domain, dimension, prototype and raw coordinate string the Domain Models tab received from `/api/domains` (SPARQL) with an independent ElementTree reading of `emotional_ontology_populated.owl`. Skipped if no browser is found; set `CHROME=/path/to/browser` to choose one. |
 
 The self-test in `test_browser.py` drives the real UI with DOM events and compares the result with the API
 data. Expected values are derived from the file. It checks that:

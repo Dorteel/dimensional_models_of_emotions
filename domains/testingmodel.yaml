@@ -1,0 +1,28 @@
+schema_version: "1.0"
+id: "testingmodel"
+name: "testingmodel"
+description: "A description of your domain model."
+notes: "Nothing to note"
+dimensions:
+  - id: "valence"
+    name: "valence"
+    definition: "A description of the quality dimension."
+    notes: ""
+    min: 0
+    max: 1
+    circular: false
+  - id: "testingmodel"
+    name: "testingmodel"
+    definition: "dsad"
+    notes: "Nothing to note"
+    min: 0
+    max: 1
+    circular: true
+emotions:
+  - id: "joy"
+    name: "joy"
+    definition: "A definition of this emotion."
+    notes: ""
+    coordinates:
+      "valence": 1
+      "testingmodel": 1

@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pandas as pd
 import yaml
-from rdflib import BNode, Graph, Namespace, RDF, RDFS, OWL, Literal
+from rdflib import BNode, Graph, Namespace, RDF, RDFS, OWL, Literal, URIRef
 from rdflib.compare import isomorphic
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -38,7 +38,134 @@ class OntologyIntegration(unittest.TestCase):
 
     @classmethod
     def run_script(cls, script, *args):
-        subprocess.run([sys.executable, str(cls.root / 'ontology' / script), *args], check=True, cwd=cls.root, capture_output=True, text=True)
+        return subprocess.run([sys.executable, str(cls.root / 'ontology' / script), *args], check=True, cwd=cls.root, capture_output=True, text=True)
+
+    def test_list_domains_without_schema_is_read_only(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'ontology').mkdir()
+            shutil.copy(self.root / 'ontology/populate_ontology.py', root / 'ontology')
+            shutil.copytree(self.root / 'domains', root / 'domains')
+            output = root / 'ontology/emotional_ontology_populated.owl'
+            output.write_bytes(b'existing output must not change')
+            result = subprocess.run([sys.executable, str(root / 'ontology/populate_ontology.py'), '--list-domains'],
+                                    check=True, capture_output=True, text=True)
+            self.assertEqual(result.stdout.splitlines(), [
+                f'{name}\tdomains/{name}/{name}.yaml'
+                for name in ('circumplex', 'pad', 'plutchik_model', 'vector_model')])
+            self.assertEqual(output.read_bytes(), b'existing output must not change')
+            self.assertFalse((root / 'ontology/emotional_ontology.owl').exists())
+            self.assertFalse((root / 'emotions').exists())
+
+    def test_selected_models_preserve_exact_subgraphs_and_reload(self):
+        names = ('circumplex', 'pad', 'plutchik_model', 'vector_model')
+        try:
+            self.run_script('populate_ontology.py', '--domains')
+            shared = Graph().parse(self.output)
+            self.assertFalse(list(shared.subjects(RDF.type, NS.Domain)))
+            self.assertEqual(set(shared.subjects(RDFS.subClassOf, NS.Emotion)),
+                             set(self.graph.subjects(RDFS.subClassOf, NS.Emotion)))
+            shared_subjects = set(shared.subjects())
+            # These graphs must contain exactly the shared dictionary/schema plus
+            # the selected models' connected data, including definitions/sources.
+            for selected, flags in [
+                    (('circumplex',), ('--domains', 'circumplex')),
+                    (('circumplex', 'pad'), ('--domains', 'circumplex', 'pad')),
+                    (names, ('--all-domains',)),
+                    ((), ('--domains',))]:
+                with self.subTest(domains=selected):
+                    expected = Graph()
+                    for triple in shared:
+                        expected.add(triple)
+                    pending = [NS['domain_' + name] for name in selected]
+                    visited = set()
+                    while pending:
+                        subject = pending.pop()
+                        if subject in visited:
+                            continue
+                        visited.add(subject)
+                        for triple in self.graph.triples((subject, None, None)):
+                            expected.add(triple)
+                            obj = triple[2]
+                            if isinstance(obj, (URIRef, BNode)) and obj not in shared_subjects:
+                                pending.append(obj)
+                    self.run_script('populate_ontology.py', *flags)
+                    actual = Graph().parse(self.output)
+                    self.assertEqual(set(actual.subjects(RDF.type, NS.Domain)),
+                                     {NS['domain_' + name] for name in selected})
+                    self.assertEqual(set(expected), set(actual))
+                    self.run_script('populate_ontology.py', *flags)
+                    self.assertTrue(isomorphic(actual, Graph().parse(self.output)))
+                    code = ('from owlready2 import World; from pathlib import Path; import sys; '
+                            'o=World().get_ontology(Path(sys.argv[1]).as_uri()).load(); '
+                            'assert len(list(o.Domain.instances())) == int(sys.argv[2]); '
+                            'assert len(list(o.Emotion.subclasses())) == int(sys.argv[3])')
+                    subprocess.run([sys.executable, '-c', code, str(self.output), str(len(selected)),
+                                    str(len(set(self.graph.subjects(RDFS.subClassOf, NS.Emotion))))], check=True)
+        finally:
+            self.run_script('populate_ontology.py')
+
+    def test_unknown_names_and_conflicting_flags_preserve_output(self):
+        before = self.output.read_bytes()
+        for flags in [('--domains', 'not_a_domain'), ('--domains', 'yourdomainmodel'),
+                      ('--domains', 'pad', '--all-domains'),
+                      ('domains/pad/pad.yaml', '--domains', 'pad')]:
+            with self.subTest(flags=flags):
+                result = subprocess.run([sys.executable, str(self.root / 'ontology/populate_ontology.py'), *flags],
+                                        cwd=self.root, capture_output=True, text=True)
+                self.assertEqual(result.returncode, 2)
+                self.assertIn('error:', result.stderr)
+                self.assertNotIn('Traceback', result.stderr)
+                if flags[-1] in {'not_a_domain', 'yourdomainmodel'}:
+                    self.assertIn('Unknown domain name(s)', result.stderr)
+                    self.assertIn('Available domains: circumplex, pad, plutchik_model, vector_model', result.stderr)
+                self.assertEqual(self.output.read_bytes(), before)
+
+    def test_in_process_population_does_not_retain_stale_domains(self):
+        code = ('import runpy,sys; from pathlib import Path; '
+                'main=runpy.run_path(sys.argv[1])["main"]; '
+                'main([Path(sys.argv[2])]); main([])')
+        try:
+            subprocess.run([sys.executable, '-c', code, str(self.root / 'ontology/populate_ontology.py'),
+                            str(self.root / 'domains/circumplex/circumplex.yaml')], check=True, capture_output=True)
+            graph = Graph().parse(self.output)
+            self.assertFalse(list(graph.subjects(RDF.type, NS.Domain)))
+            for cls in (NS.QualityDimension, NS.PrototypicalInstance, NS.Point, NS.Coordinate):
+                self.assertFalse(list(graph.subjects(RDF.type, cls)))
+            self.assertEqual(set(graph.subjects(RDFS.subClassOf, NS.Emotion)),
+                             set(self.graph.subjects(RDFS.subClassOf, NS.Emotion)))
+        finally:
+            self.run_script('populate_ontology.py')
+
+    def test_default_paths_and_selection_order_remain_compatible(self):
+        try:
+            self.run_script('populate_ontology.py', '--all-domains')
+            self.assertTrue(isomorphic(self.graph, Graph().parse(self.output)))
+            self.run_script('populate_ontology.py', 'domains/pad/pad.yaml', 'domains/circumplex/circumplex.yaml')
+            legacy = Graph().parse(self.output)
+            self.run_script('populate_ontology.py', '--domains', 'circumplex', 'pad')
+            self.assertTrue(isomorphic(legacy, Graph().parse(self.output)))
+            self.run_script('populate_ontology.py', '--domains', 'pad', 'circumplex', 'pad')
+            self.assertTrue(isomorphic(legacy, Graph().parse(self.output)))
+        finally:
+            self.run_script('populate_ontology.py')
+
+    def test_selection_does_not_validate_unselected_yaml(self):
+        invalid = self.root / 'domains/invalid/invalid.yaml'
+        invalid.parent.mkdir()
+        invalid.write_text('schema_version: unsupported\nname: invalid\ndimensions: []\n')
+        try:
+            self.run_script('populate_ontology.py', '--domains', 'pad')
+            before = self.output.read_bytes()
+            result = subprocess.run([sys.executable, str(self.root / 'ontology/populate_ontology.py'), '--all-domains'],
+                                    capture_output=True, text=True)
+            self.assertEqual(result.returncode, 2)
+            self.assertIn('unsupported schema_version', result.stderr)
+            self.assertEqual(self.output.read_bytes(), before)
+        finally:
+            invalid.unlink()
+            invalid.parent.rmdir()
+            self.run_script('populate_ontology.py')
 
     def test_schema(self):
         for name in ('ConceptualSpace', 'Domain', 'QualityDimension', 'Point', 'Region', 'ConvexRegion', 'ContrastClass', 'Context', 'SimSensParameter'):

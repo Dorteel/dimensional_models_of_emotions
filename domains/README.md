@@ -21,9 +21,13 @@ The YAML schema and research definitions/coordinates are unchanged. `examples/` 
 
 ## Edit and export
 
-For an interactive new model, open `domains/create_custom_domain_model.ods` with LibreOffice macros enabled. Its SaveModel button copies form values into the DomainModel sheet; use LibreOffice **Save As** to save the workbook as `domains/<model_id>/<model_id>.ods`. ExportYAML saves the workbook and exports `<model_id>.yaml` beside it, confirming replacement if necessary. Paths are relative to the saved document.
+1. Open `domains/create_custom_domain_model.ods` in LibreOffice with macros enabled. Use the existing Main form to record the model name, dimensions and optional prototypes.
+2. Click **SAVE DOMAIN MODEL**. The workbook switches to DomainModel and asks you to review the complete record before saving.
+3. Confirm the review. The action creates `domains/<model_id>/` beside the builder and saves `<model_id>.yaml` plus `<model_id>.ods`. The ODS contains only the completed DomainModel tab, using `domain_model_template.ods` for its layout; the builder keeps both original tabs.
 
-`domains/domain_model_template.ods` is a blank DomainModel layout without embedded macros. The existing research ODS files also have no embedded macros. To export one of these files, including its existing unknown ranges/circularity:
+Keep the builder beside `domain_model_template.ods`. Paths follow the document location. The existing SafeID convention supplies the folder and filenames (lowercase, with spaces/hyphens converted to underscores); the model's display name keeps its original case. Definitions, dimensions, coordinates and notes are saved in both formats using the existing YAML schema and validation. Replacing either existing model file requires explicit confirmation. The files are prepared together; a failed save attempts to restore the previous pair.
+
+`domains/domain_model_template.ods` is a blank DomainModel layout without embedded macros. The saved single-sheet models and existing research ODS files have no embedded macros. Edit their DomainModel tab and re-export YAML with the Python exporter when needed. To export one of these files, including its existing unknown ranges/circularity:
 
 ```sh
 python3 domains/ods_export.py --export domains/pad/pad.ods
@@ -44,9 +48,31 @@ python3 domains/validate_domain_models.py
 python3 -m unittest discover -s tests -v
 ```
 
-Population recursively discovers active `.yaml` and `.yml` files. Explicit paths replace automatic selection, for example `python3 ontology/populate_ontology.py domains/pad/pad.yaml`. Duplicate model IDs are rejected. Root-level YAML remains supported for compatibility, but keep each active model in its own folder.
+Named domain selection uses the standard `domains/<name>/<name>.yaml` layout, with names taken from the folders. `examples/`, `drafts/` and the two legacy example names are excluded:
+
+```sh
+python3 ontology/populate_ontology.py --list-domains
+python3 ontology/populate_ontology.py --domains circumplex
+python3 ontology/populate_ontology.py --domains circumplex pad
+python3 ontology/populate_ontology.py --all-domains
+python3 ontology/populate_ontology.py --domains  # shared dictionary only
+```
+
+`--list-domains` displays available names and paths without needing the schema or changing the output. `--all-domains` selects all models in that standard layout. Selected YAML files are validated before saving; invalid selected models or unknown names cause a clear error and leave the existing output intact. Invalid unselected YAML does not block a named selection. Model validity follows the existing importer rules; this does not certify scientific completeness or infer a missing reference/generated designation.
+
+All selections populate the complete shared dictionary. Domain dimensions, prototypes, points, coordinates and their definitions/notes are included only for selected models. Each run starts from the schema in a fresh Owlready2 world and replaces `ontology/emotional_ontology_populated.owl`, so prior domain selections do not accumulate. Name order and repeated names do not change the resulting RDF graph.
+
+With no selection flags, the existing recursive discovery of active `.yaml` and `.yml` files is unchanged, including legacy root-level files. Legacy explicit paths also remain supported, for example `python3 ontology/populate_ontology.py domains/pad/pad.yaml`. Selection flags are mutually exclusive and cannot be combined with explicit paths. Duplicate model IDs in separate YAML files remain errors. Keep new active models in their standard folders so both named selection and automatic discovery find them.
 
 Validation compares all four research ODS/YAML pairs with their reference sources and the top-level dictionary/catalogue. It checks field equivalence, numeric fidelity, missing-definition records, real macro path helpers, exact YAML re-export and invalid coordinates. It is a reference-model regression suite, not a general scientific validator of arbitrary custom models. Validation checks that it leaves its input files unchanged.
+
+The Save Domain Model regression tests run the real Basic action in LibreOffice, with dialogs answered automatically in temporary workbook copies:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests/libreoffice -v
+```
+
+They check folder creation, ODS/YAML equality after reopening, definitions/notes and Unicode text, review cancellation, overwrite confirmation, validation failures, and rollback if installing the pair fails.
 
 The ontology scripts and tests use the root `requirements.txt`. Export and domain validation additionally require LibreOffice and its Python UNO bridge. GUI loading tests are documented in `gui/README.md`.
 

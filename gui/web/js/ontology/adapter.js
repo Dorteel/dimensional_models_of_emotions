@@ -1,4 +1,4 @@
-// Maps the ontology JSON produced by gui/owl_loader into the generic structures used by the
+// Maps the ontology JSON produced by the server (gui/ontology_service, query explorer/statements) into the generic structures used by the
 // GraphView, TreeView and Inspector components. Pure functions: no DOM, no fetching.
 
 const KIND_LABEL = { class: "Class", individual: "Individual", property: "Property", datatype: "Datatype",

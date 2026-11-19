@@ -1,0 +1,26 @@
+# Definitions and their provenance. Domains, quality dimensions and prototypes use ecs:hasDefinition;
+# emotion classes use the annotation property ecs:hasClassDefinition. A Definition carries its text in
+# ecs:hasValue and its source in ecs:hasSource (a KnowledgeRepository with an rdfs:label).
+#
+# Columns
+#   ?subject      the defined term
+#   ?property     ecs:hasDefinition or ecs:hasClassDefinition
+#   ?definition   the Definition individual
+#   ?text         ecs:hasValue (optional)
+#   ?textLang     language tag of ?text (optional)
+#   ?source       ecs:hasSource (optional)
+#   ?sourceLabel  rdfs:label of the source (optional)
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ecs:  <http://example.org/conceptual-space-emotion.owl#>
+
+SELECT ?subject ?property ?definition ?text ?textLang ?source ?sourceLabel
+WHERE {
+  VALUES ?property { ecs:hasDefinition ecs:hasClassDefinition }
+  ?subject ?property ?definition .
+  OPTIONAL { ?definition ecs:hasValue ?text . BIND (LANG(?text) AS ?textLang) }
+  OPTIONAL {
+    ?definition ecs:hasSource ?source .
+    OPTIONAL { ?source rdfs:label ?sourceLabel }
+  }
+}

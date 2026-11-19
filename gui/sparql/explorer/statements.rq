@@ -1,0 +1,12 @@
+# Every statement in the ontology file. Used by the Emotional Ontology tab, which shows what the file
+# states (classes, individuals, properties, relations, literals) without reasoning.
+#
+# Columns
+#   ?s  subject
+#   ?p  predicate
+#   ?o  object (IRI, blank node or literal; literals keep their lexical form, datatype and language)
+
+SELECT ?s ?p ?o
+WHERE {
+  ?s ?p ?o .
+}

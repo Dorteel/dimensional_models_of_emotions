@@ -1,12 +1,12 @@
 // "Domain Models" tab: Domain individuals of the populated ontology, their quality dimensions and the
-// prototypes' coordinates. Composes the data API, the domain adapter and the generic TreeView,
-// CoordinatePlot and Inspector components.
+// prototypes' coordinates, as returned by GET /api/domains (SPARQL queries in gui/sparql/domains/).
+// Composes the data API, the domain adapter and the generic TreeView, CoordinatePlot and Inspector components.
 
-import { listOntologies, loadOntology } from "../api.js";
+import { listOntologies, loadDomains } from "../api.js";
 import { CoordinatePlot } from "../components/coordinate-plot.js";
 import { Inspector } from "../components/inspector.js";
 import { TreeView } from "../components/tree-view.js";
-import { axisBounds, describeDimension, describeDomain, describePrototype, extractDomains, toDomainTree,
+import { axisBounds, describeDimension, describeDomain, describePrototype, toDomainTree,
          toPlotData } from "../ontology/domains.js";
 
 const TEMPLATE = `
@@ -94,12 +94,14 @@ export class DomainTab {
       return;
     }
     this._message(`Reading ${list.directory_relative}/${list.domain_source}…`);
-    this.model = await loadOntology(list.domain_source);
-    this.domains = extractDomains(this.model);
+    const data = await loadDomains();
+    this.meta = data.meta;
+    this.sources = data.sources;
+    this.domains = data.domains;
     this.ui.domain.replaceChildren(...this.domains.map((d) =>
       new Option(`${d.label} — ${d.dimensions.length}D, ${d.prototypes.length} prototypes`, d.id)));
     this.tree.setData(toDomainTree(this.domains), { expandDepth: 0 });
-    this._status(this.model);
+    this._status(this.meta);
     this._message("");
     const byWanted = wanted && this.domains.find((d) => [d.id, d.name, d.label].includes(wanted));
     const first = byWanted || this.domains.find((d) => d.id === keepDomainId) ||
@@ -130,7 +132,7 @@ export class DomainTab {
     this._plot();
     this.tree.select(d.id, { emit: false });
     this.tree.reveal(`group:protos:${d.id}`);
-    this.inspector.show(describeDomain(d));
+    this.inspector.show(describeDomain(d, this.sources));
     this.selected = d.id;
   }
 
@@ -183,13 +185,13 @@ export class DomainTab {
 
   select(id, source) {
     if (!id || !this.domain) {
-      if (source === "plot") { this.inspector.show(describeDomain(this.domain)); this.tree.select(this.domain.id, { emit: false }); }
+      if (source === "plot") { this.inspector.show(describeDomain(this.domain, this.sources)); this.tree.select(this.domain.id, { emit: false }); }
       return;
     }
     if (id.startsWith("ontology:")) return this.context.openInOntology?.(this.source.file, id.slice(9));
     if (id.startsWith("group:")) return;
     const domain = this.domains.find((d) => d.id === id);
-    if (domain) { if (domain !== this.domain) this.showDomain(id); else this.inspector.show(describeDomain(domain)); return; }
+    if (domain) { if (domain !== this.domain) this.showDomain(id); else this.inspector.show(describeDomain(domain, this.sources)); return; }
     const owner = this.domains.find((d) => d.prototypes.some((p) => p.id === id) || d.dimensions.some((x) => x.id === id));
     if (!owner) return this.context.openInOntology?.(this.source.file, id);
     if (owner !== this.domain) this.showDomain(owner.id);
@@ -205,12 +207,13 @@ export class DomainTab {
     this.selected = id;
   }
 
-  _status(model) {
+  _status(meta) {
     const src = this.source;
     const where = `${src.directory}/${src.file}`;
     const note = src.fallback ? ` (ontology/ has no .owl files yet; using ${src.directory}/)` : "";
-    this.ui.status.textContent = model
-      ? `${where}${note} · sha256 ${model.meta.sha256.slice(0, 12)}… · ${this.domains.length} domains · ` +
+    this.ui.status.textContent = meta
+      ? `${where}${note} · sha256 ${meta.sha256.slice(0, 12)}… · ${meta.parser} + SPARQL (${meta.queries.length} queries) · ` +
+        `${this.domains.length} domains · ` +
         `${this.domains.reduce((n, d) => n + d.prototypes.length, 0)} prototypes · read ${new Date().toLocaleTimeString()}`
       : `${where} not available${note}`;
   }

@@ -1,0 +1,19 @@
+# Provenance: the knowledge repositories (sources) definitions cite, with the number of definitions
+# citing each. Sources that are declared but never cited are included with a count of 0.
+#
+# Columns
+#   ?source       a KnowledgeRepository, or any term used as ecs:hasSource
+#   ?label        rdfs:label of the source (optional)
+#   ?definitions  number of distinct Definition individuals with ecs:hasSource ?source
+
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ecs:  <http://example.org/conceptual-space-emotion.owl#>
+
+SELECT ?source ?label (COUNT(DISTINCT ?definition) AS ?definitions)
+WHERE {
+  { ?source rdf:type ecs:KnowledgeRepository } UNION { ?anyDefinition ecs:hasSource ?source }
+  OPTIONAL { ?source rdfs:label ?label }
+  OPTIONAL { ?definition ecs:hasSource ?source }
+}
+GROUP BY ?source ?label

@@ -1,9 +1,14 @@
-"""Local server for the Emotional Ontology GUI (Python standard library only).
+"""Local server for the Emotional Ontology GUI (Python standard library + RDFLib).
 
-Serves the static dashboard from gui/web/ and a small read-only JSON API:
+Serves the static dashboard from gui/web/ and a small read-only JSON API. Ontology content is obtained
+by loading the OWL file with RDFLib and running the named SPARQL queries in gui/sparql/ (see
+gui/sparql/README.md). Every request loads the file afresh, so Reload always shows what is on disk.
 
-  GET /api/ontologies              OWL files available in the ontology folder
-  GET /api/ontology?file=<name>    the parsed ontology (re-read from disk on every request)
+  GET /api/ontologies                       OWL files available in the ontology folder
+  GET /api/ontology?file=<name>             Emotional Ontology tab model (query explorer/statements)
+  GET /api/domains                          Domain Models tab data (queries domains/*), from the populated file
+  GET /api/queries                          the named queries (name, description, text)
+  GET /api/sparql/<name>[?file=<name>]      raw result rows of one named query (no user-supplied SPARQL)
 
 Ontology folder: `ontology/` (the repository's ontology location). The previous
 `owl/` location is supported as a fallback if no ontology files are found there.
@@ -14,12 +19,16 @@ Ontology files are only ever opened for reading. Only files listed by
 
 Usage (from the repository root):
     python3 gui/server.py [--port 8765] [--owl-dir ontology] [--default emotional_ontology_populated.owl] [--open]
+
+RDFLib is installed in gui/.venv (see gui/README.md). If the interpreter running this script cannot import
+it, the script restarts itself with gui/.venv/bin/python when that environment exists.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import threading
 import webbrowser
@@ -31,9 +40,21 @@ from urllib.parse import parse_qs, urlparse
 
 GUI_DIR = Path(__file__).resolve().parent
 REPO_DIR = GUI_DIR.parent
+VENV_PYTHON = GUI_DIR / ".venv" / "bin" / "python"
 sys.path.insert(0, str(GUI_DIR))
 
-from owl_loader import find_ontologies, load_ontology  # noqa: E402
+try:
+    import rdflib  # noqa: F401
+except ImportError:
+    # The venv's python is a symlink to the system interpreter, so compare environments (sys.prefix), not binaries.
+    if __name__ == "__main__" and VENV_PYTHON.exists() and Path(sys.prefix).resolve() != (GUI_DIR / ".venv").resolve():
+        os.execv(str(VENV_PYTHON), [str(VENV_PYTHON), str(Path(__file__).resolve()), *sys.argv[1:]])
+    sys.exit("RDFLib is required. Set it up with:\n"
+             "  python3 -m venv gui/.venv && gui/.venv/bin/pip install -r gui/requirements.txt\n"
+             "then run:  gui/.venv/bin/python gui/server.py")
+
+from ontology_service import (QueryLibrary, UnknownQuery, build_domains, build_explorer_model,  # noqa: E402
+                              find_ontologies, load)
 
 # Searched in this order; the first folder that contains .owl files is used.
 OWL_DIR_CANDIDATES = [REPO_DIR / "ontology", REPO_DIR / "owl"]
@@ -50,6 +71,7 @@ def resolve_owl_dir() -> Path:
 
 
 DEFAULT_OWL_DIR = resolve_owl_dir()  # at import time; the server re-resolves per request
+QUERIES = QueryLibrary()             # gui/sparql/*.rq, parsed once at start-up
 
 
 class Handler(SimpleHTTPRequestHandler):
@@ -95,19 +117,38 @@ class Handler(SimpleHTTPRequestHandler):
                 "default": default,
                 "files": [{"name": n, "size": p.stat().st_size, "mtime": p.stat().st_mtime} for n, p in files.items()],
             })
+        query = parse_qs(url.query)
         if url.path == "/api/ontology":
-            name = parse_qs(url.query).get("file", [None])[0]
-            files = self.available()
-            if name not in files:
-                return self.send_json({"error": f"Unknown ontology file: {name!r}",
-                                       "available": sorted(files)}, HTTPStatus.NOT_FOUND)
+            return self.with_ontology(query.get("file", [None])[0], lambda loaded: build_explorer_model(loaded, QUERIES))
+        if url.path == "/api/domains":
+            return self.with_ontology(DOMAIN_SOURCE, lambda loaded: build_domains(loaded, QUERIES))
+        if url.path == "/api/queries":
+            return self.send_json({"directory": str(QUERIES.directory.relative_to(REPO_DIR)), "queries": [
+                {"name": q.name, "file": str(q.path.relative_to(REPO_DIR)), "description": q.description, "text": q.text}
+                for q in (QUERIES.get(n) for n in QUERIES.names())]})
+        if url.path.startswith("/api/sparql/"):
+            name = url.path[len("/api/sparql/"):]
             try:
-                return self.send_json(load_ontology(files[name]))
-            except Exception as exc:  # noqa: BLE001  report parse errors to the UI instead of failing silently
-                return self.send_json({"error": f"Could not read {name}: {exc}"}, HTTPStatus.UNPROCESSABLE_ENTITY)
+                QUERIES.get(name)
+            except UnknownQuery:
+                return self.send_json({"error": f"Unknown query: {name!r}", "available": QUERIES.names()},
+                                      HTTPStatus.NOT_FOUND)
+            return self.with_ontology(query.get("file", [DOMAIN_SOURCE])[0],
+                                      lambda loaded: {"file": loaded.meta["file"], **QUERIES.run_json(name, loaded.graph)})
         if url.path.startswith("/api/"):
             return self.send_json({"error": "Unknown API endpoint"}, HTTPStatus.NOT_FOUND)
         return super().do_GET()
+
+    def with_ontology(self, name, build):
+        """Load a listed ontology file afresh with RDFLib and answer with build(loaded)."""
+        files = self.available()
+        if name not in files:
+            return self.send_json({"error": f"Unknown ontology file: {name!r}", "available": sorted(files)},
+                                  HTTPStatus.NOT_FOUND)
+        try:
+            return self.send_json(build(load(files[name])))
+        except Exception as exc:  # noqa: BLE001  report parse/query errors to the UI instead of failing silently
+            return self.send_json({"error": f"Could not read {name}: {exc}"}, HTTPStatus.UNPROCESSABLE_ENTITY)
 
 
 def make_server(port=8765, owl_dir=None, default_file=None, host="127.0.0.1"):

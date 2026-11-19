@@ -29,6 +29,12 @@ class Architecture(unittest.TestCase):
                 self.assertNotIn("document.", text)
                 self.assertNotIn("fetch(", text)
 
+    def test_no_sparql_in_javascript(self):
+        # SPARQL lives in gui/sparql/*.rq and runs on the server; the frontend only consumes results.
+        for f in WEB.rglob("*.js"):
+            with self.subTest(file=f.name):
+                self.assertIsNone(re.search(r"\bSELECT\b[^\n]*\?\w|\bPREFIX\s+\w*:", f.read_text(encoding="utf-8")), f.name)
+
     def test_tabs_use_adapters_not_raw_ontology_json(self):
         # Tabs get ontology meaning only through the adapters (no OWL vocabulary in tab code).
         for f in (WEB / "tabs").glob("*.js"):

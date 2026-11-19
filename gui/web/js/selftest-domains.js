@@ -60,7 +60,7 @@ export async function runDomainChecks(dashboard, check) {
   await tab.ready;
   await sleep(50);
   const list = await (await fetch("/api/ontologies")).json();
-  check("Domain Models tab reads only the populated ontology", tab.model.meta.file === list.domain_source &&
+  check("Domain Models tab reads only the populated ontology (via /api/domains)", tab.meta.file === list.domain_source &&
         list.domain_source === "emotional_ontology_populated.owl",
         `${list.directory_relative}/${list.domain_source}${list.fallback ? " (fallback location)" : ""}`);
   const api = await (await fetch(`/api/ontology?file=${list.domain_source}`)).json();
@@ -97,8 +97,13 @@ export async function runDomainChecks(dashboard, check) {
             [...svg.querySelectorAll(".plot-empty")].map((t) => t.textContent).join(" "));
       continue;
     }
+    // Axis order is the domain JSON's dimension order (file order; checked in test_sparql.py). Here: the axes
+    // must be exactly the domain's dimensions, and each point must carry the value stated for each axis.
+    const tabDims = tab.domain.dimensions.map((x) => x.id);
+    check(`${d.label}: plotted axes are the domain's quality dimensions`,
+          tabDims.length === d.dims.length && d.dims.every((x) => tabDims.includes(x)), tabDims.map(local).join(", "));
     const pts = plottedPoints(svg);
-    const axes = d.dims.slice(0, 3);
+    const axes = tabDims.slice(0, 3);
     const wrong = pts.filter((p) => JSON.stringify(p.raw) !== JSON.stringify(axes.map((dim) => d.coords[p.id][dim])));
     check(`${d.label}: every prototype with coordinates is plotted with its ontology values verbatim`,
           pts.length === complete.length && !wrong.length && complete.every((id) => pts.some((p) => p.id === id)),
@@ -127,8 +132,9 @@ export async function runDomainChecks(dashboard, check) {
         title() === protoEnt.label && svg.querySelector(".pt.selected")?.dataset.id === target.id &&
         tab.tree.root.querySelector(".tree-row.selected")?.dataset.id === target.id, protoEnt.label);
   const valueCells = [...section("Dimensional values").querySelectorAll("dd")].map((dd) => dd.firstChild.textContent);
+  const bestDims = tab.domain.dimensions.map((x) => x.id);
   check("Inspector shows the prototype's dimensional values verbatim",
-        JSON.stringify(valueCells) === JSON.stringify(best.dims.map((dim) => best.coords[target.id][dim])), valueCells.join(", "));
+        JSON.stringify(valueCells) === JSON.stringify(bestDims.map((dim) => best.coords[target.id][dim])), valueCells.join(", "));
   const classes = protoEnt.types.filter((t) => !t.builtin && local(t.id) !== "PrototypicalInstance");
   const classLink = section("Emotion class")?.querySelector("a");
   check("Inspector shows the prototype's emotion class", classes.length && classLink?.textContent === api.entities[classes[0].id].label,
@@ -157,9 +163,9 @@ export async function runDomainChecks(dashboard, check) {
   await choose(best.id);
   const dimRow = tab.tree.root.querySelector(`.tree-row[data-id="${CSS.escape(`group:dims:${best.id}`)}"]`);
   dimRow.querySelector(".tree-toggle").click();
-  const firstDim = dimRow.closest("li").querySelector(`.tree-row[data-id="${CSS.escape(best.dims[0])}"]`);
+  const firstDim = dimRow.closest("li").querySelector(`.tree-row[data-id="${CSS.escape(bestDims[0])}"]`);
   firstDim.click();
-  check("Selecting a dimension in the tree shows it in the inspector", title() === api.entities[best.dims[0]].label);
+  check("Selecting a dimension in the tree shows it in the inspector", title() === api.entities[bestDims[0]].label);
 
   // link to the ontology inspector
   tab.select(target.id, "test");

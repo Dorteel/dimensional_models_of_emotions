@@ -1,0 +1,25 @@
+# Coordinates of prototypes:  ?prototype ecs:hasPoint ?point . ?point ecs:hasCoordinate ?coordinate .
+# The value is returned with its lexical form exactly as written in the OWL file (STR) and its datatype.
+# Missing ecs:onQualityDimension or ecs:numericValue statements leave the variable unbound (reported, not filled).
+#
+# Columns
+#   ?prototype   individual with ecs:hasPoint
+#   ?point       the Point
+#   ?coordinate  a Coordinate of the point
+#   ?dimension   ecs:onQualityDimension (optional)
+#   ?lexical     STR(ecs:numericValue) — the literal's lexical form (optional)
+#   ?datatype    DATATYPE(ecs:numericValue) (optional)
+
+PREFIX ecs:  <http://example.org/conceptual-space-emotion.owl#>
+
+SELECT ?prototype ?point ?coordinate ?dimension ?lexical ?datatype
+WHERE {
+  ?prototype ecs:hasPoint ?point .
+  ?point ecs:hasCoordinate ?coordinate .
+  OPTIONAL { ?coordinate ecs:onQualityDimension ?dimension }
+  OPTIONAL {
+    ?coordinate ecs:numericValue ?value .
+    BIND (STR(?value) AS ?lexical)
+    BIND (DATATYPE(?value) AS ?datatype)
+  }
+}

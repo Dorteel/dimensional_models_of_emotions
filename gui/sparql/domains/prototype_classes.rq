@@ -1,0 +1,21 @@
+# Emotion classes of prototypes: the asserted rdf:type values of a domain's prototypes other than
+# ecs:PrototypicalInstance and owl:NamedIndividual. Asserted types only (no reasoning).
+#
+# Columns
+#   ?prototype   an individual linked to a domain (either direction, as in prototypes.rq)
+#   ?class       an asserted type of it
+#   ?classLabel  rdfs:label of the class (optional)
+
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX ecs:  <http://example.org/conceptual-space-emotion.owl#>
+
+SELECT DISTINCT ?prototype ?class ?classLabel
+WHERE {
+  { ?domain ecs:hasDomainPrototype ?prototype } UNION { ?prototype ecs:belongsToDomain ?domain }
+  ?domain rdf:type ecs:Domain .
+  ?prototype rdf:type ?class .
+  FILTER (?class NOT IN (ecs:PrototypicalInstance, owl:NamedIndividual))
+  OPTIONAL { ?class rdfs:label ?classLabel }
+}

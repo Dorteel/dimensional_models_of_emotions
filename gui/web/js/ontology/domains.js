@@ -1,138 +1,17 @@
-// Domain models as stated in the ontology. Pure functions over the ontology JSON produced by
-// gui/owl_loader (no DOM, no fetching). Everything is read by following the ontology's own links:
+// Presentation of domain models for the Domain Models tab. Pure functions (no DOM, no fetching).
 //
-//   Domain --hasQualityDimension--> QualityDimension (rdfs:label, hasRange, isCircular, hasMeasurementLevel,
-//                                                     hasNotes, hasDefinition --> Definition)
-//   Domain --hasDomainPrototype--> PrototypicalInstance <--belongsToDomain-- (either direction is accepted)
-//   PrototypicalInstance: rdf:type <EmotionClass>, hasNotes, hasDefinition, hasPoint --> Point
-//   Point --hasCoordinate--> Coordinate (numericValue, onQualityDimension --> QualityDimension)
-//   Definition: hasValue (text), hasSource --> KnowledgeRepository (rdfs:label)
+// The data comes from GET /api/domains, which the server assembles from the SPARQL queries in
+// gui/sparql/domains/*.rq (see gui/sparql/README.md). This module does not read ontology triples: it only
+// turns that JSON into plot data, tree items and inspector descriptions.
 //
-// Terms are matched by local name, so the functions do not depend on the ontology's namespace IRI.
-// Nothing is filled in: missing statements are reported as missing.
-
-export const PLACEHOLDER_DEFINITIONS = ["no known definitions", "undefined"];
+//   domain     {id, label, name, modelTypes[], notes[], description[definition], dimensions[], prototypes[], issues[]}
+//   dimension  {id, label, name, ranges[{raw, min, max, parsed}], range, circular[], measurementLevel[], notes[], definitions[]}
+//   prototype  {id, label, name, emotionClasses[{id, label, definitions[]}], points[], coordinates[],
+//               byDim{dimensionId: {value, raw, status: ok|missing|not numeric|conflicting, coordinateId}},
+//               definitions[], notes[], issues[]}
+//   definition {id, texts[{value, datatype, lang, placeholder}], sources[{id, label}]}
 
 const local = (iri) => String(iri).replace(/^.*[#/]/, "");
-const assertedTypes = (e) => e.types.filter((t) => !t.builtin);
-const isA = (e, cls) => assertedTypes(e).some((t) => local(t.id) === cls);
-const objects = (e, pred) => e.out.filter((o) => local(o.predicate) === pred).map((o) => o.target);
-const subjects = (e, pred) => e.in.filter((o) => local(o.predicate) === pred).map((o) => o.source);
-const values = (e, pred) => e.literals.filter((l) => local(l.predicate) === pred);
-const unique = (xs) => [...new Set(xs)];
-
-export const isPlaceholder = (text) => PLACEHOLDER_DEFINITIONS.includes(String(text).trim().toLowerCase());
-
-function definitionsOf(model, entity, pred = "hasDefinition") {
-  return objects(entity, pred).map((defId) => {
-    const def = model.entities[defId];
-    const texts = def ? values(def, "hasValue") : [];
-    return {
-      id: defId,
-      texts: texts.map((l) => ({ value: l.value, datatype: l.datatype_name, lang: l.lang,
-                                 placeholder: isPlaceholder(l.value) })),
-      sources: def ? objects(def, "hasSource").map((s) => ({ id: s, label: model.entities[s]?.label ?? local(s) })) : [],
-    };
-  });
-}
-
-export function parseRange(raw) {
-  // hasRange is stored as text such as "min=-1,max=1"; anything else is kept raw and not interpreted.
-  const m = /^\s*min\s*=\s*([^,]*),\s*max\s*=\s*(.*)$/.exec(raw);
-  if (!m) return { raw, min: null, max: null, parsed: false };
-  const num = (s) => (/^\s*[-+]?(\d+\.?\d*|\.\d+)([eE][-+]?\d+)?\s*$/.test(s) ? Number(s) : null);
-  return { raw, min: num(m[1]), max: num(m[2]), parsed: true };
-}
-
-const NUMERIC = /^\s*[-+]?(\d+\.?\d*|\.\d+)([eE][-+]?\d+)?\s*$/;
-
-function dimensionInfo(model, id) {
-  const e = model.entities[id];
-  const ranges = values(e, "hasRange").map((l) => parseRange(l.value));
-  return {
-    id, label: e.label, name: e.name,
-    ranges,
-    range: ranges.length === 1 ? ranges[0] : null,
-    circular: values(e, "isCircular").map((l) => l.value),
-    measurementLevel: values(e, "hasMeasurementLevel").map((l) => l.value),
-    notes: values(e, "hasNotes").map((l) => l.value),
-    definitions: definitionsOf(model, e),
-  };
-}
-
-function prototypeInfo(model, id, dimIds) {
-  const e = model.entities[id];
-  const issues = [];
-  const emotionClasses = assertedTypes(e).filter((t) => local(t.id) !== "PrototypicalInstance")
-    .map((t) => ({ id: t.id, label: model.entities[t.id]?.label ?? t.name,
-                   definitions: model.entities[t.id] ? definitionsOf(model, model.entities[t.id], "hasClassDefinition") : [] }));
-  const points = objects(e, "hasPoint");
-  if (points.length > 1) issues.push(`${points.length} points (hasPoint) are stated for this prototype`);
-  const coordinates = [];   // every Coordinate reached from the prototype, verbatim
-  for (const pointId of points) {
-    const point = model.entities[pointId];
-    for (const coordId of point ? objects(point, "hasCoordinate") : []) {
-      const c = model.entities[coordId];
-      const raw = c ? values(c, "numericValue") : [];
-      const dims = c ? objects(c, "onQualityDimension") : [];
-      coordinates.push({ id: coordId, pointId, dimensions: dims, raw: raw.map((l) => l.value),
-                         datatype: raw[0]?.datatype_name ?? null });
-      if (raw.length !== 1) issues.push(`${local(coordId)} has ${raw.length} numericValue statements`);
-      if (dims.length !== 1) issues.push(`${local(coordId)} has ${dims.length} onQualityDimension statements`);
-      for (const d of dims) {
-        if (!dimIds.includes(d)) issues.push(`${local(coordId)} is on ${local(d)}, which is not a dimension of this domain`);
-      }
-    }
-  }
-  // One value per domain dimension, only when the ontology states exactly one numeric value for it.
-  const byDim = {};
-  for (const dimId of dimIds) {
-    const found = coordinates.filter((c) => c.dimensions.includes(dimId)).flatMap((c) => c.raw.map((raw) => ({ raw, c })));
-    let value = null, raw = null, status = "missing";
-    if (found.length === 1 && NUMERIC.test(found[0].raw)) {
-      raw = found[0].raw; value = Number(raw); status = "ok";
-    } else if (found.length === 1) {
-      raw = found[0].raw; status = "not numeric";
-      issues.push(`value '${raw}' on ${local(dimId)} is not numeric`);
-    } else if (found.length > 1) {
-      raw = found.map((f) => f.raw).join(" | "); status = "conflicting";
-      issues.push(`${found.length} values on ${local(dimId)}: ${raw}`);
-    }
-    byDim[dimId] = { value, raw, status, coordinateId: found[0]?.c.id ?? null };
-  }
-  return {
-    id, label: e.label, name: e.name, emotionClasses, points, coordinates, byDim,
-    definitions: definitionsOf(model, e),
-    notes: values(e, "hasNotes").map((l) => l.value),
-    issues,
-  };
-}
-
-export function extractDomains(model) {
-  const domains = Object.values(model.entities).filter((e) => isA(e, "Domain"))
-    .sort((a, b) => a.label.localeCompare(b.label));
-  return domains.map((e) => {
-    const dimIds = unique(objects(e, "hasQualityDimension")).filter((d) => model.entities[d]);
-    const protoIds = unique([...objects(e, "hasDomainPrototype"), ...subjects(e, "belongsToDomain")])
-      .filter((p) => model.entities[p]);
-    const issues = [];
-    const viaDomain = new Set(objects(e, "hasDomainPrototype")), viaProto = new Set(subjects(e, "belongsToDomain"));
-    for (const p of protoIds) {
-      if (!viaDomain.has(p)) issues.push(`${local(p)} states belongsToDomain, but the domain has no hasDomainPrototype to it`);
-      if (!viaProto.has(p)) issues.push(`${local(p)} is a hasDomainPrototype of the domain, but has no belongsToDomain back`);
-    }
-    const prototypes = protoIds.map((p) => prototypeInfo(model, p, dimIds));
-    return {
-      id: e.id, label: e.label, name: e.name,
-      modelTypes: values(e, "hasModelType").map((l) => l.value),
-      notes: values(e, "hasNotes").map((l) => l.value),
-      description: definitionsOf(model, e),
-      dimensions: dimIds.map((d) => dimensionInfo(model, d)),
-      prototypes,
-      issues,
-    };
-  });
-}
 
 // ------------------------------------------------------------------ plot data (generic shape)
 
@@ -176,7 +55,15 @@ function definitionRows(defs, emptyText) {
   return { rows, empty: emptyText };
 }
 
-export function describeDomain(domain) {
+function citedSources(domain) {
+  const defs = [...domain.description, ...domain.dimensions.flatMap((d) => d.definitions),
+                ...domain.prototypes.flatMap((p) => [...p.definitions, ...p.emotionClasses.flatMap((c) => c.definitions)])];
+  const ids = new Set(defs.flatMap((d) => d.sources.map((s) => s.id)));
+  return [...ids];
+}
+
+export function describeDomain(domain, sources = []) {
+  const byId = new Map(sources.map((s) => [s.id, s]));
   const plotted = domain.prototypes.filter((p) => Object.values(p.byDim).every((v) => v.status === "ok")).length;
   return {
     title: domain.label, subtitle: domain.name, badges: ["Domain", ...domain.modelTypes],
@@ -191,6 +78,9 @@ export function describeDomain(domain) {
         note: Object.values(p.byDim).every((v) => v.status === "ok") ? "" : "no complete coordinates" })),
         empty: "No prototypical instances are linked to this domain." },
       { title: "Coverage", rows: [{ key: "plotted", value: `${plotted} of ${domain.prototypes.length} prototypes have a value on every dimension` }] },
+      { title: "Sources cited", rows: citedSources(domain).map((id) => ({ value: byId.get(id)?.label ?? local(id), ref: ONTO(id),
+        note: byId.has(id) ? `cited by ${byId.get(id).definitions} definition(s) in the ontology` : "" })),
+        empty: "No definition of this domain, its dimensions or prototypes cites a source." },
       { title: "Issues in the ontology", rows: domain.issues.map((i) => ({ value: i })) },
       { title: "Ontology", rows: [{ value: "Open this domain in the ontology inspector", ref: ONTO(domain.id) }] },
     ],

@@ -1,34 +1,33 @@
-"""Build a JSON-serialisable view of an OWL ontology from RDF triples.
+"""Model for the Emotional Ontology tab, built from the result of the SPARQL query explorer/statements.
 
-The view is a faithful re-arrangement of the triples in the file; nothing is
-inferred except what is needed to arrange them (e.g. listing a class's direct
-instances). Terms that are used but never declared are marked `declared: false`.
+The query returns every statement of the file; this module arranges the rows into entities (classes,
+individuals, properties), edges and the asserted class hierarchy. Nothing is inferred (no reasoning).
+The JSON shape is the one the Emotional Ontology tab consumes:
 
-Output (see `load_ontology`):
-  meta        file path, sha256, size, mtime, ontology IRI, base, prefixes
-  entities    {id: {id, iri, label, kind, declared, types, line, literals, ...}}
+  meta        file, path, sha256, size, mtime, parser, ontology IRI, base, prefixes, queries used
+  entities    {id: {id, iri, name, label, kind, declared, line, types, labels, comments, literals,
+                    superclasses, subclasses, instances, domain, range, property_kind, characteristics, out, in}}
   edges       [{source, target, kind, predicate, label, line}]
-  hierarchy   [{id, children: [...], instances: [...]}]  (class tree; roots under owl:Thing)
+  hierarchy   {id: owl:Thing, implicit, children: [...], instances: [...]}
   stats       counts per kind
-  warnings    unsupported RDF/XML constructs reported by the reader
+  warnings    always empty (RDFLib reports unreadable files as errors)
 """
 
 from __future__ import annotations
 
-import hashlib
 from collections import defaultdict
-from pathlib import Path
 
-from .rdfxml import BNode, IRI, Literal, parse_rdfxml
+from rdflib import Literal
 
-RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-RDFS = "http://www.w3.org/2000/01/rdf-schema#"
-OWL = "http://www.w3.org/2002/07/owl#"
-XSD = "http://www.w3.org/2001/XMLSchema#"
+from .names import OWL, RDF, RDFS, XSD, Names, graph_prefixes
+from .queries import QueryLibrary, term_id
+from .queries import term_id as _tid   # the model code below uses "term_id" as a variable name
+from .store import LoadedOntology
+
+STATEMENTS_QUERY = "explorer/statements"
 
 TYPE = RDF + "type"
 SUBCLASS = RDFS + "subClassOf"
-SUBPROPERTY = RDFS + "subPropertyOf"
 DOMAIN = RDFS + "domain"
 RANGE = RDFS + "range"
 LABEL = RDFS + "label"
@@ -41,65 +40,39 @@ PROPERTY_TYPES = {
     OWL + "AnnotationProperty": "annotation",
     RDF + "Property": "rdf",
 }
-# Characteristics such as owl:FunctionalProperty are extra types of a property.
 PROPERTY_CHARACTERISTICS = {OWL + t for t in ("FunctionalProperty", "InverseFunctionalProperty", "TransitiveProperty",
                                                "SymmetricProperty", "AsymmetricProperty", "ReflexiveProperty",
                                                "IrreflexiveProperty")}
 INDIVIDUAL_TYPE = OWL + "NamedIndividual"
 ONTOLOGY_TYPE = OWL + "Ontology"
 OWL_THING = OWL + "Thing"
-WELL_KNOWN = {RDF: "rdf", RDFS: "rdfs", OWL: "owl", XSD: "xsd"}
 
 
-def _sha256(path: Path) -> str:
-    h = hashlib.sha256()
-    with open(path, "rb") as handle:
-        for chunk in iter(lambda: handle.read(65536), b""):
-            h.update(chunk)
-    return h.hexdigest()
+def statements(loaded: LoadedOntology, library: QueryLibrary):
+    """Rows of explorer/statements as (subject id, predicate IRI, object term), in document order."""
+    _, rows = library.run(STATEMENTS_QUERY, loaded.graph)
+    triples = [(term_id(r["s"]), str(r["p"]), r["o"]) for r in rows]
+    pos = loaded.document.position
+    # RDF is unordered: order by the subject's and object's position in the file (then by IRI / lexical form),
+    # which reproduces the file's own order for lists such as a domain's dimensions.
+    def key(t):
+        s, p, o = t
+        obj = (float("inf"), str(o)) if isinstance(o, Literal) else (pos(term_id(o)), term_id(o))
+        return (pos(s), s, p, obj)
+    return sorted(triples, key=key)
 
 
-class _Names:
-    """Compact, unique display names for IRIs using the file's own prefixes."""
-
-    def __init__(self, prefixes, base):
-        self.ns = []
-        for prefix, uri in prefixes.items():
-            self.ns.append((uri, prefix))
-        for uri, prefix in WELL_KNOWN.items():
-            if all(u != uri for u, _ in self.ns):
-                self.ns.append((uri, prefix))
-        if base and all(u != base + "#" for u, _ in self.ns):
-            self.ns.append((base + "#", ""))
-        self.ns.sort(key=lambda item: -len(item[0]))  # longest namespace first
-
-    def short(self, iri: str) -> str:
-        for uri, prefix in self.ns:
-            if uri and iri.startswith(uri) and len(iri) > len(uri):
-                local = iri[len(uri):]
-                return local if prefix == "" else f"{prefix}:{local}"
-        return iri
-
-
-def _term_id(term):
-    return term.value if isinstance(term, IRI) else "_:" + term.value
-
-
-def load_ontology(path) -> dict:
-    path = Path(path)
-    stat = path.stat()
-    parsed = parse_rdfxml(path)
-    names = _Names(parsed.prefixes, parsed.base)
-    triples = parsed.triples
+def build_explorer_model(loaded: LoadedOntology, library: QueryLibrary) -> dict:
+    graph = loaded.graph
+    names = Names(graph_prefixes(graph), loaded.document.base)
+    triples = statements(loaded, library)
 
     types = defaultdict(list)
-    for t in triples:
-        if t.p.value == TYPE and not isinstance(t.o, Literal):
-            types[_term_id(t.s)].append(_term_id(t.o))
+    for s_id, p_id, o in triples:
+        if p_id == TYPE and not isinstance(o, Literal):
+            types[s_id].append(_tid(o))
 
-    first_line = {}
-    for t in triples:
-        first_line.setdefault(_term_id(t.s), t.line)
+    first_line = loaded.document.lines
 
     def kind_of(term_id):
         ts = set(types.get(term_id, []))
@@ -148,13 +121,14 @@ def load_ontology(path) -> dict:
             entity(term_id)
 
     edges = []
-    for t in triples:
-        s_id, p_id = _term_id(t.s), t.p.value
+    for s_id, p_id, o in triples:
         s = entity(s_id)
-        if isinstance(t.o, Literal):
-            lit = {"predicate": p_id, "predicate_name": names.short(p_id), "value": t.o.value,
-                   "datatype": t.o.datatype, "datatype_name": names.short(t.o.datatype) if t.o.datatype else None,
-                   "lang": t.o.lang, "line": t.line}
+        line = first_line.get(s_id)   # statements are located by their subject's description
+        if isinstance(o, Literal):
+            dt = str(o.datatype) if o.datatype is not None else None
+            lit = {"predicate": p_id, "predicate_name": names.short(p_id), "value": str(o),
+                   "datatype": dt, "datatype_name": names.short(dt) if dt else None,
+                   "lang": o.language or None, "line": line}
             if p_id == LABEL:
                 s["labels"].append(lit)
             elif p_id == COMMENT:
@@ -162,7 +136,7 @@ def load_ontology(path) -> dict:
             else:
                 s["literals"].append(lit)
             continue
-        o_id = _term_id(t.o)
+        o_id = _tid(o)
         if p_id == TYPE:
             if o_id in PROPERTY_TYPES:
                 s["property_kind"] = PROPERTY_TYPES[o_id]
@@ -170,20 +144,20 @@ def load_ontology(path) -> dict:
                 s["characteristics"].append(names.short(o_id))
             if o_id in CLASS_TYPES or o_id in PROPERTY_TYPES or o_id in PROPERTY_CHARACTERISTICS \
                     or o_id in (INDIVIDUAL_TYPE, ONTOLOGY_TYPE):
-                s["types"].append({"id": o_id, "name": names.short(o_id), "builtin": True, "line": t.line})
+                s["types"].append({"id": o_id, "name": names.short(o_id), "builtin": True, "line": line})
                 continue
             o = entity(o_id, "class")
-            s["types"].append({"id": o_id, "name": o["name"], "builtin": False, "line": t.line})
+            s["types"].append({"id": o_id, "name": o["name"], "builtin": False, "line": line})
             o["instances"].append(s_id)
             edges.append({"source": s_id, "target": o_id, "kind": "type", "predicate": TYPE,
-                          "label": "rdf:type", "line": t.line})
+                          "label": "rdf:type", "line": line})
             continue
         if p_id == SUBCLASS:
             o = entity(o_id, "class")
             s["superclasses"].append(o_id)
             o["subclasses"].append(s_id)
             edges.append({"source": s_id, "target": o_id, "kind": "subclass", "predicate": SUBCLASS,
-                          "label": "rdfs:subClassOf", "line": t.line})
+                          "label": "rdfs:subClassOf", "line": line})
             continue
         if p_id in (DOMAIN, RANGE):
             is_datatype = o_id.startswith(XSD) or o_id == RDFS + "Literal"
@@ -191,10 +165,10 @@ def load_ontology(path) -> dict:
             s["domain" if p_id == DOMAIN else "range"].append(o_id)
             continue
         o = entity(o_id)
-        s["out"].append({"predicate": p_id, "predicate_name": names.short(p_id), "target": o_id, "line": t.line})
-        o["in"].append({"predicate": p_id, "predicate_name": names.short(p_id), "source": s_id, "line": t.line})
+        s["out"].append({"predicate": p_id, "predicate_name": names.short(p_id), "target": o_id, "line": line})
+        o["in"].append({"predicate": p_id, "predicate_name": names.short(p_id), "source": s_id, "line": line})
         edges.append({"source": s_id, "target": o_id, "kind": "relation", "predicate": p_id,
-                      "label": names.short(p_id), "line": t.line})
+                      "label": names.short(p_id), "line": line})
 
     # Property schema: domain -> range, one edge per (domain, range) pair, labelled with the property.
     for e in entities.values():
@@ -239,20 +213,11 @@ def load_ontology(path) -> dict:
     stats["triples"] = len(triples)
 
     return {
-        "meta": {"file": path.name, "path": str(path), "sha256": _sha256(path), "size": stat.st_size,
-                 "mtime": stat.st_mtime, "ontology_iri": ontology_iri, "base": parsed.base,
-                 "prefixes": parsed.prefixes},
+        "meta": {**loaded.meta, "ontology_iri": ontology_iri, "base": loaded.document.base,
+                 "prefixes": graph_prefixes(graph), "queries": [STATEMENTS_QUERY]},
         "entities": entities,
         "edges": edges,
         "hierarchy": hierarchy,
         "stats": dict(stats),
-        "warnings": parsed.warnings,
+        "warnings": [],
     }
-
-
-def find_ontologies(directory) -> list[Path]:
-    directory = Path(directory)
-    return sorted(p for p in directory.glob("*.owl") if p.is_file()) if directory.is_dir() else []
-
-
-__all__ = ["load_ontology", "find_ontologies"]

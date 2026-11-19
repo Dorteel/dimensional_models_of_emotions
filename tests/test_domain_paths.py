@@ -28,6 +28,8 @@ class DomainDiscovery(unittest.TestCase):
                 path.write_text(yaml.safe_dump({'name': identifier, 'dimensions': [], 'emotions': []}))
             with patch.object(population, 'DOMAINS_DIR', root):
                 self.assertEqual({data['name'] for _, data in population.read_domains()}, {'custom', 'other', 'legacy'})
+                # Named selection uses only the standard <name>/<name>.yaml layout.
+                self.assertEqual(population.discover_domains(), {'custom': root / 'custom/custom.yaml'})
                 # Drafts remain available by explicit choice, without promoting their status.
                 self.assertEqual(population.read_domains([root / 'drafts/research/research.yaml'])[0][1]['name'], 'draft')
 
@@ -84,9 +86,15 @@ class ExportPaths(unittest.TestCase):
         self.assertTrue(self.exporter.MACRO_DOC.is_file())
         with ZipFile(self.exporter.MACRO_DOC) as archive:
             code = ''.join(ET.fromstring(archive.read('Basic/Standard/Module1.xml')).itertext())
-        self.assertIn('fileUrl = DomainYAMLURL(ThisComponent.URL, modelId)', code)
-        self.assertIn('ThisComponent.store()', code)
+            content = archive.read('content.xml').decode()
+        self.assertIn('Sub SaveDomainModel(Optional event)', code)
+        self.assertIn('baseUrl = DomainModelParentURL(sourceDoc.URL)', code)
+        self.assertIn('CopyDomainModelValues(d, target)', code)
         self.assertNotIn('FilePicker', code)
+        self.assertIn('form:label="SAVE DOMAIN MODEL"', content)
+        self.assertIn('Standard.Module1.SaveDomainModel?language=Basic', content)
+        for entry in ('SaveModel', 'AddDimension', 'AddPrototype', 'ExportYAML'):
+            self.assertIn(f'Sub {entry}(Optional event)', code)
 
 
 if __name__ == '__main__':

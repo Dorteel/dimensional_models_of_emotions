@@ -1,0 +1,21 @@
+# Domain discovery: every individual explicitly typed ecs:Domain.
+#
+# Columns
+#   ?domain     the Domain individual (IRI)
+#   ?label      rdfs:label (optional; one row per label)
+#   ?modelType  ecs:hasModelType (optional; one row per value)
+#
+# Prefixes
+#   ecs:  the Emotional Conceptual Spaces ontology (xml:base of ontology/emotional_ontology_populated.owl)
+#   rdf:, rdfs: W3C vocabularies
+
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ecs:  <http://example.org/conceptual-space-emotion.owl#>
+
+SELECT ?domain ?label ?modelType
+WHERE {
+  ?domain rdf:type ecs:Domain .
+  OPTIONAL { ?domain rdfs:label ?label }
+  OPTIONAL { ?domain ecs:hasModelType ?modelType }
+}

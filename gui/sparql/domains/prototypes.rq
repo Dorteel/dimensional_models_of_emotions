@@ -1,0 +1,26 @@
+# Prototypical instances of each domain. A prototype is linked to a domain in either direction:
+#   ?domain ecs:hasDomainPrototype ?prototype     or     ?prototype ecs:belongsToDomain ?domain
+# Both directions are returned (?link tells which), so one-sided links can be reported.
+#
+# Columns
+#   ?domain     the Domain individual
+#   ?prototype  the linked individual
+#   ?link       "hasDomainPrototype" or "belongsToDomain"
+#   ?label      rdfs:label of the prototype (optional)
+
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ecs:  <http://example.org/conceptual-space-emotion.owl#>
+
+SELECT ?domain ?prototype ?link ?label
+WHERE {
+  ?domain rdf:type ecs:Domain .
+  {
+    ?domain ecs:hasDomainPrototype ?prototype .
+    BIND ("hasDomainPrototype" AS ?link)
+  } UNION {
+    ?prototype ecs:belongsToDomain ?domain .
+    BIND ("belongsToDomain" AS ?link)
+  }
+  OPTIONAL { ?prototype rdfs:label ?label }
+}

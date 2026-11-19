@@ -86,6 +86,15 @@ def read_dictionary():
     return df
 
 
+def discover_domains():
+    """Named research models in domains/<name>/<name>.yaml, in stable order."""
+    if not DOMAINS_DIR.is_dir():
+        raise FileNotFoundError(f"Domain directory not found: {DOMAINS_DIR}")
+    return {path.parent.name: path for path in sorted(DOMAINS_DIR.glob("*/*.yaml"))
+            if path.stem == path.parent.name
+            and path.parent.name not in {"examples", "drafts", "yourdomainmodel", "yourdomainmodel2"}}
+
+
 def read_domains(paths=None):
     if not DOMAINS_DIR.is_dir():
         raise FileNotFoundError(f"Domain directory not found: {DOMAINS_DIR}")
@@ -176,7 +185,9 @@ def main(domain_paths=None):
 
     dictionary = read_dictionary()
     domains = read_domains(domain_paths)
-    onto = get_ontology(ontology_path.as_uri()).load()
+    # A separate world prevents stale individuals even when main() is called
+    # repeatedly in the same Python process.
+    onto = World().get_ontology(ontology_path.as_uri()).load()
     emotions = {}
 
     for _, row in dictionary.iterrows():
@@ -256,8 +267,38 @@ def main(domain_paths=None):
     print(f"Saved: {OUTPUT_PATH}")
 
 
-if __name__ == "__main__":
+def cli():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("domains", nargs="*", type=Path, help="Explicit domain YAML files (defaults to repository models; excludes examples)")
+    parser.add_argument("paths", nargs="*", type=Path,
+                        help="Legacy explicit YAML paths; cannot be combined with selection flags")
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument("--list-domains", action="store_true", help="List research model names and paths without populating")
+    selection.add_argument("--domains", nargs="*", metavar="NAME",
+                           help="Include these model names; no names means dictionary only")
+    selection.add_argument("--all-domains", action="store_true", help="Include all research models in the standard folder layout")
     args = parser.parse_args()
-    main(args.domains or None)
+    if args.paths and (args.list_domains or args.domains is not None or args.all_domains):
+        parser.error("Explicit YAML paths cannot be combined with selection flags")
+    try:
+        paths = args.paths or None
+        if args.list_domains or args.domains is not None or args.all_domains:
+            available = discover_domains()
+            if args.list_domains:
+                for name, path in available.items():
+                    print(f"{name}\t{source_path(path)}")
+                if not available:
+                    print("No research domains found.")
+                return
+            names = set(available) if args.all_domains else set(args.domains)
+            unknown = names - available.keys()
+            if unknown:
+                raise ValueError(f"Unknown domain name(s): {', '.join(sorted(unknown))}. "
+                                 f"Available domains: {', '.join(available) or '(none)'}")
+            paths = [path for name, path in available.items() if name in names]
+        main(paths)
+    except (FileNotFoundError, ValueError, yaml.YAMLError) as error:
+        parser.error(str(error))
+
+
+if __name__ == "__main__":
+    cli()
