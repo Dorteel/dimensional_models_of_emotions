@@ -32,7 +32,7 @@ class ServerTest(unittest.TestCase):
         cls.base = f"http://127.0.0.1:{cls.httpd.server_address[1]}"
         cls.thread = threading.Thread(target=cls.httpd.serve_forever, daemon=True)
         cls.thread.start()
-        cls.files = find_ontologies(REPO / "owl")
+        cls.files = find_ontologies(server.resolve_owl_dir())
         cls.hashes = {p: hashlib.sha256(p.read_bytes()).hexdigest() for p in cls.files}
 
     @classmethod

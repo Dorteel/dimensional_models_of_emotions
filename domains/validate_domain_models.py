@@ -43,7 +43,7 @@ UNDEFINED, UNKNOWN = "undefined", "unknown"
 PROTECTED = {
     str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
     for p in [gen.TEMPLATE, gen.MACRO_DOC, *DOMAINS.rglob("*.ods"), *DOMAINS.rglob("*.yaml"),
-              *(ROOT / "owl").glob("*.owl"),
+              *(ROOT / "ontology").glob("*.owl"),
               EMOTIONS / "emotion_dictionary.ods", EMOTIONS / "emotion_catalogue.ods"]
 }
 YAML_KEYS = ["schema_version", "id", "name", "description", "notes", "dimensions", "emotions"]
@@ -116,7 +116,7 @@ for r in dict_rows[1:]:
         dictionary[key(r[0])] = [(dict_head[i].removesuffix(" definition"), r[i], r[i + 1])
                                  for i in range(1, len(dict_head), 2) if r[i] != ""]
 catalogue = {key(r[0]): r[1] for r in sheets_of(EMOTIONS / "emotion_catalogue.ods")["Catalogue"][1:] if r[0]}
-template = sheets_of(ROOT / "domain_model_template.ods")["DomainModel"]
+template = sheets_of(gen.TEMPLATE)["DomainModel"]
 
 # ----------------------------------------------------------------- B. every model accounted for
 expected = {m for m, (_, r) in dim_models.items() if r["model_dimensions"].strip()}
@@ -284,7 +284,7 @@ with gen.office() as session:
         # E1: rebuild the macro-exported example in a copy of the template and compare byte-for-byte.
         golden_text = (DOMAINS / "examples/yourdomainmodel/yourdomainmodel2.yaml").read_text(encoding="utf-8")
         g = yaml.safe_load(golden_text)
-        doc = gen.load(session, ROOT / "domain_model_template.ods", AsTemplate=True)
+        doc = gen.load(session, gen.TEMPLATE, AsTemplate=True)
         d = doc.Sheets.getByName("DomainModel")
         d.getCellRangeByName("B4").String = g["name"]
         d.getCellRangeByName("B5").String = g["description"]

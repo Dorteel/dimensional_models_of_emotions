@@ -33,7 +33,7 @@ CHROME = os.environ.get("CHROME") or next(
 @unittest.skipUnless(CHROME, "Chrome/Chromium not found (set CHROME=...)")
 class BrowserSelfTest(unittest.TestCase):
     def test_dashboard_in_headless_browser(self):
-        for path in find_ontologies(server.DEFAULT_OWL_DIR):
+        for path in find_ontologies(server.resolve_owl_dir()):
             with self.subTest(file=path.name):
                 print(f"\n  {path.name}")
                 self.run_selftest(path.name)

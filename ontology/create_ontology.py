@@ -184,7 +184,7 @@ with onto:
 
 
 # Save as RDF/XML OWL file
-output = Path(__file__).resolve().parent / "owl" / "emotional_ontology.owl"
+output = Path(__file__).resolve().parent / "emotional_ontology.owl"
 output.parent.mkdir(parents=True, exist_ok=True)
 onto.save(file=str(output), format="rdfxml")
 print("Saved:", output)

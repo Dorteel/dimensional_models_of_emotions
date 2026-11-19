@@ -16,8 +16,8 @@ import uno
 from com.sun.star.beans import PropertyValue
 
 ROOT = Path(__file__).resolve().parent.parent
-TEMPLATE = ROOT / "domain_model_template.ods"
-MACRO_DOC = ROOT / "create_custom_domain_model.ods"
+TEMPLATE = ROOT / "domains" / "domain_model_template.ods"
+MACRO_DOC = ROOT / "domains" / "create_custom_domain_model.ods"
 UNKNOWN = "unknown"
 DIM_ROWS = range(9, 29)
 PROTO_ROWS = range(33, 63)

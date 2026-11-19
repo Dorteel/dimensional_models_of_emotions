@@ -28,8 +28,8 @@ Originally generated from source records; currently validated by `domains/valida
 | Coordinates | `sources/models/circumplex/standard_model.csv`, `sources/models/pad/standard_model.csv` | No coordinate files exist for other models. |
 | Emotion definitions | `emotions/emotion_dictionary.ods` | Verbatim; source and URL cited in each emotion's Notes. |
 | Emotion concepts | `emotions/emotion_catalogue.ods` | Every prototype resolves to a concept; prototype IDs equal catalogue concept IDs. |
-| Template | `domain_model_template.ods` | Renamed from `domain_model_template_with_notes.ods`; opened as a template, never modified by generation. |
-| YAML structure | `ExportYAML` macro, `create_custom_domain_model.ods` (Basic/Standard/Module1) | Port of the macro; quoting, numbers and IDs are produced by the macro's own `YAMLQuote`/`YAMLNumber`/`SafeID`. It reproduces the macro-exported `domains/examples/yourdomainmodel/yourdomainmodel2.yaml` byte-for-byte. |
+| Template | `domains/domain_model_template.ods` | Renamed from `domain_model_template_with_notes.ods`; opened as a template, never modified by generation. |
+| YAML structure | `ExportYAML` macro, `domains/create_custom_domain_model.ods` (Basic/Standard/Module1) | Port of the macro; quoting, numbers and IDs are produced by the macro's own `YAMLQuote`/`YAMLNumber`/`SafeID`. It reproduces the macro-exported `domains/examples/yourdomainmodel/yourdomainmodel2.yaml` byte-for-byte. |
 
 **One extension of the macro's rules.** The macro accepts only numbers for Minimum/Maximum and only Yes/No for Circular. The port additionally accepts `unknown` and exports it as YAML `null`, so that unknown values are not replaced by defaults. Everything else is unchanged:
 - definitions must be non-empty;

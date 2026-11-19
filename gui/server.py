@@ -5,11 +5,15 @@ Serves the static dashboard from gui/web/ and a small read-only JSON API:
   GET /api/ontologies              OWL files available in the ontology folder
   GET /api/ontology?file=<name>    the parsed ontology (re-read from disk on every request)
 
+Ontology folder: `ontology/` (the repository's ontology location). The previous
+`owl/` location is supported as a fallback if no ontology files are found there.
+The folder is re-resolved on every request unless --owl-dir is given.
+
 Ontology files are only ever opened for reading. Only files listed by
 /api/ontologies can be requested, so no other path on disk is reachable.
 
 Usage (from the repository root):
-    python3 gui/server.py [--port 8765] [--owl-dir owl] [--default emotional_ontology_populated.owl] [--open]
+    python3 gui/server.py [--port 8765] [--owl-dir ontology] [--default emotional_ontology_populated.owl] [--open]
 """
 
 from __future__ import annotations
@@ -31,13 +35,30 @@ sys.path.insert(0, str(GUI_DIR))
 
 from owl_loader import find_ontologies, load_ontology  # noqa: E402
 
-DEFAULT_OWL_DIR = REPO_DIR / "owl"
+# Searched in this order; the first folder that contains .owl files is used.
+OWL_DIR_CANDIDATES = [REPO_DIR / "ontology", REPO_DIR / "owl"]
 PREFERRED_DEFAULT = "emotional_ontology_populated.owl"
+# The Domain Models tab reads only this file.
+DOMAIN_SOURCE = "emotional_ontology_populated.owl"
+
+
+def resolve_owl_dir() -> Path:
+    for candidate in OWL_DIR_CANDIDATES:
+        if find_ontologies(candidate):
+            return candidate
+    return OWL_DIR_CANDIDATES[0]
+
+
+DEFAULT_OWL_DIR = resolve_owl_dir()  # at import time; the server re-resolves per request
 
 
 class Handler(SimpleHTTPRequestHandler):
-    owl_dir: Path = DEFAULT_OWL_DIR
+    owl_dir_override: Path | None = None
     default_file: str | None = None
+
+    @property
+    def owl_dir(self) -> Path:
+        return self.owl_dir_override or resolve_owl_dir()
 
     def log_message(self, fmt, *args):  # quieter console: API errors only
         if self.path.startswith("/api/") and args and str(args[1]).startswith(("4", "5")):
@@ -64,8 +85,13 @@ class Handler(SimpleHTTPRequestHandler):
             files = self.available()
             default = self.default_file if self.default_file in files else \
                 (PREFERRED_DEFAULT if PREFERRED_DEFAULT in files else next(iter(files), None))
+            owl_dir = self.owl_dir
             return self.send_json({
-                "directory": str(self.owl_dir),
+                "directory": str(owl_dir),
+                "directory_relative": str(owl_dir.relative_to(REPO_DIR)) if owl_dir.is_relative_to(REPO_DIR) else str(owl_dir),
+                "searched": [str(c.relative_to(REPO_DIR)) for c in OWL_DIR_CANDIDATES] if not self.owl_dir_override else [],
+                "fallback": not self.owl_dir_override and owl_dir != OWL_DIR_CANDIDATES[0],
+                "domain_source": DOMAIN_SOURCE,
                 "default": default,
                 "files": [{"name": n, "size": p.stat().st_size, "mtime": p.stat().st_mtime} for n, p in files.items()],
             })
@@ -84,24 +110,29 @@ class Handler(SimpleHTTPRequestHandler):
         return super().do_GET()
 
 
-def make_server(port=8765, owl_dir=DEFAULT_OWL_DIR, default_file=None, host="127.0.0.1"):
-    handler = type("BoundHandler", (Handler,), {"owl_dir": Path(owl_dir).resolve(), "default_file": default_file})
+def make_server(port=8765, owl_dir=None, default_file=None, host="127.0.0.1"):
+    override = Path(owl_dir).resolve() if owl_dir else None
+    handler = type("BoundHandler", (Handler,), {"owl_dir_override": override, "default_file": default_file})
     return ThreadingHTTPServer((host, port), partial(handler, directory=str(GUI_DIR / "web")))
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Emotional Ontology GUI (local, read-only)")
     parser.add_argument("--port", type=int, default=8765)
-    parser.add_argument("--owl-dir", default=str(DEFAULT_OWL_DIR), help="folder containing the .owl files")
+    parser.add_argument("--owl-dir", default=None,
+                        help="folder containing the .owl files (default: ontology/, else owl/)")
     parser.add_argument("--default", dest="default_file", help="OWL file shown first (file name in --owl-dir)")
     parser.add_argument("--open", action="store_true", help="open the dashboard in the default browser")
     args = parser.parse_args(argv)
 
     server = make_server(args.port, args.owl_dir, args.default_file)
     url = f"http://127.0.0.1:{server.server_address[1]}/"
-    found = [p.name for p in find_ontologies(args.owl_dir)]
+    owl_dir = Path(args.owl_dir).resolve() if args.owl_dir else resolve_owl_dir()
+    found = [p.name for p in find_ontologies(owl_dir)]
     print(f"Emotional Ontology GUI: {url}")
-    print(f"Ontology folder: {Path(args.owl_dir).resolve()} ({', '.join(found) or 'no .owl files found'})")
+    print(f"Ontology folder: {owl_dir} ({', '.join(found) or 'no .owl files found'})")
+    if not args.owl_dir and owl_dir != OWL_DIR_CANDIDATES[0]:
+        print(f"Note: {OWL_DIR_CANDIDATES[0]} has no .owl files yet; using {owl_dir}")
     print("Press Ctrl+C to stop.")
     if args.open:
         threading.Timer(0.5, webbrowser.open, args=(url,)).start()

@@ -19,7 +19,7 @@ python3 gui/server.py            # then open http://127.0.0.1:8765/
 python3 gui/server.py --open     # same, and open the browser
 ```
 
-Options: `--port 8765`, `--owl-dir owl` (folder with `.owl` files), `--default <file.owl>`.
+Options: `--port 8765`, `--owl-dir ontology` (folder with `.owl` files), `--default <file.owl>`.
 
 Requirements: Python 3.10+ (standard library only) and a modern browser. There are no dependencies to
 install, no build step, and no network access. The server listens on `127.0.0.1` only.
@@ -34,11 +34,11 @@ The existing ontology files are used instead, unchanged:
 
 | File | Content |
 |---|---|
-| `owl/emotional_ontology_populated.owl` | Schema plus population. **Shown by default.** |
-| `owl/emotional_ontology.owl` | Schema only (classes and properties, no individuals). |
+| `ontology/emotional_ontology_populated.owl` | Schema plus population. **Shown by default.** |
+| `ontology/emotional_ontology.owl` | Schema only (classes and properties, no individuals). |
 
-Both are RDF/XML as written by Owlready2 (`create_ontology.py`, `populate_ontology.py`). The file selector
-switches between every `.owl` file in `owl/`, and **Reload** re-reads the current one from disk. The status bar
+Both are RDF/XML as written by Owlready2 (`ontology/create_ontology.py`, `ontology/populate_ontology.py`). The file selector
+switches between every `.owl` file in `ontology/`, and **Reload** re-reads the current one from disk. The status bar
 shows the file name, its sha256 and the counts, so you can see exactly which version is displayed.
 
 ## Using the Emotional Ontology tab
@@ -101,7 +101,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s gui/tests -v
 
 | Test file | What it checks |
 |---|---|
-| `test_loader.py` | Every triple of each `owl/*.owl` file is read, cross-checked with an independent ElementTree reading. Classes, individuals, properties, edges and literals match the file. Every declared class is in the hierarchy. RDF/XML edge cases are handled. Unsupported constructs are reported. Files are unchanged (sha256). |
+| `test_loader.py` | Every triple of each `ontology/*.owl` file is read, cross-checked with an independent ElementTree reading. Classes, individuals, properties, edges and literals match the file. Every declared class is in the hierarchy. RDF/XML edge cases are handled. Unsupported constructs are reported. Files are unchanged (sha256). |
 | `test_server.py` | The dashboard and assets are served. The API lists and reads the OWL files (sha256 matches). Only listed files are reachable (no path traversal). Files are unchanged. |
 | `test_architecture.py` | Components do not import ontology or API code. The adapter is pure. Only `api.js` fetches. No external resources are loaded. |
 | `test_browser.py` | Runs `web/js/selftest.js` in headless Chrome/Chromium against each OWL file (see below). Skipped if no browser is found; set `CHROME=/path/to/browser` to choose one. |

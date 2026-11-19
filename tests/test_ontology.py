@@ -20,15 +20,16 @@ class OntologyIntegration(unittest.TestCase):
     def setUpClass(cls):
         cls.tmp = tempfile.TemporaryDirectory()
         cls.root = Path(cls.tmp.name)
+        (cls.root / 'ontology').mkdir()
         for filename in ('create_ontology.py', 'populate_ontology.py'):
-            shutil.copy(ROOT / filename, cls.root / filename)
+            shutil.copy(ROOT / 'ontology' / filename, cls.root / 'ontology' / filename)
         shutil.copytree(ROOT / 'domains', cls.root / 'domains')
         (cls.root / 'emotions').mkdir(parents=True)
         shutil.copy(ROOT / 'emotions/emotion_dictionary.ods', cls.root / 'emotions')
         cls.run_script('create_ontology.py')
-        cls.schema = Graph().parse(cls.root / 'owl/emotional_ontology.owl')
+        cls.schema = Graph().parse(cls.root / 'ontology/emotional_ontology.owl')
         cls.run_script('populate_ontology.py')
-        cls.output = cls.root / 'owl/emotional_ontology_populated.owl'
+        cls.output = cls.root / 'ontology/emotional_ontology_populated.owl'
         cls.graph = Graph().parse(cls.output)
 
     @classmethod
@@ -37,7 +38,7 @@ class OntologyIntegration(unittest.TestCase):
 
     @classmethod
     def run_script(cls, script, *args):
-        subprocess.run([sys.executable, str(cls.root / script), *args], check=True, cwd=cls.root, capture_output=True, text=True)
+        subprocess.run([sys.executable, str(cls.root / 'ontology' / script), *args], check=True, cwd=cls.root, capture_output=True, text=True)
 
     def test_schema(self):
         for name in ('ConceptualSpace', 'Domain', 'QualityDimension', 'Point', 'Region', 'ConvexRegion', 'ContrastClass', 'Context', 'SimSensParameter'):
@@ -137,15 +138,16 @@ class OntologyIntegration(unittest.TestCase):
         # changes the YAML-path provenance and its hashed helper identifiers.
         with tempfile.TemporaryDirectory() as directory:
             flat = Path(directory)
+            (flat / 'ontology').mkdir()
             for filename in ('create_ontology.py', 'populate_ontology.py'):
-                shutil.copy(self.root / filename, flat / filename)
+                shutil.copy(self.root / 'ontology' / filename, flat / 'ontology' / filename)
             shutil.copytree(self.root / 'emotions', flat / 'emotions')
             (flat / 'domains').mkdir()
             for name in ('circumplex', 'pad', 'plutchik_model', 'vector_model'):
                 shutil.copy(self.root / f'domains/{name}/{name}.yaml', flat / 'domains')
             for filename in ('create_ontology.py', 'populate_ontology.py'):
-                subprocess.run([sys.executable, str(flat / filename)], check=True, capture_output=True)
-            before = Graph().parse(flat / 'owl/emotional_ontology_populated.owl')
+                subprocess.run([sys.executable, str(flat / 'ontology' / filename)], check=True, capture_output=True)
+            before = Graph().parse(flat / 'ontology/emotional_ontology_populated.owl')
 
         def comparable(graph):
             result = Graph()

@@ -1,6 +1,6 @@
 """Populate the Owlready2 emotion ontology from the dictionary and domain YAML files.
 
-Run create_ontology.py first. This script never modifies the inputs.
+Run ontology/create_ontology.py from the repository root first. This script never modifies the inputs.
 """
 from pathlib import Path
 import argparse
@@ -13,11 +13,12 @@ import pandas as pd
 import yaml
 from owlready2 import *
 
-BASE_DIR = Path(__file__).resolve().parent
+ONTOLOGY_DIR = Path(__file__).resolve().parent
+BASE_DIR = ONTOLOGY_DIR.parent
 DICTIONARY_PATH = BASE_DIR / "emotions/emotion_dictionary.ods"
 DOMAINS_DIR = BASE_DIR / "domains"
-ONTOLOGY_PATH = BASE_DIR / "owl/emotional_ontology.owl"
-OUTPUT_PATH = BASE_DIR / "owl/emotional_ontology_populated.owl"
+ONTOLOGY_PATH = ONTOLOGY_DIR / "emotional_ontology.owl"
+OUTPUT_PATH = ONTOLOGY_DIR / "emotional_ontology_populated.owl"
 
 
 def safe_name(text: str) -> str:
@@ -171,7 +172,7 @@ def main(domain_paths=None):
         # Support an older root-level schema if the current path is absent.
         ontology_path = BASE_DIR / "emotional_ontology.owl"
     if not ontology_path.is_file():
-        raise FileNotFoundError("Base ontology not found. Run create_ontology.py first.")
+        raise FileNotFoundError("Base ontology not found. Run ontology/create_ontology.py from the repository root first.")
 
     dictionary = read_dictionary()
     domains = read_domains(domain_paths)

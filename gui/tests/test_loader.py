@@ -21,7 +21,10 @@ RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 OWL = "http://www.w3.org/2002/07/owl#"
 RDFS = "http://www.w3.org/2000/01/rdf-schema#"
 XMLNS = "{http://www.w3.org/XML/1998/namespace}"
-OWL_FILES = find_ontologies(REPO / "owl")
+from server import resolve_owl_dir  # noqa: E402  (ontology/, else owl/)
+
+OWL_DIR = resolve_owl_dir()
+OWL_FILES = find_ontologies(OWL_DIR)
 
 
 def sha(path):
@@ -62,7 +65,7 @@ def loader_triples(path):
 
 class RealOntologyFiles(unittest.TestCase):
     def test_ontology_files_exist(self):
-        self.assertTrue(OWL_FILES, "no .owl files in owl/")
+        self.assertTrue(OWL_FILES, f"no .owl files in {OWL_DIR}")
 
     def test_every_triple_read(self):
         for path in OWL_FILES:
