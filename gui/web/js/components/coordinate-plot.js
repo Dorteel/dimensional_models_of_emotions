@@ -10,6 +10,7 @@
 //
 // Axis bounds: [min, max] when given (stated), widened only if a point lies outside; otherwise the data
 // extent with padding. Events: "select" {detail: {id | null}}.
+// highlight(ids) marks other points as linked to a selection elsewhere (e.g. in a second plot).
 
 const SVG = "http://www.w3.org/2000/svg";
 const el = (name, attrs = {}, text) => {
@@ -50,6 +51,7 @@ export class CoordinatePlot extends EventTarget {
     container.append(this.svg);
     this.data = null;
     this.selected = null;
+    this.linked = new Set();
     this.showLabels = true;
     this.view = { ...DEFAULT_VIEW };
     this._bind();
@@ -69,11 +71,18 @@ export class CoordinatePlot extends EventTarget {
 
   select(id, { emit = true } = {}) {
     this.selected = this.data?.points.some((p) => p.id === id) ? id : null;
-    for (const g of this.svg.querySelectorAll(".pt")) g.classList.toggle("selected", g.dataset.id === this.selected);
-    this.svg.classList.toggle("has-selection", !!this.selected);
-    const sel = this.svg.querySelector(".pt.selected");
-    if (sel) sel.parentNode.append(sel);
+    for (const g of this.svg.querySelectorAll(".pt")) {
+      g.classList.toggle("selected", g.dataset.id === this.selected);
+      g.classList.toggle("linked", this.linked.has(g.dataset.id));
+    }
+    this.svg.classList.toggle("has-selection", !!this.selected || this.svg.querySelector(".pt.linked") !== null);
+    for (const g of this.svg.querySelectorAll(".pt.linked, .pt.selected")) g.parentNode.append(g);
     if (emit) this.dispatchEvent(new CustomEvent("select", { detail: { id: this.selected } }));
+  }
+
+  highlight(ids = []) {
+    this.linked = new Set(ids);
+    this.select(this.selected, { emit: false });
   }
 
   setLabels(on) { this.showLabels = on; this.svg.classList.toggle("no-labels", !on); }

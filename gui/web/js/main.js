@@ -1,6 +1,7 @@
 // Dashboard shell: a tab bar and one panel per tab. Tabs are registered here; each tab is a
 // self-contained module with a constructor taking its panel element.
 
+import { CompareTab } from "./tabs/compare-tab.js";
 import { CreateTab } from "./tabs/create-tab.js";
 import { DomainTab } from "./tabs/domain-tab.js";
 import { OntologyTab } from "./tabs/ontology-tab.js";
@@ -10,6 +11,7 @@ const TABS = [
   { id: "ontology", title: "Emotional Ontology", create: (panel) => new OntologyTab(panel) },
   { id: "domains", title: "Domain Models", create: (panel, context) => new DomainTab(panel, context) },
   { id: "create", title: "Create Domain Model", create: (panel, context) => new CreateTab(panel, context) },
+  { id: "compare", title: "Compare Domain Models", create: (panel, context) => new CompareTab(panel, context) },
 ];
 
 function mountDashboard(root) {

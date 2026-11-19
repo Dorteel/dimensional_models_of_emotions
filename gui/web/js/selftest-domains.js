@@ -14,7 +14,7 @@ function pointer(target, type, x, y) {
 }
 
 // Expected structure, read from the API JSON with plain link walking (independent of domains.js).
-function expectedDomains(api) {
+export function expectedDomains(api) {
   const E = api.entities;
   const typed = (e, cls) => e.types.some((t) => !t.builtin && local(t.id) === cls);
   const out = (e, p) => e.out.filter((o) => local(o.predicate) === p).map((o) => o.target);
@@ -46,7 +46,7 @@ function linearDeviation(pairs) {
   return { dev: Math.max(...pairs.map((p) => Math.abs(a + b * p.v - p.px))), slope: b };
 }
 
-function plottedPoints(svg) {
+export function plottedPoints(svg) {
   return [...svg.querySelectorAll(".pt")].map((g) => {
     const c = g.querySelector("circle");
     return { id: g.dataset.id, raw: JSON.parse(g.dataset.values), x: +c.getAttribute("cx"), y: +c.getAttribute("cy"), g, c };

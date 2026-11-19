@@ -23,3 +23,13 @@ async function postJSON(url, body) {
 export const loadCatalogue = () => getJSON("/api/catalogue");
 export const validateModel = (model) => postJSON("/api/models/validate", { model });
 export const saveModel = (model, overwrite = false) => postJSON("/api/models/save", { model, overwrite });
+
+// Compare Domain Models tab: both domains and their comparison, computed by the server from the SPARQL results.
+const compareUrl = (a, b, format) =>
+  `/api/compare?a=${encodeURIComponent(a)}&b=${encodeURIComponent(b)}${format ? `&format=${format}` : ""}`;
+export const loadComparison = (a, b) => getJSON(compareUrl(a, b));
+export async function loadComparisonExport(a, b, format) {   // format: csv | md | html
+  const response = await fetch(compareUrl(a, b, format), { cache: "no-store" });
+  if (!response.ok) throw new Error((await response.json().catch(() => ({}))).error || response.statusText);
+  return response.text();
+}

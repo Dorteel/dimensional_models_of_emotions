@@ -43,10 +43,75 @@ default definitions, or coordinate normalization is introduced.
   raising `NotImplementedError` until an observed-result format is agreed.
 
 The intended workflow is to load a validated domain, supply a model executor,
-run the appropriate pipeline, then serialize its result. Only domain YAML I/O
-works today. There are no prompts, extraction algorithms, evaluation metrics,
-model SDK dependencies, or ontology imports. Evaluation modules and the two
-separate `prompts/` packages reserve their respective locations.
+run the appropriate pipeline, then serialize its result. Within those pipelines,
+only domain YAML I/O works today. There are no extraction prompts, algorithms,
+evaluation metrics, model SDK dependencies, or ontology imports. Evaluation
+modules and the two separate `prompts/` packages reserve their locations.
+
+## Download and verify local VLMs
+
+`local_models/download_models.py` uses the existing Ollama service's HTTP API,
+independently of the still-deferred `OllamaModel.execute` adapter. It requires
+no additional Python dependencies. Start Ollama first, then run from the
+repository root:
+
+```sh
+python3 extraction_pipeline/local_models/download_models.py --list
+python3 extraction_pipeline/local_models/download_models.py --pull qwen3_vl_2b --quant q4 q8
+python3 extraction_pipeline/local_models/download_models.py --all --test-image imgs/angry.jpg
+python3 extraction_pipeline/local_models/download_models.py --all --test-only --test-image imgs/angry.jpg
+python3 extraction_pipeline/local_models/download_models.py --pull granite_vision_2b --quant q4 q8 --test-only --test-image imgs/angry.jpg --context 8192
+```
+
+`--all` selects nine variants: Q4/Q8 for Qwen3-VL 2B and 4B, Gemma 3 4B, and
+Granite Vision 3.2 2B; Q4 for LLaVA-Phi3. `--quant q4` or `--quant q8` filters
+them. `--pull` defaults to Q4 and accepts multiple family names. Tags,
+quantizations, and vision projectors are verified in the registry before pulling;
+installed tags are skipped. Unrelated models are preserved.
+
+Weights stay in Ollama's standard storage. `model_dictionary.ods` contains one
+row per variant; `local_models/model_results.json` stores metadata, manifests,
+commands, image hashes, responses, failures, and memory snapshots. Sizes are
+actual `/api/tags` artifact bytes / 1,000,000,000, including the projector.
+They measure model bundles, not network traffic or deduplicated disk usage.
+Parameter counts use `model_info.general.parameter_count` from the model GGUF
+where available, with Ollama's rounded count as fallback; advertised sizes can differ.
+
+`Downloaded` means registered locally; `Tested` additionally requires vision
+support and a completed, nonempty image response. `Failed` records the failing
+stage, including inference after a successful download. `Unavailable` means a
+registry 404; blank metadata/status means not checked.
+`Tested` records successful image-request execution, not description quality:
+both Granite variants accepted the image but returned `unanswerable` for a
+generic caption and a clothing-color question. Their Notes explicitly retain
+this limitation. The other seven variants produced image-specific descriptions.
+
+Image checks run sequentially: default context 4096 (`--context` overrides it),
+batch 64, up to 96 output tokens, temperature 0. Granite's full-resolution test
+image needs 7351 input tokens, so use context 8192 for that model. `--prompt`
+can supply a concrete image-verification question. Previous test attempts remain
+in the results and dictionary notes when retesting.
+Checks try automatic placement, then CPU (`num_gpu=0`) on failure,
+and unload each model. `--timeout` defaults to 600 seconds. Other loaded models
+prevent testing and are not evicted. Memory snapshots describe these smoke tests;
+larger contexts/images may need more memory, and description quality is not scored.
+
+Official tag inventories: [Qwen3-VL](https://ollama.com/library/qwen3-vl/tags),
+[Gemma 3](https://ollama.com/library/gemma3/tags),
+[Granite Vision](https://ollama.com/library/granite3.2-vision/tags), and
+[LLaVA-Phi3](https://ollama.com/library/llava-phi3/tags).
+The legacy LLaVA-Phi3 `q4_0` tag reports `Q4_K_M` in its registry configuration;
+the dictionary uses the installed model's reported quantization, not its suffix.
+
+Run offline tests, then verify the completed setup against Ollama and LibreOffice:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s extraction_pipeline/local_models -p test_download_models.py -v
+PYTHONDONTWRITEBYTECODE=1 python3 extraction_pipeline/local_models/verify_models.py
+```
+
+The live verifier checks model metadata, saved image responses/hashes, unloading,
+and unrelated models, then reopens the ODS using a temporary LibreOffice profile.
 
 ## Before implementing generation
 

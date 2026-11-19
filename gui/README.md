@@ -1,6 +1,7 @@
 # Emotional Ontology GUI
 
-A local, browser-based dashboard for exploring the Emotional Ontology and creating domain models. It has three tabs.
+A local, browser-based dashboard for exploring the Emotional Ontology, creating domain models and comparing
+them. It has four tabs.
 
 **Emotional Ontology**:
 
@@ -20,7 +21,15 @@ A local, browser-based dashboard for exploring the Emotional Ontology and creati
   quality dimensions, and optional prototypical emotions;
 - saving writes `domains/<model_id>/<model_id>.yaml` and `.ods` with the builder workbook's own macros.
 
-Everything the first two tabs show is read from the OWL file on disk each time it is loaded: the server loads
+**Compare Domain Models**:
+
+- two domains of the populated ontology side by side, each in its own coordinate plot;
+- selecting an emotion highlights the prototype of the same emotion class in the other plot;
+- a summary of dimensions, prototypes, shared and unique emotions and their coordinates; differences only where
+  the ontology establishes that the dimensions are the same;
+- exports: SVG/PNG figures, a CSV table, and HTML or Markdown summaries.
+
+Everything the Emotional Ontology, Domain Models and Compare tabs show is read from the OWL file on disk each time it is loaded: the server loads
 it with RDFLib and answers with the results of the named SPARQL queries in [`sparql/`](sparql/README.md).
 Nothing is hard-coded. No tab writes to the ontology: creating a model and populating the ontology remain
 separate steps.
@@ -66,6 +75,7 @@ Deep links:
 - `http://127.0.0.1:8765/?file=emotional_ontology.owl&select=Emotion#ontology` opens a file in the ontology
   tab and selects a term by local name, label or IRI.
 - `http://127.0.0.1:8765/?domain=circumplex&prototype=happy#domains` opens a domain and selects a prototype.
+- `http://127.0.0.1:8765/?compareA=circumplex&compareB=pad#compare` compares two domains (name, label or IRI).
 
 ## Ontology source
 
@@ -199,6 +209,69 @@ folder is written.
 **After saving.** The ontology is not changed. To include the model, populate separately, for example
 `python3 ontology/populate_ontology.py --domains <model_id>`.
 
+## Using the Compare Domain Models tab
+
+**Data source.** As in Domain Models: only `ontology/emotional_ontology_populated.owl`, through the SPARQL
+queries. `GET /api/compare?a=<domain IRI>&b=<domain IRI>` returns both domains exactly as `/api/domains` does,
+plus the comparison computed by `ontology_service/compare.py`. No YAML or ODS file is read, and nothing is written.
+
+**Choosing domains.** Pick **A** and **B** in the toolbar; any two domains, including the same one twice. **⇄**
+swaps them.
+
+**Plots.** Each domain has its own `CoordinatePlot`, with its own axis labels and ranges ("range not stated" when
+`hasRange` is missing). The dimension chips show each dimension's IRI, range and definitions with their sources
+on hover. A dashed chip marks a missing range or definition. For two or more dimensions, the X/Y/Z pickers
+choose the projection: 1D (Y and Z "none"), 2D or 3D, which also covers more than three dimensions. A domain
+without prototypes shows an explanation instead of a plot.
+
+**Linked selection.** Click a point in either plot, a table row, or an emotion in the summary. The prototype is
+selected, and the prototypes of the **same emotion class** in the other domain are highlighted (dashed red
+ring). Matching uses only the class IRI, the prototype's asserted `rdf:type`. Names are never compared, so an
+emotion of another class, or one without a class, highlights nothing; the line below the plots says why.
+
+**Summary panel:**
+
+- **Overview:** dimensions, number of prototypes, how many have complete coordinates, emotion classes, and
+  prototypes without a class.
+- **Dimension correspondence:** two dimensions correspond only if they are the same individual (identical IRI) or
+  the ontology asserts `owl:sameAs` between them (query `compare/dimension_equivalence`). Equal or similar
+  labels are never used: PAD *pleasure* and circumplex *valence*, and circumplex *valence* and vector_model
+  *valence*, are not equated. The current ontology states no `owl:sameAs`, so two different domains get a
+  structural comparison only.
+- **Differences** (B − A) are computed for a corresponding pair only when the scales are explicitly compatible:
+  - each dimension states exactly one range in `min=…,max=…` form;
+  - the ranges are equal;
+  - neither dimension is stated to be circular;
+  - stated measurement levels do not differ.
+
+  Otherwise the reason is shown. Values are subtracted exactly, in decimal arithmetic on the file's lexical
+  forms. A Euclidean distance is added only when every dimension of both domains has such a counterpart.
+  Selecting the same domain twice therefore gives differences of 0 where ranges are stated, and none for PAD,
+  whose ranges are not stated.
+- **Emotions:** shared classes, classes only in A or only in B.
+- **Comparison table:** one row per matched prototype pair (every pair when a class has several prototypes),
+  unique emotion or unclassified prototype, with the coordinates of both domains verbatim.
+- **Missing information and warnings:** missing ranges, definitions, descriptions, coordinates and emotion
+  classes, inconsistencies in the ontology, and why differences were not computed.
+- **Provenance:** file, sha256, parser, the queries used and the comparison rules.
+
+**Export** (toolbar):
+
+| Button | File |
+|---|---|
+| A/B SVG | The plot as shown, as a standalone SVG with styles inlined. The title gives the model label and IRI, the plotted axes with their ranges, and the source file; the footer lists hidden dimensions, unstated ranges, unplotted prototypes and the domain's warnings. |
+| A/B PNG | The same figure, rendered at twice the size. |
+| CSV table | The comparison table. `#` lines before it give the model IRIs, every dimension (IRI, range, definition state), the correspondence, all warnings and the source sha256. |
+| HTML summary | Self-contained (inline CSS, no external resources): models, dimensions, correspondence, both figures, emotions, the comparison table, warnings and provenance. |
+| Markdown | The same summary without the figures. |
+
+CSV, Markdown and HTML are rendered by `ontology_service/compare_report.py` (also available as
+`/api/compare?…&format=csv|md|html`). The table on screen is the same table, so the panel and every export agree.
+
+**Reuse.** `ontology_service.compare.compare(a, b, equivalences)` takes two domain objects in the
+`build_domains` format and has no GUI dependencies. It can compare, for example, an extracted model with a
+reference model in an experiment evaluation.
+
 ## Architecture
 
 ```
@@ -207,6 +280,7 @@ gui/
   requirements.txt          rdflib, PyYAML (installed into gui/.venv)
   sparql/                   the named SPARQL queries (.rq) — the only way the GUI reads the ontology
     domains/*.rq            domains, quality dimensions, prototypes, classes, coordinates, definitions, notes, provenance
+    compare/dimension_equivalence.rq  owl:sameAs between quality dimensions (Compare tab)
     explorer/statements.rq  every statement (Emotional Ontology tab)
     README.md               query interface: prefixes, columns, rules, API
   ontology_service/         Python query service (no GUI code)
@@ -214,6 +288,8 @@ gui/
     queries.py              QueryLibrary: loads and runs the named .rq files; no ad-hoc SPARQL
     domains.py              query rows -> domains / dimensions / prototypes / coordinates JSON
     explorer.py             query rows -> entities, edges, class hierarchy (Emotional Ontology tab)
+    compare.py              comparison of two domains: dimension correspondence, emotion matching, differences
+    compare_report.py       comparison table, CSV / Markdown / HTML exports
     names.py                compact names from the file's prefixes
   model_builder/            Create Domain Model backend (no GUI code)
     catalogue.py            emotions/emotion_catalogue.ods + dictionary definitions (read-only)
@@ -227,19 +303,24 @@ gui/
     js/api.js               the only module that fetches data
     js/ontology/adapter.js  ontology JSON -> generic graph / tree / inspector structures (pure functions)
     js/ontology/domains.js  /api/domains JSON -> plot data, tree items, inspector descriptions (pure)
+    js/ontology/compare.js  /api/compare JSON -> linked prototypes, selection notes, figure titles/footers (pure)
     js/components/          reusable, ontology-agnostic UI components
       graph-view.js         SVG graph: zoom, pan, drag, select, focus, filters
       force-layout.js       deterministic force-directed layout
       tree-view.js          collapsible tree navigator
       inspector.js          detail panel with navigation links
-      coordinate-plot.js    number line / scatterplot / 3D view of labelled points
+      coordinate-plot.js    number line / scatterplot / 3D view of labelled points (select + highlight)
+      axis-picker.js        X/Y/Z projection picker
+      plot-export.js        standalone SVG (inlined styles, title/footer), PNG, download
     js/tabs/ontology-tab.js the Emotional Ontology tab: composes the pieces above
     js/tabs/domain-tab.js   the Domain Models tab: tree + coordinate plot + inspector
     js/models/domain-form.js Create Domain Model form state (pure: add/remove/reorder, preview data)
     js/tabs/create-tab.js   the Create Domain Model tab: three-step form, validation messages, preview, save
+    js/tabs/compare-tab.js  the Compare Domain Models tab: two plots, linked selection, summary, exports
     js/selftest.js          in-browser end-to-end test (only loaded with ?selftest=1)
     js/selftest-domains.js  Domain Models part of the self-test
     js/selftest-create.js   Create Domain Model part (only with &create=1; the test server saves to a scratch folder)
+    js/selftest-compare.js  Compare Domain Models part (only with &compare=1)
   tests/                    unittest suite
 ```
 
@@ -263,7 +344,8 @@ PYTHONDONTWRITEBYTECODE=1 gui/.venv/bin/python -m unittest discover -s gui/tests
 | `test_server.py` | The dashboard and assets are served. The catalogue endpoint works. The model endpoints accept only same-origin JSON (415/403/400/404 otherwise), and validation reports field errors and the destination without writing. The API lists and reads the OWL files (sha256 matches). The `ontology/` → `owl/` folder resolution and the domain source are reported. `/api/domains` is built by SPARQL. Named queries are listed and runnable, and no user-supplied SPARQL is accepted. Only listed files are reachable (no path traversal). Files are unchanged. |
 | `test_architecture.py` | Components do not import ontology or API code. Both adapters and the form-state module are pure. Tabs use no OWL vocabulary directly. There is no SPARQL in JavaScript. Only `api.js` fetches. No external resources are loaded. |
 | `test_model_builder.py` | Validation rules field by field; the `SafeID` and precision mirrors; the ODS reader (repeats, whitespace, stored values) and the catalogue/dictionary against LibreOffice's own reading. Saving into temporary folders, with each pair checked independently: the YAML is parsed; the ODS has only DomainModel, no macros, and every cell (numbers as stored values) equals the model; the existing `python3 domains/ods_export.py --export` reproduces the YAML byte for byte. Also: models without prototypes; nothing written for invalid models; overwrite only after confirmation; rollback after a failed commit; no empty folder left behind; reserved names and non-folder conflicts refused; only the model's folder written. The builder, the template and the repository's `domains/` folder are unchanged. |
-| `test_browser.py` | Runs the self-test in headless Chrome/Chromium against each OWL file (see below). A further run fills and saves the Create Domain Model form against a server that saves to a temporary folder; the saved files are then checked, and the repository's `domains/` folder is unchanged. It also compares every domain, dimension, prototype and raw coordinate string the Domain Models tab received from `/api/domains` (SPARQL) with an independent ElementTree reading of `emotional_ontology_populated.owl`. Skipped if no browser is found; set `CHROME=/path/to/browser` to choose one. |
+| `test_compare.py` | The comparison on the real ontology, checked against independent readings of the file: circumplex vs PAD (shared classes, 2 vs 3 dimensions, no correspondence, structural only), equal labels not equated, every domain against itself (differences and distance 0 where ranges are stated), domains without prototypes. On a synthetic ontology written to a temporary folder: `owl:sameAs` in both directions, exact decimal differences and distance, missing and non-numeric values, unequal ranges, circular dimensions, differing measurement levels, partial and ambiguous correspondence, several prototypes per class, prototypes without a class. Exports: the CSV body equals the table and its `#` lines carry the IRIs, dimensions and warnings; the HTML is self-contained and its tables equal the comparison; the Markdown contains every row and warning. `/api/compare`: JSON, CSV/MD/HTML with download names, errors. The ontology and `domains/` are unchanged. |
+| `test_browser.py` | Runs the self-test in headless Chrome/Chromium against each OWL file (see below). A further run fills and saves the Create Domain Model form against a server that saves to a temporary folder; the saved files are then checked, and the repository's `domains/` folder is unchanged. It also compares every domain, dimension, prototype and raw coordinate string the Domain Models tab received from `/api/domains` (SPARQL) with an independent ElementTree reading of `emotional_ontology_populated.owl`. A run with `&compare=1` drives the Compare tab; its exported SVGs are parsed with ElementTree, and every point's values are compared with the raw coordinates in the OWL file. Skipped if no browser is found; set `CHROME=/path/to/browser` to choose one. |
 
 The self-test in `test_browser.py` drives the real UI with DOM events and compares the result with the API
 data. Expected values are derived from the file. It checks that:
@@ -302,9 +384,21 @@ For the Create Domain Model tab (`&create=1`) it checks:
 - the preview plot;
 - saving, and overwrite confirmation (declined, then accepted).
 
+For the Compare Domain Models tab (`&compare=1`) it checks:
+
+- every domain is selectable as A and B;
+- both plots keep their own coordinates, axis labels and ranges;
+- selection in either plot, or via a table row, highlights only prototypes with the same class IRI;
+- the shared emotions, the counts and the coordinate table;
+- that no differences are shown for non-equivalent domains, and that they are all 0 for the same domain twice;
+- 1D, 2D and 3D projections;
+- domains without prototypes, and different numbers of dimensions;
+- every export: SVG content identical to the plot, styles inlined, IRI, axes and warnings included; PNG at
+  twice the size; CSV and Markdown equal to the server's; HTML self-contained with both figures.
+
 To watch the self-test in a normal browser, open `http://127.0.0.1:8765/?selftest=1`. The results appear at
 the bottom of the page. Add `&create=1` only with `--domains-dir` pointing to a scratch folder, because that
-part saves a model.
+part saves a model; `&compare=1` adds the comparison checks.
 
 ## Not in this iteration
 

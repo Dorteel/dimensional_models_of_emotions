@@ -7,6 +7,9 @@ gui/sparql/README.md). Every request loads the file afresh, so Reload always sho
   GET /api/ontologies                       OWL files available in the ontology folder
   GET /api/ontology?file=<name>             Emotional Ontology tab model (query explorer/statements)
   GET /api/domains                          Domain Models tab data (queries domains/*), from the populated file
+  GET /api/compare?a=<domain>&b=<domain>[&format=csv|md|html]
+                                            Compare Domain Models tab: both domains + comparison (queries domains/*,
+                                            compare/*), or the comparison as a CSV / Markdown / HTML export
   GET /api/queries                          the named queries (name, description, text)
   GET /api/sparql/<name>[?file=<name>]      raw result rows of one named query (no user-supplied SPARQL)
   GET  /api/catalogue                       emotions/emotion_catalogue.ods (+ dictionary definitions)
@@ -60,6 +63,8 @@ except ImportError:
 
 from ontology_service import (QueryLibrary, UnknownQuery, build_domains, build_explorer_model,  # noqa: E402
                               find_ontologies, load)
+from ontology_service.compare import UnknownDomain, build_comparison  # noqa: E402
+from ontology_service import compare_report  # noqa: E402
 from model_builder import save as model_save  # noqa: E402
 from model_builder.catalogue import load_catalogue  # noqa: E402
 
@@ -132,6 +137,8 @@ class Handler(SimpleHTTPRequestHandler):
             return self.with_ontology(query.get("file", [None])[0], lambda loaded: build_explorer_model(loaded, QUERIES))
         if url.path == "/api/domains":
             return self.with_ontology(DOMAIN_SOURCE, lambda loaded: build_domains(loaded, QUERIES))
+        if url.path == "/api/compare":
+            return self.compare(query)
         if url.path == "/api/queries":
             return self.send_json({"directory": str(QUERIES.directory.relative_to(REPO_DIR)), "queries": [
                 {"name": q.name, "file": str(q.path.relative_to(REPO_DIR)), "description": q.description, "text": q.text}
@@ -185,6 +192,39 @@ class Handler(SimpleHTTPRequestHandler):
         except Exception as exc:  # noqa: BLE001
             return self.send_json({"ok": False, "errors": [{"field": "", "message": f"{type(exc).__name__}: {exc}"}]},
                                   HTTPStatus.INTERNAL_SERVER_ERROR)
+
+    EXPORTS = {"csv": ("text/csv", ".csv", compare_report.to_csv),
+               "md": ("text/markdown", ".md", compare_report.to_markdown),
+               "html": ("text/html", ".html", compare_report.to_html)}
+
+    def compare(self, query):
+        """Both domains and their comparison (JSON), or one export of the comparison (format=csv|md|html)."""
+        a, b, fmt = (query.get(k, [None])[0] for k in ("a", "b", "format"))
+        if not a or not b:
+            return self.send_json({"error": "Both a and b (domain IRIs) are required."}, HTTPStatus.BAD_REQUEST)
+        if fmt not in (None, "json", *self.EXPORTS):
+            return self.send_json({"error": f"Unknown format {fmt!r}", "available": ["json", *self.EXPORTS]},
+                                  HTTPStatus.BAD_REQUEST)
+        files = self.available()
+        if DOMAIN_SOURCE not in files:
+            return self.send_json({"error": f"{DOMAIN_SOURCE} not found"}, HTTPStatus.NOT_FOUND)
+        try:
+            data = build_comparison(load(files[DOMAIN_SOURCE]), QUERIES, a, b)
+        except UnknownDomain as exc:
+            return self.send_json({"error": f"Unknown domain: {exc.args[0]!r}"}, HTTPStatus.NOT_FOUND)
+        except Exception as exc:  # noqa: BLE001
+            return self.send_json({"error": f"Could not compare: {exc}"}, HTTPStatus.UNPROCESSABLE_ENTITY)
+        if fmt in (None, "json"):
+            return self.send_json(data)
+        mime, ext, render = self.EXPORTS[fmt]
+        body = render(data["comparison"]).encode("utf-8")
+        self.send_response(HTTPStatus.OK)
+        self.send_header("Content-Type", f"{mime}; charset=utf-8")
+        self.send_header("Content-Disposition",
+                         f'attachment; filename="{compare_report.file_stem(data["comparison"])}{ext}"')
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
 
     def with_ontology(self, name, build):
         """Load a listed ontology file afresh with RDFLib and answer with build(loaded)."""

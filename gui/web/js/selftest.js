@@ -1,6 +1,7 @@
 // End-to-end self-test, loaded only with ?selftest=1 (used by gui/tests/test_browser.py).
 // Emotional Ontology tab checks are below; Domain Models tab checks are in selftest-domains.js; Create Domain
-// Model checks (selftest-create.js) run only with &create=1, against a server that saves to a scratch folder.
+// Model checks (selftest-create.js) run only with &create=1, against a server that saves to a scratch folder;
+// Compare Domain Models checks (selftest-compare.js) only with &compare=1.
 // Drives the real UI with DOM events and compares what is shown with the API data,
 // which it fetches independently. Expected values are derived from the ontology file, not hard-coded.
 
@@ -41,8 +42,9 @@ export async function run(dashboard) {
 
     // ---------------------------------------------------------------- dashboard + loading
     const tabs = [...document.querySelectorAll('.tabbar [role="tab"]')].map((b) => b.textContent);
-    check("Dashboard has the tabs 'Emotional Ontology', 'Domain Models' and 'Create Domain Model'",
-          JSON.stringify(tabs) === JSON.stringify(["Emotional Ontology", "Domain Models", "Create Domain Model"]),
+    check("Dashboard has the tabs 'Emotional Ontology', 'Domain Models', 'Create Domain Model' and 'Compare Domain Models'",
+          JSON.stringify(tabs) === JSON.stringify(["Emotional Ontology", "Domain Models", "Create Domain Model",
+                                                   "Compare Domain Models"]),
           JSON.stringify(tabs));
     const list = await (await fetch("/api/ontologies")).json();
     const wantedFile = new URLSearchParams(location.search).get("file") || list.default;
@@ -219,7 +221,7 @@ export async function run(dashboard) {
   } catch (err) {
     check("Self-test ran without errors", false, `${err.message}\n${err.stack}`);
   }
-  let domainExtraction = null, created = null;
+  let domainExtraction = null, created = null, compared = null;
   try {
     const { runDomainChecks } = await import("./selftest-domains.js");
     domainExtraction = await runDomainChecks(dashboard, check);
@@ -234,9 +236,17 @@ export async function run(dashboard) {
       check("Create Domain Model self-test ran without errors", false, `${err.message}\n${err.stack}`);
     }
   }
+  if (new URLSearchParams(location.search).has("compare")) {
+    try {
+      const { runCompareChecks } = await import("./selftest-compare.js");
+      compared = await runCompareChecks(dashboard, check);
+    } catch (err) {
+      check("Compare Domain Models self-test ran without errors", false, `${err.message}\n${err.stack}`);
+    }
+  }
   const failed = checks.filter((c) => !c.ok).length;
   out.dataset.status = failed ? "fail" : "pass";
-  out.textContent = JSON.stringify({ passed: checks.length - failed, failed, checks, domainExtraction, created }, null, 1);
+  out.textContent = JSON.stringify({ passed: checks.length - failed, failed, checks, domainExtraction, created, compared }, null, 1);
   document.body.append(out);
   document.title = failed ? "SELFTEST FAIL" : "SELFTEST PASS";
   await sleep(0);

@@ -34,6 +34,7 @@ Each file declares the prefixes it uses and documents its result columns in a he
 | `domains/notes` | Domain Models | `ecs:hasNotes` on any term. |
 | `domains/provenance` | Domain Models | Knowledge repositories (sources) with the number of definitions citing each. |
 | `explorer/statements` | Emotional Ontology | Every statement (`?s ?p ?o`); the tab shows what the file states. |
+| `compare/dimension_equivalence` | Compare Domain Models | Pairs of quality dimensions with an asserted `owl:sameAs` between them, read in both directions; no chains, no other reasoning. The only basis besides an identical IRI on which two dimensions are compared numerically. |
 
 ## Rules
 
@@ -54,6 +55,7 @@ Each file declares the prefixes it uses and documents its result columns in a he
 |---|---|
 | `GET /api/domains` | Domains, dimensions, prototypes, coordinates, definitions, notes and sources from `emotional_ontology_populated.owl`. `meta.queries` lists the queries used. |
 | `GET /api/ontology?file=<name>` | The Emotional Ontology tab model, built from `explorer/statements`. |
+| `GET /api/compare?a=<IRI>&b=<IRI>[&format=csv\|md\|html]` | Both domains (as in `/api/domains`) and their comparison (`ontology_service/compare.py`), or one export of it. |
 | `GET /api/queries` | Name, file, description and text of every query. |
 | `GET /api/sparql/<name>[?file=<name>]` | Raw result rows of one named query, as SPARQL-JSON-like terms (`type`, `value`, `datatype`, `lang`). |
 

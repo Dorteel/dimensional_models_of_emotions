@@ -9,6 +9,7 @@ ElementTree reading of the OWL file. Skipped if no Chrome/Chromium is installed;
 CHROME=/path/to/browser to choose one.
 """
 
+import hashlib
 import html
 import json
 import os
@@ -19,6 +20,7 @@ import sys
 import tempfile
 import threading
 import unittest
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 GUI = Path(__file__).resolve().parents[1]
@@ -83,10 +85,39 @@ class BrowserSelfTest(unittest.TestCase):
             shutil.rmtree(domains, ignore_errors=True)
         self.assertEqual(tree_hashes(GUI.parent / "domains"), real_before, "the repository's domains/ folder changed")
 
-    def run_selftest(self, file_name, create=False, domains_dir=None, full=False):
+    def test_compare_domain_models_tab(self):
+        """Compare two domains in the browser; check the exported figures against the OWL file."""
+        source = server.resolve_owl_dir() / server.DOMAIN_SOURCE
+        before = hashlib.sha256(source.read_bytes()).hexdigest()
+        result = self.run_selftest(server.DOMAIN_SOURCE, compare=True, full=True)
+        exported = result["compared"]
+        self.assertIsNotNone(exported, "Compare self-test returned nothing")
+        raw = ind.et_domains(source)                      # independent: ElementTree on the XML
+        svg_ns = "{http://www.w3.org/2000/svg}"
+        for key, domain in (("svgA", exported["a"]), ("svgB", exported["b"])):
+            with self.subTest(figure=key):
+                root = ET.fromstring(exported[key].encode("utf-8"))
+                points = [g for g in root.iter(svg_ns + "g") if "pt" in (g.get("class") or "").split()]
+                expected = raw[domain]["prototypes"]
+                self.assertEqual(sorted(g.get("data-id") for g in points), sorted(expected))
+                for g in points:   # the values drawn are the file's lexical values, on the domain's own axes
+                    self.assertEqual(json.loads(g.get("data-values")),
+                                     [expected[g.get("data-id")][d] for d in raw[domain]["dimensions"]])
+                texts = " ".join("".join(t.itertext()) for t in root.iter(svg_ns + "text"))
+                self.assertIn(domain, texts)
+                self.assertIsNone(re.search(r"(href|src)=[\"']https?:", exported[key]))
+        self.assertIn("range not stated", exported["svgB"])
+        csv_rows = [line for line in exported["csv"].splitlines() if not line.startswith("# ")]
+        shared = [line for line in csv_rows if line.startswith("shared,")]
+        self.assertEqual(len(shared), 2, "circumplex and PAD share two emotion classes (bored, relaxed)")
+        self.assertEqual(exported["html"].count("<svg"), 4)   # two figures, each an outer + the plot's svg
+        self.assertEqual(hashlib.sha256(source.read_bytes()).hexdigest(), before, "the ontology file changed")
+
+    def run_selftest(self, file_name, create=False, domains_dir=None, full=False, compare=False):
         httpd = server.make_server(port=0, domains_dir=domains_dir)
         threading.Thread(target=httpd.serve_forever, daemon=True).start()
-        url = f"http://127.0.0.1:{httpd.server_address[1]}/?selftest=1&file={file_name}" + ("&create=1" if create else "")
+        url = (f"http://127.0.0.1:{httpd.server_address[1]}/?selftest=1&file={file_name}" + ("&create=1" if create else "")
+               + ("&compare=1" if compare else ""))
         profile = tempfile.mkdtemp(prefix="gui_selftest_chrome_")
         try:
             proc = subprocess.run(

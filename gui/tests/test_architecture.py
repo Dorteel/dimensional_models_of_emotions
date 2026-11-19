@@ -36,6 +36,16 @@ class Architecture(unittest.TestCase):
         self.assertNotIn("document.", text)
         self.assertNotIn("fetch(", text)
 
+    def test_compare_tab_reuses_plot_and_extraction(self):
+        # One plotting component and one domain extraction: the Compare tab composes them and draws nothing itself.
+        f = WEB / "tabs" / "compare-tab.js"
+        deps = imports(f)
+        self.assertIn("../components/coordinate-plot.js", deps)
+        self.assertIn("../ontology/domains.js", deps)
+        code = f.read_text(encoding="utf-8")
+        self.assertNotIn("createElementNS", code)
+        self.assertNotIn("toPlotData(d", (WEB / "ontology" / "compare.js").read_text(encoding="utf-8"))
+
     def test_no_sparql_in_javascript(self):
         # SPARQL lives in gui/sparql/*.rq and runs on the server; the frontend only consumes results.
         for f in WEB.rglob("*.js"):

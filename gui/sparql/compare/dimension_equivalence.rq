@@ -1,0 +1,19 @@
+# Explicitly stated identity between quality dimensions: owl:sameAs between two dimensions that are each
+# linked to a domain with ecs:hasQualityDimension. Read in both directions (?a owl:sameAs ?b, ?b owl:sameAs ?a),
+# asserted statements only: no chains (no transitive closure) and no other reasoning. Labels, ranges or
+# similar names are never used to equate dimensions.
+#
+# Columns
+#   ?dimension   a QualityDimension of some domain
+#   ?equivalent  a QualityDimension of some domain stated to be the same individual (owl:sameAs)
+
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX ecs:  <http://example.org/conceptual-space-emotion.owl#>
+
+SELECT DISTINCT ?dimension ?equivalent
+WHERE {
+  ?domain1 ecs:hasQualityDimension ?dimension .
+  ?domain2 ecs:hasQualityDimension ?equivalent .
+  { ?dimension owl:sameAs ?equivalent } UNION { ?equivalent owl:sameAs ?dimension }
+  FILTER (?dimension != ?equivalent)
+}
