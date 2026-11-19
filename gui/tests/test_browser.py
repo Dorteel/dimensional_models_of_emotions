@@ -27,6 +27,9 @@ sys.path.insert(0, str(GUI))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import independent as ind  # noqa: E402
+import yaml  # noqa: E402
+from model_builder.ods_reader import read_sheet  # noqa: E402
+from test_model_builder import _floats as floats, tree_hashes  # noqa: E402
 import server  # noqa: E402
 from ontology_service import find_ontologies  # noqa: E402
 
@@ -60,17 +63,37 @@ class BrowserSelfTest(unittest.TestCase):
         print(f"\n  Domain extraction matches {source.name}: {len(expected)} domains, "
               f"{sum(len(d['prototypes']) for d in expected.values())} prototypes, {n} coordinate cells")
 
-    def run_selftest(self, file_name):
-        httpd = server.make_server(port=0)
+    def test_create_domain_model_tab(self):
+        """Fill and save the Create Domain Model form in the browser; the server saves to a scratch folder."""
+        domains = Path(tempfile.mkdtemp(prefix="gui_create_domains_"))
+        real_before = tree_hashes(GUI.parent / "domains")
+        try:
+            result = self.run_selftest(server.DOMAIN_SOURCE, create=True, domains_dir=domains, full=True)
+            created = result["created"]
+            self.assertIsNotNone(created, "Create Domain Model self-test returned nothing")
+            folder = domains / "gui_selftest_model"
+            files = sorted(p.name for p in folder.iterdir())
+            self.assertEqual(files, ["gui_selftest_model.ods", "gui_selftest_model.yaml"])
+            saved = (folder / "gui_selftest_model.yaml").read_text(encoding="utf-8")
+            self.assertEqual(saved, created["saved"]["yaml_text"])
+            self.assertEqual(floats(yaml.safe_load(saved)), floats(created["expected"]))
+            self.assertEqual(read_sheet(folder / "gui_selftest_model.ods", "DomainModel")[3][1], "GUI Selftest Model")
+            self.assertEqual(sorted(p.name for p in domains.iterdir()), ["gui_selftest_model"])
+        finally:
+            shutil.rmtree(domains, ignore_errors=True)
+        self.assertEqual(tree_hashes(GUI.parent / "domains"), real_before, "the repository's domains/ folder changed")
+
+    def run_selftest(self, file_name, create=False, domains_dir=None, full=False):
+        httpd = server.make_server(port=0, domains_dir=domains_dir)
         threading.Thread(target=httpd.serve_forever, daemon=True).start()
-        url = f"http://127.0.0.1:{httpd.server_address[1]}/?selftest=1&file={file_name}"
+        url = f"http://127.0.0.1:{httpd.server_address[1]}/?selftest=1&file={file_name}" + ("&create=1" if create else "")
         profile = tempfile.mkdtemp(prefix="gui_selftest_chrome_")
         try:
             proc = subprocess.run(
                 [CHROME, "--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check",
-                 f"--user-data-dir={profile}", "--window-size=1500,950", "--virtual-time-budget=60000",
+                 f"--user-data-dir={profile}", "--window-size=1500,950", "--virtual-time-budget=180000",
                  "--dump-dom", url],
-                capture_output=True, text=True, timeout=180)
+                capture_output=True, text=True, timeout=300)
         finally:
             httpd.shutdown()
             httpd.server_close()
@@ -83,7 +106,7 @@ class BrowserSelfTest(unittest.TestCase):
         failed = [c for c in result["checks"] if not c["ok"]]
         self.assertFalse(failed, json.dumps(failed, indent=1))
         self.assertGreaterEqual(result["passed"], 50)
-        return result.get("domainExtraction")
+        return result if full else result.get("domainExtraction")
 
 
 if __name__ == "__main__":

@@ -29,6 +29,13 @@ class Architecture(unittest.TestCase):
                 self.assertNotIn("document.", text)
                 self.assertNotIn("fetch(", text)
 
+    def test_form_state_module_is_pure(self):
+        f = WEB / "models" / "domain-form.js"
+        text = f.read_text(encoding="utf-8")
+        self.assertEqual(imports(f), [])
+        self.assertNotIn("document.", text)
+        self.assertNotIn("fetch(", text)
+
     def test_no_sparql_in_javascript(self):
         # SPARQL lives in gui/sparql/*.rq and runs on the server; the frontend only consumes results.
         for f in WEB.rglob("*.js"):

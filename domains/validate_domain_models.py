@@ -34,8 +34,6 @@ import ods_export as gen  # noqa: E402  (only for the exporter tests in section 
 SOURCES = ROOT / "sources"
 EMOTIONS = ROOT / "emotions"
 DOMAINS = ROOT / "domains"
-REPORT = DOMAINS / "GENERATION_REPORT.md"
-MISSING = DOMAINS / "MISSING_DEFINITIONS.md"
 UNDEFINED, UNKNOWN = "undefined", "unknown"
 
 # Snapshot the current inputs: validation must not modify files. Historical hashes
@@ -107,7 +105,6 @@ def cell(rows, ref):  # "B4" -> rows[3][1]
 
 # ----------------------------------------------------------------- sources
 dim_models = {r["model_label"].strip(): (line, r) for line, r in raw_rows("dimensional_model_overview.csv")}
-disc_models = {r["model_label"].strip(): (line, r) for line, r in raw_rows("discrete_model_overview.csv")}
 dict_rows = sheets_of(EMOTIONS / "emotion_dictionary.ods")["Dictionary"]
 dict_head = [h for h in dict_rows[0] if h]
 dictionary = {}
@@ -120,26 +117,9 @@ template = sheets_of(gen.TEMPLATE)["DomainModel"]
 
 # ----------------------------------------------------------------- B. every model accounted for
 expected = {m for m, (_, r) in dim_models.items() if r["model_dimensions"].strip()}
-missing_md = MISSING.read_text(encoding="utf-8") if MISSING.exists() else ""
 check("Every dimensional model with at least one dimension has domains/<model>/<model>.ods and domains/<model>/<model>.yaml",
       all((DOMAINS / m / f"{m}.ods").exists() and (DOMAINS / m / f"{m}.yaml").exists() for m in expected), f"{sorted(expected)}")
 check("No leftover drafts directory", not (DOMAINS / "drafts").exists())
-check("Every model not generated (discrete or without dimensions) is listed in MISSING_DEFINITIONS.md",
-      all(f"| `{m}` |" in missing_md for m in (set(dim_models) - expected) | set(disc_models)),
-      f"{sorted((set(dim_models) - expected) | set(disc_models))}")
-report = REPORT.read_text(encoding="utf-8") if REPORT.exists() else ""
-check("GENERATION_REPORT.md names every model", report and all(f"`{m}`" in report for m in list(dim_models) + list(disc_models)))
-
-
-def md_rows(model):
-    """(kind, item, missing) rows of MISSING_DEFINITIONS.md for one model."""
-    sect = missing_md.split(f"## `{model}`", 1)[1].split("\n## ", 1)[0] if f"## `{model}`" in missing_md else ""
-    rows = []
-    for line in sect.splitlines():
-        parts = [p.strip() for p in line.strip("|").split(" | ")]
-        if len(parts) == 4 and parts[0] in ("model", "dimension", "emotion"):
-            rows.append((parts[0], parts[1], parts[2], parts[3]))
-    return rows
 
 
 # ----------------------------------------------------------------- C/D. ODS and YAML per model
@@ -150,8 +130,6 @@ for m in sorted(expected):
     y = yaml.safe_load(text)
     line, row = dim_models[m]
     dims = [d.strip() for d in row["model_dimensions"].split(",") if d.strip()]
-    md = md_rows(m)
-    md_items = {(k, i, miss.split(" (")[0]) for k, i, miss, _ in md}
 
     # --- ODS vs sources ---
     problems = []
@@ -254,16 +232,6 @@ for m in sorted(expected):
                       "coordinates": {s[9 + i][0]: float(p[3 + i]) for i in range(len(dims))}} for p in protos]}
     yaml_view = {k: y[k] for k in ods_view}
     check(f"{m}: ODS and YAML contain equivalent information (every field)", ods_view == yaml_view)
-
-    # --- MISSING_DEFINITIONS.md covers every placeholder ---
-    needed = {("dimension", d["name"], "Definition") for d in y["dimensions"] if d["definition"] == UNDEFINED} | \
-             {("dimension", d["name"], "Minimum and maximum") for d in y["dimensions"] if d["min"] is None} | \
-             {("dimension", d["name"], "Circularity") for d in y["dimensions"] if d["circular"] is None} | \
-             {("emotion", e["name"], "Definition") for e in y["emotions"] if e["definition"] == UNDEFINED}
-    extra = {i for i in md_items if i[0] != "model"} - needed
-    check(f"{m}: MISSING_DEFINITIONS.md lists exactly the 'undefined'/unknown items, each with source references",
-          needed <= md_items and not extra and all(refs for *_, refs in md),
-          f"{len(needed)} items; unlisted {sorted(needed - md_items)}; extra {sorted(extra)}")
 
 # ----------------------------------------------------------------- E. exporter behaviour
 with gen.office() as session:

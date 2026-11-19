@@ -1,1 +1,2 @@
 rdflib==7.1.4
+PyYAML==6.0.2   # tests only: parse saved domain-model YAML

@@ -116,19 +116,19 @@ class SaveDomainModel(unittest.TestCase):
     def fixture(self, name='Save Study', prototypes=True):
         self.model = {
             'schema_version': '1.0', 'id': safe_id(name), 'name': name,
-            'description': 'A complete model: "quoted", café, and \\ paths.\nSecond line.',
+            'description': 'A complete model: "quoted", café, and \\ paths.\tAligned\nSecond line.',
             'notes': '  Model source\nDOI: example\toptional notes  ',
             'dimensions': [
-                {'id': 'valence', 'name': 'Valence', 'definition': 'Pleasantness: "low" to high.\nDefinition continued.',
+                {'id': 'valence', 'name': 'Valence', 'definition': 'Pleasantness: "low" to high.\nDefinition\tcontinued.',
                  'notes': 'Dimension source é', 'min': -1, 'max': 1, 'circular': False},
                 {'id': 'angle', 'name': 'Angle', 'definition': 'A circular quality dimension.',
                  'notes': '  Notes with a tab\tand spaces  ', 'min': 0, 'max': 360, 'circular': True},
             ],
             'emotions': [
-                {'id': 'joy', 'name': 'Joy', 'definition': 'A "joyful" state.\nMore detail.',
-                 'notes': 'Prototype source é', 'coordinates': {'valence': 0.125, 'angle': 135.5}},
+                {'id': 'joy', 'name': 'Joy', 'definition': 'A "joyful" state.\nMore\tdetail.',
+                 'notes': 'Prototype source é', 'coordinates': {'valence': 0.123456789012345, 'angle': 1e-200}},
                 {'id': 'sadness', 'name': 'Sadness', 'definition': 'A second definition.',
-                 'notes': '  A second source\ncontinued  ', 'coordinates': {'valence': -1, 'angle': 0}},
+                 'notes': '  A second source\ncontinued\tnote  ', 'coordinates': {'valence': -1, 'angle': 0}},
             ] if prototypes else [],
         }
         sh = self.sheet
@@ -239,7 +239,7 @@ class SaveDomainModel(unittest.TestCase):
         self.assert_pair()
 
     def test_validation_rejects_invalid_or_unexported_data(self):
-        for kind in ('definition', 'coordinate', 'gap', 'extra_coordinate'):
+        for kind in ('definition', 'coordinate', 'gap', 'extra_coordinate', 'precision'):
             with self.subTest(kind=kind):
                 self.fixture()
                 if kind == 'definition':
@@ -248,8 +248,10 @@ class SaveDomainModel(unittest.TestCase):
                     self.sheet.getCellByPosition(3, 33).Value = 100
                 elif kind == 'gap':
                     self.sheet.getCellByPosition(1, 34).String = ''
-                else:
+                elif kind == 'extra_coordinate':
                     self.sheet.getCellByPosition(5, 33).Value = 0.5
+                else:
+                    self.sheet.getCellByPosition(3, 33).Value = 0.12345678901234566
                 self.assertNotIn('Save complete', self.save())
                 self.assertFalse(self.folder.exists())
 

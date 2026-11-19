@@ -12,9 +12,7 @@ domains/
 ├── vector_model/      # dimensions only; no documented prototypes
 ├── examples/yourdomainmodel/  # two example YAMLs; no matching ODS
 ├── ods_export.py
-├── validate_domain_models.py
-├── GENERATION_REPORT.md
-└── MISSING_DEFINITIONS.md
+└── validate_domain_models.py
 ```
 
 The YAML schema and research definitions/coordinates are unchanged. `examples/` and any future `drafts/` are excluded from automatic ontology population. The two example YAMLs share one model ID and must not be imported together.
@@ -25,7 +23,7 @@ The YAML schema and research definitions/coordinates are unchanged. `examples/` 
 2. Click **SAVE DOMAIN MODEL**. The workbook switches to DomainModel and asks you to review the complete record before saving.
 3. Confirm the review. The action creates `domains/<model_id>/` beside the builder and saves `<model_id>.yaml` plus `<model_id>.ods`. The ODS contains only the completed DomainModel tab, using `domain_model_template.ods` for its layout; the builder keeps both original tabs.
 
-Keep the builder beside `domain_model_template.ods`. Paths follow the document location. The existing SafeID convention supplies the folder and filenames (lowercase, with spaces/hyphens converted to underscores); the model's display name keeps its original case. Definitions, dimensions, coordinates and notes are saved in both formats using the existing YAML schema and validation. Replacing either existing model file requires explicit confirmation. The files are prepared together; a failed save attempts to restore the previous pair.
+Keep the builder beside `domain_model_template.ods`. Paths follow the document location. The existing SafeID convention supplies the folder and filenames (lowercase, with spaces/hyphens converted to underscores); the model's display name keeps its original case. Definitions, dimensions, coordinates and notes are saved in both formats using the existing YAML schema and validation. Replacing either existing model file requires explicit confirmation. The files are prepared together; a failed save attempts to restore the previous pair. Numeric values that cannot round-trip through ODS precision are rejected instead of silently rounded.
 
 `domains/domain_model_template.ods` is a blank DomainModel layout without embedded macros. The saved single-sheet models and existing research ODS files have no embedded macros. Edit their DomainModel tab and re-export YAML with the Python exporter when needed. To export one of these files, including its existing unknown ranges/circularity:
 
@@ -76,4 +74,4 @@ They check folder creation, ODS/YAML equality after reopening, definitions/notes
 
 The ontology scripts and tests use the root `requirements.txt`. Export and domain validation additionally require LibreOffice and its Python UNO bridge. GUI loading tests are documented in `gui/README.md`.
 
-`GENERATION_REPORT.md` preserves the historical model inventory, and `MISSING_DEFINITIONS.md` preserves unresolved research information. Both remain in place. Update documented facts and both model representations together when resolving a missing value; definitions or coordinates must not be invented.
+Update both model representations together when resolving a documented missing value; definitions and coordinates must not be invented.

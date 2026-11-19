@@ -25,6 +25,18 @@ def get(base, path):
         return e.code, e.headers.get("Content-Type", ""), e.read()
 
 
+def post(base, path, body, content_type="application/json", origin=None):
+    data = body if isinstance(body, bytes) else json.dumps(body).encode()
+    req = urllib.request.Request(base + path, data=data, method="POST", headers={"Content-Type": content_type})
+    if origin:
+        req.add_header("Origin", origin)
+    try:
+        with urllib.request.urlopen(req, timeout=300) as r:
+            return r.status, r.read()
+    except urllib.error.HTTPError as e:
+        return e.code, e.read()
+
+
 class ServerTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -101,6 +113,34 @@ class ServerTest(unittest.TestCase):
         for path in ("/api/sparql/SELECT%20%3Fs%20WHERE%20%7B%3Fs%20%3Fp%20%3Fo%7D", "/api/sparql/../server",
                      "/api/sparql/nonexistent", "/api/sparql?query=SELECT%20*%20WHERE%20%7B%3Fs%20%3Fp%20%3Fo%7D"):
             self.assertEqual(get(self.base, path)[0], 404, path)
+
+    def test_catalogue_endpoint(self):
+        status, _, body = get(self.base, "/api/catalogue")
+        data = json.loads(body)
+        self.assertEqual(status, 200)
+        self.assertEqual(data["sources"]["catalogue"]["path"], "emotions/emotion_catalogue.ods")
+        self.assertTrue(data["emotions"] and all(e["name"] and e["concept_id"] for e in data["emotions"]))
+
+    def test_model_endpoints_accept_only_same_origin_json(self):
+        good = {"model": {"name": "", "dimensions": [], "emotions": []}}
+        self.assertEqual(post(self.base, "/api/models/validate", good)[0], 200)
+        self.assertEqual(post(self.base, "/api/models/validate", good, content_type="text/plain")[0], 415)
+        self.assertEqual(post(self.base, "/api/models/validate", good, origin="http://evil.example")[0], 403)
+        self.assertEqual(post(self.base, "/api/models/validate", b"not json")[0], 400)
+        self.assertEqual(post(self.base, "/api/models/other", good)[0], 404)
+        status, body = post(self.base, "/api/models/validate", good)
+        fields = {e["field"] for e in json.loads(body)["errors"]}
+        self.assertTrue({"name", "dimensions"} <= fields)
+
+    def test_validate_reports_destination_without_writing(self):
+        before = sorted(p.name for p in (REPO / "domains").iterdir())
+        model = {"name": "Server Test", "description": "", "notes": "", "emotions": [],
+                 "dimensions": [{"name": "x", "definition": "d", "notes": "", "min": 0, "max": 1, "circular": "no"}]}
+        status, body = post(self.base, "/api/models/validate", {"model": model})
+        data = json.loads(body)
+        self.assertEqual((status, data["ok"], data["model_id"]), (200, True, "server_test"))
+        self.assertEqual(data["destination"]["yaml"], "domains/server_test/server_test.yaml")
+        self.assertEqual(sorted(p.name for p in (REPO / "domains").iterdir()), before)
 
     def test_only_listed_files_are_reachable(self):
         for bad in ("../README.md", "/etc/passwd", "nonexistent.owl", ""):
